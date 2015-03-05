@@ -5,6 +5,7 @@ import com.github.onsdigital.readers.Csv;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -19,15 +20,14 @@ import java.util.Map;
  * DATASET IS WORKBOOK LEVEL
  */
 public class DataSet {
-    String name;
-    String source;
+    public String name;
+    public String source;
 
     public ArrayList<TimeSeries> timeSeries = new ArrayList<>();
     public ArrayList<TimeSeriesTable> timeTables = new ArrayList<>();
 
-
     public static void main(String[] args) throws IOException, URISyntaxException {
-        Csv csv = new Csv("/imports/Construction 2.csv");
+        Csv csv = new Csv("/imports/Construction 1.csv");
         csv.read(0);
 
         for (Map<String, String> row : csv) {
@@ -36,4 +36,6 @@ public class DataSet {
             }
         }
     }
+
+
 }

@@ -7,6 +7,7 @@ import com.github.onsdigital.data.TimeSeriesTable;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Created by Tom.Ridd on 03/03/15.
@@ -56,6 +57,8 @@ public class TimeSeriesReaderCSV {
                 table.name = row[1];
                 rowNumber += 1;
             } else if (meta.equals(META_WORKBOOK_NAME)) {
+                dataset.source = row[1];
+                dataset.name = row[1];
                 table.source = row[1];
                 rowNumber += 1;
             } else if (meta.equals(META_WORKSHEET_NAME)) {
@@ -86,7 +89,11 @@ public class TimeSeriesReaderCSV {
                 } else {
                     String data = row[seriesColumn];
                     TimeSeriesPoint point = new TimeSeriesPoint(rowTitle, data);
-                    series.data.add(point);
+                    try {
+                        series.addPoint(point);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -94,8 +101,18 @@ public class TimeSeriesReaderCSV {
             dataset.timeSeries.add(series);
         }
 
+        /*
+         * ADD TABLE - (BUT ONLY IF THE DATE COLUMN CHECKS OUT)
+         */
+        //TODO APPROPRIATE ERROR CATCHING
+        try {
+            table.parseDates();
+            dataset.timeTables.add(table);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        dataset.timeTables.add(table);
+
         return dataset;
     }
 

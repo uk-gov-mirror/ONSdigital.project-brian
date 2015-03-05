@@ -1,6 +1,8 @@
 package com.github.onsdigital.data;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -10,8 +12,13 @@ import java.util.TreeSet;
 public class TimeSeries {
 
     public String taxi;
-    public String cdid;
     public String name;
-    //TODO: ALPHA USES A TREE SET - REQUIRES IMPLEMENTING COMPARABLE
+
     public ArrayList<TimeSeriesPoint> data = new ArrayList<>();
+    public HashMap<String, TimeSeriesPoint> points = new HashMap<>();
+
+    public void addPoint(TimeSeriesPoint point) throws ParseException {
+        points.put(point.timeLabel, point);
+    }
+
 }

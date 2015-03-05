@@ -23,7 +23,6 @@ public class TimeSeriesPoint {
     public String value;
     public int year;
     public Date startDate;
-
     public String period;
 
     @Override
@@ -37,12 +36,13 @@ public class TimeSeriesPoint {
         }
     }
 
-    public TimeSeriesPoint(String aTimeLabel, String aValue) {
+    public TimeSeriesPoint(String aTimeLabel, String aValue) throws ParseException {
         value = aValue;
         timeLabel = aTimeLabel;
+        parseTimeLabel();
     }
 
-    public boolean parseTimeLabel() throws ParseException {
+    private boolean parseTimeLabel() throws ParseException {
         // TODO FIND OUT WHETHER LEAP YEAR CORRECTIONS ARE NECESSARY
         String[] quarters = {"q1", "q2", "q3", "q4"};
         String[] quarterMonth = {"jan", "apr", "jul", "oct"};
@@ -51,6 +51,7 @@ public class TimeSeriesPoint {
 
         String lowerLabel = StringUtils.lowerCase(timeLabel);
         String startMonth = "jan";
+        String quarter = "q1";
         boolean isMonth = false;
         boolean isQuarter = false;
 
@@ -59,6 +60,7 @@ public class TimeSeriesPoint {
         for (int i = 0; i < quarters.length; i++) {
             if (StringUtils.contains(lowerLabel, quarters[i])) {
                 isQuarter = true;
+                quarter = quarters[i];
                 startMonth = quarterMonth[i];
                 period = PERIOD_QUARTERS;
                 break;
@@ -84,9 +86,18 @@ public class TimeSeriesPoint {
                 if (!isMonth & !isQuarter) {
                     period = PERIOD_YEARS;
                 }
+
+                // SET THE DATE
                 DateFormat df = new SimpleDateFormat("MMM dd yyyy");
                 startDate = df.parse(startMonth + " 01 " + year);
 
+                // STANDARDISE THE TIME LABEL
+                timeLabel = StringUtils.trim(timeLabel);
+                if(isMonth) {
+                    timeLabel = year + " " + StringUtils.capitalize(startMonth);
+                } else if(isQuarter) {
+                    timeLabel = year + " " + StringUtils.upperCase(quarter);
+                }
                 return true;
             }
         }
