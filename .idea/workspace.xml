@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="49f19a9c-b28c-4d7a-b19c-fadd9f19ba57" name="Default" comment="Initial, and massively late, commit">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/ManifestDataSetUpdate.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/ManifestPointUpdate.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/ManifestSeriesUpdate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/imports/Construction 3.csv" afterPath="$PROJECT_DIR$/src/main/resources/imports/Construction 3.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/DataSet.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/DataSet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeries.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeries.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeriesPoint.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeriesPoint.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/TimeSeriesReaderCSV.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/TimeSeriesReaderCSV.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeriesTable.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeriesTable.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/imports/Published.csv" afterPath="$PROJECT_DIR$/src/main/resources/imports/Published.csv" />
     </list>
     <ignored path="brian.iws" />
     <ignored path=".idea/workspace.xml" />
