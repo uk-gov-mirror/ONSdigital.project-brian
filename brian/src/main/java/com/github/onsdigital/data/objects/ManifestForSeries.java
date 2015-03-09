@@ -23,16 +23,13 @@ public class ManifestForSeries {
     public ManifestForSeries(TimeSeries series, TimeSeries master) {
         this.origin = series;
         this.destination = master;
-        this.matchCount = master.points.size();
 
         for(String key : series.points.keySet() ) {
             TimeSeriesPoint point = series.points.get(key);
             TimeSeriesPoint masterPoint = master.points.get(key);
 
             if(masterPoint != null) {
-                if(point.value.equals(masterPoint.value)) {
-                    this.matchCount += 1;
-                } else {
+                if(!point.value.equals(masterPoint.value)) {
                     ManifestPoint update = new ManifestPoint(point, masterPoint);
                     this.updates.add(update);
                     this.updateCount += 1;
@@ -43,12 +40,14 @@ public class ManifestForSeries {
                 this.createCount += 1;
             }
         }
+
+        this.matchCount = series.points.size() - this.createCount - this.updateCount;
     }
 
     // TWEAKABLE METRIC FOR DETERMINING THE POWER OF THE MATCH
     public double similarity() {
         if( (matchCount + updateCount) > 0) {
-            return matchCount / (matchCount + updateCount);
+            return (double) matchCount / (double) (matchCount + updateCount);
         } else {
             return 1.0;
         }
