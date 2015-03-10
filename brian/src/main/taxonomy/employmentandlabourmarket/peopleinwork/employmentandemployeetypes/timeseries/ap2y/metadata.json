@@ -1,0 +1,18 @@
+{
+  "cdid": "AP2Y",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "",
+  "source": "Labour Force Survey",
+  "nationalStatistic": false,
+  "relatedBulletins": [],
+  "relatedTimeseries": [],
+  "sourceDatasets": [
+    "LMS",
+    "UNEM"
+  ],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/ap2y",
+  "fileName": "ap2y"
+}

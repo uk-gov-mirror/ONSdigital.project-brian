@@ -31,10 +31,7 @@ public class Data {
 
         Path requestPath = Path.newInstance(request);
 
-        
-
         return requestPath.lastSegment();
-
     }
 
     private Object getSeriesList() {

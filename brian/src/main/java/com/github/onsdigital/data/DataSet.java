@@ -25,18 +25,9 @@ public class DataSet {
     public ArrayList<TimeSeries> timeSeries = new ArrayList<>();
     public ArrayList<TimeSeriesTable> timeTables = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        Csv csv = new Csv("/imports/Construction 1.csv");
-        csv.read(0);
 
-        for (Map<String, String> row : csv) {
-            for (String key : row.keySet()) {
-                System.out.println(row.get(key));
-            }
-        }
-    }
 
-    public void updateDataSet(Manifest manifest) {
+    public void updateDataSet(Update update) {
 
     }
 }

@@ -1,0 +1,21 @@
+{
+  "cdid": "RAID125",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "m",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualmidyearpopulationestimates2013"
+  ],
+  "relatedTimeseries": [
+    "/peoplepopulationandcommunity/populationandmigration/populationestimates/timeseries/raid124",
+    "/peoplepopulationandcommunity/populationandmigration/populationestimates/timeseries/raid126",
+    "/peoplepopulationandcommunity/populationandmigration/populationestimates/timeseries/raid127"
+  ],
+  "sourceDatasets": [],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/populationandmigration/populationestimates/timeseries/raid125",
+  "fileName": "raid125"
+}

@@ -1,0 +1,24 @@
+{
+  "cdid": "IHYN",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "%",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/economy/grossdomesticproductgdp/bulletins/gdppreliminaryestimateq32014"
+  ],
+  "relatedTimeseries": [
+    "/economy/grossdomesticproductgdp/timeseries/ybha",
+    "/economy/grossdomesticproductgdp/timeseries/ihyo"
+  ],
+  "sourceDatasets": [
+    "PN2",
+    "QNA",
+    "UKEA"
+  ],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/economy/grossdomesticproductgdp/timeseries/ihyn",
+  "fileName": "ihyn"
+}

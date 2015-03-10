@@ -1,0 +1,22 @@
+{
+  "cdid": "RAID87",
+  "nationalStatistic": false,
+  "years": [
+    {
+      "date": "2012",
+      "value": "46.353871",
+      "year": "2012"
+    },
+    {
+      "date": "2013",
+      "value": "46.139940",
+      "year": "2013"
+    }
+  ],
+  "quarters": [],
+  "months": [],
+  "type": "numbers",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/elections/timeseries/raid87",
+  "fileName": "raid87"
+}

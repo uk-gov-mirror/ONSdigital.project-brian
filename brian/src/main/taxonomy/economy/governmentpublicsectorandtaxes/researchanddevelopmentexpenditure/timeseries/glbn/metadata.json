@@ -1,0 +1,19 @@
+{
+  "cdid": "GLBN",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "bn",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/economy/governmentpublicsectorandtaxes/researchanddevelopmentexpenditure/bulletins/ukgrossdomesticexpenditureonresearchanddevelopment2012"
+  ],
+  "relatedTimeseries": [],
+  "sourceDatasets": [
+    "GERD"
+  ],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/economy/governmentpublicsectorandtaxes/researchanddevelopmentexpenditure/timeseries/glbn",
+  "fileName": "glbn"
+}

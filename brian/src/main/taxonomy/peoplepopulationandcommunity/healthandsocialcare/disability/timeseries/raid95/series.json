@@ -1,0 +1,17 @@
+{
+  "cdid": "RAID95",
+  "nationalStatistic": false,
+  "years": [
+    {
+      "date": "2011",
+      "value": "5490807",
+      "year": "2011"
+    }
+  ],
+  "quarters": [],
+  "months": [],
+  "type": "numbers",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/healthandsocialcare/disability/timeseries/raid95",
+  "fileName": "raid95"
+}

@@ -1,0 +1,21 @@
+{
+  "cdid": "DGPH",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "m",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/economy/grossvalueaddedgva/bulletins/regionalgrossvalueaddedincomeapproachdecember2013"
+  ],
+  "relatedTimeseries": [
+    "/economy/grossvalueaddedgva/timeseries/abml"
+  ],
+  "sourceDatasets": [
+    "RAGV"
+  ],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/economy/grossvalueaddedgva/timeseries/dgph",
+  "fileName": "dgph"
+}

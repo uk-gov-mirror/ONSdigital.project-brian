@@ -1,0 +1,25 @@
+{
+  "cdid": "IKBH",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "m",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/businessindustryandtrade/internationaltrade/bulletins/uktradejune2014"
+  ],
+  "relatedTimeseries": [
+    "/businessindustryandtrade/internationaltrade/timeseries/ikbi"
+  ],
+  "sourceDatasets": [
+    "MRET",
+    "PN2",
+    "PNBP",
+    "QNA",
+    "UKEA"
+  ],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/businessindustryandtrade/internationaltrade/timeseries/ikbh",
+  "fileName": "ikbh"
+}

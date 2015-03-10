@@ -23,6 +23,7 @@ public class TimeSeriesReaderCSV {
     static final String SERIES_NAMES = "series names";
     static final String SERIES_TAXIS = "series ids";
 
+    static final String FLAT_FILE_NAME = "numbers.json";
 
     /**
      * Returns a DataSet from a .csv spreadsheet
@@ -110,6 +111,18 @@ public class TimeSeriesReaderCSV {
 
 
         return dataset;
+    }
+
+    /**
+     * Returns a DataSet from a .csv spreadsheet
+     * <p/>
+     * Dataset contains multiple time series and a single table
+     *
+     * @param resourcePath The internal source path
+     * @return The constructed dataset
+     */
+    public static DataSet readFlatFileDataSet(String resourcePath) throws IOException {
+        return null;
     }
 
     public static void main(String[] args) throws IOException {

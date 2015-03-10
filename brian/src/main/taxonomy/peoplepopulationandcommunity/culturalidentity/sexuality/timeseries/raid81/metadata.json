@@ -1,0 +1,20 @@
+{
+  "cdid": "RAID81",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "%",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/peoplepopulationandcommunity/culturalidentity/sexuality/bulletins/integratedhouseholdsurveyapril2011tomarch2012experimentalstatistics"
+  ],
+  "relatedTimeseries": [
+    "/peoplepopulationandcommunity/culturalidentity/sexuality/timeseries/raid83",
+    "/peoplepopulationandcommunity/culturalidentity/sexuality/timeseries/raid84"
+  ],
+  "sourceDatasets": [],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/culturalidentity/sexuality/timeseries/raid81",
+  "fileName": "raid81"
+}

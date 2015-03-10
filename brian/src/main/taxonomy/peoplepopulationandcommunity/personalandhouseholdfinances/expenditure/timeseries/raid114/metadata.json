@@ -1,0 +1,15 @@
+{
+  "cdid": "RAID114",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "per week",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [],
+  "relatedTimeseries": [],
+  "sourceDatasets": [],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/personalandhouseholdfinances/expenditure/timeseries/raid114",
+  "fileName": "raid114"
+}

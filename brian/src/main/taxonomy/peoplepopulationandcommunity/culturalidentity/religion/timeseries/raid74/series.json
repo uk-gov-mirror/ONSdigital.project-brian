@@ -1,0 +1,17 @@
+{
+  "cdid": "RAID74",
+  "nationalStatistic": false,
+  "years": [
+    {
+      "date": "2011",
+      "value": "33.243175",
+      "year": "2011"
+    }
+  ],
+  "quarters": [],
+  "months": [],
+  "type": "numbers",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/culturalidentity/religion/timeseries/raid74",
+  "fileName": "raid74"
+}

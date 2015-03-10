@@ -1,0 +1,22 @@
+{
+  "cdid": "G7AU",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "m",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/employmentandlabourmarket/publicsectorpersonnel/bulletins/publicsectoremploymentq12014"
+  ],
+  "relatedTimeseries": [
+    "/employmentandlabourmarket/publicsectorpersonnel/timeseries/g7g3"
+  ],
+  "sourceDatasets": [
+    "LMS",
+    "PSE"
+  ],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/employmentandlabourmarket/publicsectorpersonnel/timeseries/g7au",
+  "fileName": "g7au"
+}

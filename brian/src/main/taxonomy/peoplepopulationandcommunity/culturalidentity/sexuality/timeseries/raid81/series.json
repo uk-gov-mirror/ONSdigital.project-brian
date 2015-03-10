@@ -1,0 +1,17 @@
+{
+  "cdid": "RAID81",
+  "nationalStatistic": false,
+  "years": [
+    {
+      "date": "2011/12",
+      "value": "1.5",
+      "year": "2012"
+    }
+  ],
+  "quarters": [],
+  "months": [],
+  "type": "numbers",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/culturalidentity/sexuality/timeseries/raid81",
+  "fileName": "raid81"
+}

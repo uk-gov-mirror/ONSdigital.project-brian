@@ -1,0 +1,19 @@
+{
+  "cdid": "RAID116",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/peoplepopulationandcommunity/personalandhouseholdfinances/incomeandwealth/bulletins/wealthandincome201012"
+  ],
+  "relatedTimeseries": [
+    "/peoplepopulationandcommunity/personalandhouseholdfinances/incomeandwealth/timeseries/raid115"
+  ],
+  "sourceDatasets": [],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/personalandhouseholdfinances/incomeandwealth/timeseries/raid116",
+  "fileName": "raid116"
+}

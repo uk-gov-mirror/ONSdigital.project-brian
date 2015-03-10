@@ -24,7 +24,7 @@ public class TimeSeriesPair {
         for(TimeSeries masterSeries: master.timeSeries) {
             // MANIFEST FINDS THE NUMBER OF POINTS THAT WOULD BE NEEDED TO MERGE FROM INTO MASTER
             // SIMILARITY IGNORES ADDITIONS
-            ManifestForSeries manifestForPair = new ManifestForSeries(fromSeries, masterSeries);
+            UpdateForSeries manifestForPair = new UpdateForSeries(fromSeries, masterSeries);
             if((bestSeries == null) || (manifestForPair.similarity() > mapPower)) {
                 bestSeries = masterSeries;
                 mapPower = manifestForPair.similarity();

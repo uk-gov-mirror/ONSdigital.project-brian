@@ -1,0 +1,19 @@
+{
+  "cdid": "RAID108",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/peoplepopulationandcommunity/housing/bulletins/housepriceindexmay2014"
+  ],
+  "relatedTimeseries": [
+    "/peoplepopulationandcommunity/housing/timeseries/raid104"
+  ],
+  "sourceDatasets": [],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/housing/timeseries/raid108",
+  "fileName": "raid108"
+}

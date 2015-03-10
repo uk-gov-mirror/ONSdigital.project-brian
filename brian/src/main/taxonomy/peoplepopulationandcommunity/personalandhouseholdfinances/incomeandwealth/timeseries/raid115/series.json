@@ -1,0 +1,17 @@
+{
+  "cdid": "RAID115",
+  "nationalStatistic": false,
+  "years": [
+    {
+      "date": "2010-12",
+      "value": "32100",
+      "year": "12"
+    }
+  ],
+  "quarters": [],
+  "months": [],
+  "type": "numbers",
+  "name": "People not in Work",
+  "uri": "/peoplepopulationandcommunity/personalandhouseholdfinances/incomeandwealth/timeseries/raid115",
+  "fileName": "raid115"
+}

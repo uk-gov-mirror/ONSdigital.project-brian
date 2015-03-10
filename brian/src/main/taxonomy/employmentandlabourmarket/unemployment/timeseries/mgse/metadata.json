@@ -1,0 +1,21 @@
+{
+  "cdid": "MGSE",
+  "note1": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "",
+  "source": "Labour Force Survey",
+  "nationalStatistic": false,
+  "relatedBulletins": [],
+  "relatedTimeseries": [
+    "/employmentandlabourmarket/unemployment/timeseries/mgsd",
+    "/employmentandlabourmarket/unemployment/timeseries/mgsc",
+    "/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/timeseries/mgsb"
+  ],
+  "sourceDatasets": [
+    "LMS"
+  ],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/employmentandlabourmarket/unemployment/timeseries/mgse",
+  "fileName": "mgse"
+}

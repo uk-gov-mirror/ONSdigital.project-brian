@@ -1,0 +1,24 @@
+{
+  "cdid": "D7G7",
+  "note1": "Inflation rates prior to 1997 and index levels prior to 1996 are estimated.\n",
+  "note2": "This content is not available in the prototype but in future will provide a note about this timeseries.",
+  "unit": "%",
+  "source": "Office for National Statistics",
+  "nationalStatistic": false,
+  "relatedBulletins": [
+    "/economy/inflationandpriceindices/bulletins/consumerpriceinflationjune2014"
+  ],
+  "relatedTimeseries": [
+    "/economy/inflationandpriceindices/timeseries/d7bt",
+    "/economy/inflationandpriceindices/timeseries/l55o",
+    "/economy/inflationandpriceindices/timeseries/czbh",
+    "/economy/inflationandpriceindices/timeseries/kvr9"
+  ],
+  "sourceDatasets": [
+    "MM23"
+  ],
+  "type": "timeseries",
+  "name": "People not in Work",
+  "uri": "/economy/inflationandpriceindices/timeseries/d7g7",
+  "fileName": "d7g7"
+}
