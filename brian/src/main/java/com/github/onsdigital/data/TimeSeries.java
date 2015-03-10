@@ -14,7 +14,6 @@ public class TimeSeries {
     public String taxi;
     public String name;
 
-    public ArrayList<TimeSeriesPoint> data = new ArrayList<>();
     public HashMap<String, TimeSeriesPoint> points = new HashMap<>();
 
     public void addPoint(TimeSeriesPoint point) throws ParseException {

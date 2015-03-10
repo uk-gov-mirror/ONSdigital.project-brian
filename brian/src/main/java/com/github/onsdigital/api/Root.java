@@ -17,7 +17,7 @@ public class Root implements Startup {
     @Override
     public void init() {
         try {
-            master = TimeSeriesReaderCSV.readSingleTableDataSet("/imports/Published.csv");
+            master = TimeSeriesReaderCSV.readFile("/imports/Published.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }

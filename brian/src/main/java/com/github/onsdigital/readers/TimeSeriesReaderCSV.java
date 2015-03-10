@@ -33,7 +33,7 @@ public class TimeSeriesReaderCSV {
      * @param resourceName The internal source path
      * @return The constructed dataset
      */
-    public static DataSet readSingleTableDataSet(String resourceName) throws IOException {
+    public static DataSet readFile(String resourceName) throws IOException {
         // 1. Read from the source
         Csv source = new Csv(resourceName);
         source.read(0);
@@ -99,7 +99,7 @@ public class TimeSeriesReaderCSV {
             }
 
             table.addSeries(series);
-            dataset.timeSeries.add(series);
+            dataset.timeSeries.put(series.taxi, series);
         }
 
         /*
@@ -126,7 +126,7 @@ public class TimeSeriesReaderCSV {
     }
 
     public static void main(String[] args) throws IOException {
-        DataSet dataset = TimeSeriesReaderCSV.readSingleTableDataSet("/imports/Published.csv");
+        DataSet dataset = TimeSeriesReaderCSV.readFile("/imports/Published.csv");
 
         try {
             assert dataset.timeTables.size() > 0 : "table not read";

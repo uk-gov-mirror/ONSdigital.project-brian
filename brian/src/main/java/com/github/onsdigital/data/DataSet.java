@@ -6,6 +6,7 @@ import com.github.onsdigital.readers.Csv;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,12 +23,7 @@ public class DataSet {
     public String name;
     public String source;
 
-    public ArrayList<TimeSeries> timeSeries = new ArrayList<>();
     public ArrayList<TimeSeriesTable> timeTables = new ArrayList<>();
+    public HashMap<String, TimeSeries> timeSeries = new HashMap<>();
 
-
-
-    public void updateDataSet(Update update) {
-
-    }
 }
