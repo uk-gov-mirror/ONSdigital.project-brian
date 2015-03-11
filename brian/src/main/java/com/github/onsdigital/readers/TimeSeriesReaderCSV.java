@@ -72,8 +72,6 @@ public class TimeSeriesReaderCSV {
             }
         }
 
-        // TODO CREATE DEFAULT VALUES FOR MISSING DATA
-
         // READ TIME SERIES
         int seriesCount = source.row(rowNumber).length - 1;
         for (int seriesColumn = 1; seriesColumn <= seriesCount; seriesColumn++) {
@@ -90,13 +88,17 @@ public class TimeSeriesReaderCSV {
                 } else {
                     String data = row[seriesColumn];
                     try {
-                        TimeSeriesPoint point = new TimeSeriesPoint(rowTitle, data);
-                        series.addPoint(point);
+                        if(data.equals("") == false) { // IGNORE MISSING VALUES (FOR NOW)
+                            TimeSeriesPoint point = new TimeSeriesPoint(rowTitle, data);
+                            series.addPoint(point);
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
             }
+
+            //TODO: FILL IN THE BLANKS (BETWEEN TIME SERIES START AND END DATES)
 
             table.addSeries(series);
             dataset.timeSeries.put(series.taxi, series);
@@ -112,6 +114,7 @@ public class TimeSeriesReaderCSV {
 
         return dataset;
     }
+
 
     /**
      * Returns a DataSet from a .csv spreadsheet
