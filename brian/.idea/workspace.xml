@@ -2,15 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="408ede31-cb16-4b80-a679-9593b6f4283d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/writers/SeriesWriterJSON.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/com/github/onsdigital/readers/TimeSeriesReaderCSDB.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/com/github/onsdigital/readers/TimeSeriesReaderCSV.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/test-classes/com/github/onsdigital/readers/TimeSeriesReaderCSVTest.class" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/TimeSeriesReaderCSDB.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/DataSetReaderCSDB.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/TimeSeriesReaderCSV.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/DataSetReaderCSV.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/java/com/github/onsdigital/readers/TimeSeriesReaderCSVTest.java" afterPath="$PROJECT_DIR$/src/test/java/com/github/onsdigital/readers/DataSetReaderCSVTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/github/onsdigital/api/Root.class" afterPath="$PROJECT_DIR$/target/classes/com/github/onsdigital/api/Root.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Root.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Root.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/writers/DataSetWriterJSON.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/github/onsdigital/api/Data.class" afterPath="$PROJECT_DIR$/target/classes/com/github/onsdigital/api/Data.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/github/onsdigital/data/objects/TimeSeriesPoint.class" afterPath="$PROJECT_DIR$/target/classes/com/github/onsdigital/data/objects/TimeSeriesPoint.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/objects/TimeSeriesPoint.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/objects/TimeSeriesPoint.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="brian.iws" />
@@ -55,13 +50,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DataSetReaderCSDB.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/DataSetReaderCSDB.java">
+      <file leaf-file-name="TimeSeriesPoint.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/objects/TimeSeriesPoint.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2565">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="60" max-vertical-offset="1890">
+              <caret line="51" column="23" selection-start-line="51" selection-start-column="23" selection-end-line="51" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="method#toString#0;class#TimeSeriesPoint#0" expanded="false" />
+                <element signature="method#parseTimeLabel#1;class#TimeSeriesPoint#0" expanded="false" />
+                <element signature="method#nextTimeLabel#0;class#TimeSeriesPoint#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -71,10 +69,35 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/writers/SeriesWriterJSON.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="765">
-              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="24" selection-end-column="5" />
               <folding>
+                <element signature="imports" expanded="true" />
                 <element signature="e#463#464#0" expanded="true" />
                 <element signature="e#514#515#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataSetWriterJSON.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/writers/DataSetWriterJSON.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="525">
+              <caret line="19" column="26" selection-start-line="19" selection-start-column="26" selection-end-line="19" selection-end-column="26" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Data.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Data.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="990">
+              <caret line="53" column="51" selection-start-line="53" selection-start-column="51" selection-end-line="53" selection-end-column="51" />
+              <folding>
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -102,10 +125,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Root.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Root.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Root.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.39672545" vertical-offset="0" max-vertical-offset="794">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
               <caret line="26" column="53" selection-start-line="26" selection-start-column="53" selection-end-line="26" selection-end-column="53" />
               <folding />
             </state>
@@ -117,16 +140,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="420">
               <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DataSet.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/DataSet.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="420">
-              <caret line="19" column="28" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -144,10 +157,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TimeSeries.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TimeSeries.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeries.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
+            <state vertical-scroll-proportion="0.6117825" vertical-offset="0" max-vertical-offset="662">
               <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
               <folding>
                 <element signature="method#addPoint#0;class#TimeSeries#0" expanded="false" />
@@ -203,7 +216,6 @@
         <option value="$PROJECT_DIR$/src/main/resources/imports/IOS1" />
         <option value="$PROJECT_DIR$/src/test/java/com/github/onsdigital/readers/TimeSeriesReaderCSVTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/github/onsdigital/data/objects/TimeSeriesPointTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/objects/TimeSeriesPoint.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeries.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/github/onsdigital/data/TimeSeriesTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/TimeSeriesReaderCSDB.java" />
@@ -212,7 +224,9 @@
         <option value="$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Root.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/onsdigital/writers/SeriesWriterJSON.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/github/onsdigital/readers/DataSetReaderCSVTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/objects/TimeSeriesPoint.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Data.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/onsdigital/writers/DataSetWriterJSON.java" />
       </list>
     </option>
   </component>
@@ -926,7 +940,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -948,7 +962,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2768903" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18613862" sideWeight="0.49967763" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31683168" sideWeight="0.49967763" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1378,19 +1392,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/objects/TimeSeriesPoint.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="630" max-vertical-offset="1875">
-          <caret line="78" column="31" selection-start-line="78" selection-start-column="31" selection-end-line="78" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#toString#0;class#TimeSeriesPoint#0" expanded="false" />
-            <element signature="method#parseTimeLabel#1;class#TimeSeriesPoint#0" expanded="false" />
-            <element signature="method#nextTimeLabel#0;class#TimeSeriesPoint#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/readers/DataSetReaderCSDB.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2565">
@@ -1406,20 +1407,6 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="420">
           <caret line="19" column="28" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeries.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
-          <folding>
-            <element signature="method#addPoint#0;class#TimeSeries#0" expanded="false" />
-            <element signature="method#fillInTheBlanks#0;class#TimeSeries#0" expanded="false" />
-            <element signature="e#2646#2647#0" expanded="true" />
-            <element signature="e#2690#2691#0" expanded="true" />
-            <element signature="method#main#0;class#TimeSeries#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1459,11 +1446,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Root.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+          <caret line="26" column="53" selection-start-line="26" selection-start-column="53" selection-end-line="26" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/objects/TimeSeriesPoint.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="60" max-vertical-offset="1890">
+          <caret line="51" column="23" selection-start-line="51" selection-start-column="23" selection-end-line="51" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#toString#0;class#TimeSeriesPoint#0" expanded="false" />
+            <element signature="method#parseTimeLabel#1;class#TimeSeriesPoint#0" expanded="false" />
+            <element signature="method#nextTimeLabel#0;class#TimeSeriesPoint#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/writers/SeriesWriterJSON.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="765">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="24" selection-end-column="5" />
           <folding>
+            <element signature="imports" expanded="true" />
             <element signature="e#463#464#0" expanded="true" />
             <element signature="e#514#515#0" expanded="true" />
           </folding>
@@ -1472,22 +1481,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Data.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13224182" vertical-offset="15" max-vertical-offset="870">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="990">
+          <caret line="53" column="51" selection-start-line="53" selection-start-column="51" selection-end-line="53" selection-end-column="51" />
           <folding>
-            <element signature="e#1317#1318#0" expanded="true" />
-            <element signature="e#1344#1345#0" expanded="true" />
-            <element signature="e#1378#1379#0" expanded="true" />
-            <element signature="e#1405#1406#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/api/Root.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/writers/DataSetWriterJSON.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.39672545" vertical-offset="0" max-vertical-offset="794">
-          <caret line="26" column="53" selection-start-line="26" selection-start-column="53" selection-end-line="26" selection-end-column="53" />
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="525">
+          <caret line="19" column="26" selection-start-line="19" selection-start-column="26" selection-end-line="19" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/onsdigital/data/TimeSeries.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6117825" vertical-offset="0" max-vertical-offset="662">
+          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <folding>
+            <element signature="method#addPoint#0;class#TimeSeries#0" expanded="false" />
+            <element signature="method#fillInTheBlanks#0;class#TimeSeries#0" expanded="false" />
+            <element signature="e#2646#2647#0" expanded="true" />
+            <element signature="e#2690#2691#0" expanded="true" />
+            <element signature="method#main#0;class#TimeSeries#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

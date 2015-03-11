@@ -19,7 +19,7 @@ public class TimeSeriesPoint {
 
     public String timeLabel;
     public String value;
-    public int year;
+    //public int year;
     public Date startDate;
     public String period;
 
@@ -45,6 +45,7 @@ public class TimeSeriesPoint {
 
         String[] months = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
 
+        int year;
         String lowerLabel = StringUtils.lowerCase(timeLabel);
         String startMonth = "jan";
         String quarter = "q1";
