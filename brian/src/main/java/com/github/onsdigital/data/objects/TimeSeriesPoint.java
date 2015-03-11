@@ -25,12 +25,10 @@ public class TimeSeriesPoint {
 
     @Override
     public String toString() {
-        SimpleDateFormat ft =
-                new SimpleDateFormat("MMM yyyy");
         try {
-            return timeLabel + " - " + value + " (" + period + " starting at " + ft.format(startDate) + ")";
+            return timeLabel + ": " + value;
         } catch (Exception e) {
-            return timeLabel + " - " + value;
+            return timeLabel + ": " + value;
         }
     }
 
@@ -78,7 +76,7 @@ public class TimeSeriesPoint {
         }
 
         // TRY AND WORK OUT THE RELEVANT YEAR - IF A YEAR IS FOUND RETURN TRUE
-        for (int tryYear = 1841; tryYear < 2050; tryYear++) {
+        for (int tryYear = 1800; tryYear < 2050; tryYear++) {
             if (StringUtils.contains(timeLabel, tryYear + "")) {
                 year = tryYear;
                 if (!isMonth & !isQuarter) {
@@ -105,6 +103,10 @@ public class TimeSeriesPoint {
         return false;
     }
 
+    public static String parseTimeLabel(String timeLabel) throws ParseException {
+        TimeSeriesPoint point = new TimeSeriesPoint(timeLabel, "");
+        return point.timeLabel;
+    }
 
     public static String nextTimeLabel(String timeLabel) {
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};

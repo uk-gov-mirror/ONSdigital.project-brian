@@ -116,7 +116,7 @@ public class TimeSeriesReaderCSDB {
                         // TRIM OFF THE BEGINNING
                         values = values.substring(10);
                         iteration += 1;
-                    };
+                    }
                 }
             } catch (NumberFormatException e) {
 

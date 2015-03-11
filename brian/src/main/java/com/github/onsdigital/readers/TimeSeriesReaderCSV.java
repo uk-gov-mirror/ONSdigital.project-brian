@@ -97,9 +97,8 @@ public class TimeSeriesReaderCSV {
                     }
                 }
             }
-
-            //TODO: FILL IN THE BLANKS (BETWEEN TIME SERIES START AND END DATES)
-
+            
+            series.fillInTheBlanks();
             table.addSeries(series);
             dataset.timeSeries.put(series.taxi, series);
         }
