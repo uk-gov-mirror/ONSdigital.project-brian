@@ -2,6 +2,10 @@ package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.davidcarboni.restolino.helpers.Path;
+import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.writers.SeriesWriterJSON;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,8 +34,13 @@ public class Data {
                       HttpServletResponse response) throws IOException {
 
         Path requestPath = Path.newInstance(request);
+        TimeSeries series = Root.master.timeSeries.get(requestPath.lastSegment());
 
-        return requestPath.lastSegment();
+        response.setCharacterEncoding("UTF8");
+        response.setContentType("application.json");
+        response.getWriter().println(SeriesWriterJSON.seriesAsJSON(series,true));
+        response.setStatus(HttpStatus.OK_200);
+        return null;
     }
 
     private Object getSeriesList() {

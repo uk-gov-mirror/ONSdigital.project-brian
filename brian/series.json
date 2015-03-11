@@ -1,0 +1,28 @@
+{
+  "hasYearly": true,
+  "hasMonthly": true,
+  "hasQuarterly": true,
+  "points": {
+    "2013": {
+      "timeLabel": "2013",
+      "value": "100",
+      "year": 2013,
+      "startDate": "Jan 1, 2013 12:00:00 AM",
+      "period": "years"
+    },
+    "2014 Q3": {
+      "timeLabel": "2014 Q3",
+      "value": "200",
+      "year": 2014,
+      "startDate": "Jul 1, 2014 12:00:00 AM",
+      "period": "quarters"
+    },
+    "2014 Sep": {
+      "timeLabel": "2014 Sep",
+      "value": "300",
+      "year": 2014,
+      "startDate": "Sep 1, 2014 12:00:00 AM",
+      "period": "months"
+    }
+  }
+}

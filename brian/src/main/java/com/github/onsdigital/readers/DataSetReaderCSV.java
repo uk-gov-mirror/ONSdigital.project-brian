@@ -14,7 +14,7 @@ import java.text.ParseException;
  */
 
 
-public class TimeSeriesReaderCSV {
+public class DataSetReaderCSV {
     static final String META_WORKBOOK_NAME = "workbook name";
     static final String META_WORKSHEET_NAME = "worksheet name";
     static final String META_TABLE_NAME = "table name";
@@ -97,7 +97,7 @@ public class TimeSeriesReaderCSV {
                     }
                 }
             }
-            
+
             series.fillInTheBlanks();
             table.addSeries(series);
             dataset.timeSeries.put(series.taxi, series);
@@ -128,7 +128,7 @@ public class TimeSeriesReaderCSV {
     }
 
     public static void main(String[] args) throws IOException {
-        DataSet dataset = TimeSeriesReaderCSV.readFile("/imports/Published.csv");
+        DataSet dataset = DataSetReaderCSV.readFile("/imports/Published.csv");
 
         try {
             assert dataset.timeTables.size() > 0 : "table not read";

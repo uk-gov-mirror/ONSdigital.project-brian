@@ -5,11 +5,7 @@ import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 import org.apache.commons.io.FileUtils;
 
-import javax.sound.sampled.Line;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -22,7 +18,7 @@ import java.util.List;
 /**
  * Created by thomasridd on 10/03/15.
  */
-public class TimeSeriesReaderCSDB {
+public class DataSetReaderCSDB {
 
     // CHEWS THROUGH THE CSDB BRIDGE FILES
     public static DataSet readFile(String resourceName) throws IOException {
@@ -47,7 +43,7 @@ public class TimeSeriesReaderCSDB {
                     if (LineType == 92) {
                         if (seriesBuffer.size() > 0) {
                             // PARSE THE BLOCK JUST COLLECTED
-                            TimeSeries series = TimeSeriesReaderCSDB.seriesFromStringList(seriesBuffer);
+                            TimeSeries series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
 
                             // COMBINE IT WITH AN EXISTING SERIES
                             if(serieses.containsKey(series.taxi)) {
@@ -152,8 +148,8 @@ public class TimeSeriesReaderCSDB {
     }
 
     public static void main(String[] args) throws IOException {
-        DataSet csvSet = TimeSeriesReaderCSV.readFile("/imports/IOS1.csv");
-        DataSet csdbSet = TimeSeriesReaderCSDB.readFile("/imports/IOS1");
+        DataSet csvSet = DataSetReaderCSV.readFile("/imports/IOS1.csv");
+        DataSet csdbSet = DataSetReaderCSDB.readFile("/imports/IOS1");
 
         for(TimeSeries t: csvSet.timeSeries.values()) {
             try {

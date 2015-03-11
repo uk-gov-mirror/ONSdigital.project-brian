@@ -2,7 +2,8 @@ package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Startup;
 import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.readers.TimeSeriesReaderCSV;
+import com.github.onsdigital.readers.DataSetReaderCSDB;
+import com.github.onsdigital.readers.DataSetReaderCSV;
 
 import java.io.IOException;
 
@@ -12,16 +13,17 @@ import java.io.IOException;
 
 public class Root implements Startup {
 
-    static DataSet master;
+    public static DataSet master;
 
     @Override
     public void init() {
         try {
-            master = TimeSeriesReaderCSV.readFile("/imports/Published.csv");
+            master = DataSetReaderCSDB.readFile("/imports/IOS1");
+            //master = DataSetReaderCSV.readFile("/imports/Published.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
         System.out.println("Startup");
-        System.out.println(master);
+        System.out.println(master.timeSeries.keySet());
     }
 }

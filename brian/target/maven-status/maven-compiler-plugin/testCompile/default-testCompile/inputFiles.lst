@@ -1,1 +1,3 @@
-/Users/thomasridd/Projects/brian/src/test/java/com/github/onsdigital/readers/TimeSeriesReaderCSVTest.java
+/Users/thomasridd/Projects/brian/src/test/java/com/github/onsdigital/readers/DataSetReaderCSVTest.java
+/Users/thomasridd/Projects/brian/src/test/java/com/github/onsdigital/data/objects/TimeSeriesPointTest.java
+/Users/thomasridd/Projects/brian/src/test/java/com/github/onsdigital/data/TimeSeriesTest.java
