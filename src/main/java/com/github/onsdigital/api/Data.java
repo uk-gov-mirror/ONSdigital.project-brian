@@ -78,7 +78,7 @@ public class Data {
     private boolean returnRandom(Path requestPath, HttpServletResponse response) {
         String isRand = requestPath.segments().get(1).toUpperCase();
         if(StringUtils.startsWith(isRand,"RAND")) {
-            long seed = Long.parseLong(StringUtils.substring(isRand, 5));
+            long seed = Long.parseLong(StringUtils.substring(isRand, 4));
             TimeSeries series = Sample.randomWalk(seed, 100, 1, 1997, 2014, true, true, true);
 
             response.setCharacterEncoding("UTF8");

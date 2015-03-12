@@ -136,8 +136,6 @@ public class TimeSeries {
         series.addPoint(new TimeSeriesPoint("2013 Nov", "100"));
         series.fillInTheBlanks();
 
-
-
         // When
         //... we search for points that we didn't add but exist
         String[] filledPoints = {"2013 Dec", "2014 Feb"};
