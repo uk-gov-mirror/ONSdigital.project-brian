@@ -4,16 +4,19 @@ import com.github.davidcarboni.restolino.framework.Api;
 import com.github.davidcarboni.restolino.helpers.Path;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.generators.Sample;
 import com.github.onsdigital.writers.DataSetWriterJSON;
 import com.github.onsdigital.writers.SeriesWriterJSON;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import java.io.IOException;
-
+import java.util.Objects;
 
 
 @Api
@@ -37,22 +40,58 @@ public class Data {
 
         Path requestPath = Path.newInstance(request);
         System.out.println(requestPath);
-        if(requestPath.segments().size() == 1) {
+        if(requestPath.segments().size() == 1) { // RETURN ALL DATA
             response.setCharacterEncoding("UTF8");
             response.setContentType("application/json");
             response.getWriter().println(DataSetWriterJSON.dataSetAsJSON(Root.master, true));
             response.setStatus(HttpStatus.OK_200);
 
-        } else {
-            TimeSeries series = Root.master.timeSeries.get(requestPath.lastSegment());
+        } else if (returnSeries(requestPath, response)) {
+
+            response.setStatus(HttpStatus.OK_200);
+            return null;
+        } else if (returnRandom(requestPath, response)) {
+            response.setStatus(HttpStatus.OK_200);
+            return null;
+        }
+
+        response.setStatus(HttpStatus.NOT_FOUND_404);
+        return null;
+    }
+
+    private boolean returnSeries(Path requestPath, HttpServletResponse response) {
+        TimeSeries series = Root.getTimeSeries(requestPath.segments().get(1));
+        if (series == null) { return false; }
+
+        response.setCharacterEncoding("UTF8");
+        response.setContentType("application/json");
+        try {
+            response.getWriter().println(SeriesWriterJSON.seriesAsJSON(series, true));
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    private boolean returnRandom(Path requestPath, HttpServletResponse response) {
+        String isRand = requestPath.segments().get(1).toUpperCase();
+        if(StringUtils.startsWith(isRand,"RAND")) {
+            long seed = Long.parseLong(StringUtils.substring(isRand, 5));
+            TimeSeries series = Sample.randomWalk(seed, 100, 1, 1997, 2014, true, true, true);
 
             response.setCharacterEncoding("UTF8");
             response.setContentType("application/json");
-            response.getWriter().println(SeriesWriterJSON.seriesAsJSON(series, true));
-            response.setStatus(HttpStatus.OK_200);
+            try {
+                response.getWriter().println(SeriesWriterJSON.seriesAsJSON(series, true));
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
-        response.setStatus(HttpStatus.NOT_FOUND_404);
-        return null;
+        return false;
     }
 
     private Object getSeriesList() {

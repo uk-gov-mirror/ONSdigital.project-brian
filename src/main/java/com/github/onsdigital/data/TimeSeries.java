@@ -19,6 +19,11 @@ public class TimeSeries {
 
     public HashMap<String, TimeSeriesPoint> points = new HashMap<>();
 
+    /**
+     * INSERT A POINT
+     *
+     * @param point
+     */
     public void addPoint(TimeSeriesPoint point) {
         points.put(point.timeLabel, point);
         if(point.period == TimeSeriesPoint.PERIOD_YEARS){
@@ -30,7 +35,28 @@ public class TimeSeries {
         }
     }
 
-    // FILLS GAPS IN A SERIES WITH HOLES
+    /**
+     * ACCESS POINT FOR A TIME LABEL
+     *
+     * @param timeLabel
+     * @return
+     */
+    public TimeSeriesPoint getPoint(String timeLabel) {
+        return points.get(timeLabel);
+    }
+
+    @Override
+    public String toString() {
+        String str = "";
+        for(String key: points.keySet()) {
+            TimeSeriesPoint point = points.get(key);
+            str = String.format("%s(%s, %s) ", str, point.timeLabel, point.value);
+        }
+        return str;
+    }
+    /**
+     * FILL BREAKS IN CONTINUITY WITH BLANKS
+     */
     public void fillInTheBlanks() {
         ArrayList <String> periods = new ArrayList<>();
         if(hasYearly == true) { periods.add(TimeSeriesPoint.PERIOD_YEARS);}
@@ -58,14 +84,46 @@ public class TimeSeries {
                     }
                     curPoint = new TimeSeriesPoint(TimeSeriesPoint.nextTimeLabel(curPoint.timeLabel), "");
                 }
-
-
-
         }
     }
 
-    public TimeSeriesPoint getPoint(String timeLabel) {
-        return points.get(timeLabel);
+    /**
+     * REVERSE fillInTheBlanks
+     *
+     * @return TIMESERIES WHERE ALL POINTS CONTAIN VALUES
+     */
+    public TimeSeries noBlanks() {
+        TimeSeries series = new TimeSeries();
+        series.taxi = taxi;
+        series.name = name;
+        for(TimeSeriesPoint point: points.values()) {
+            if(point.value.length() > 0) {
+                series.addPoint(point);
+            }
+        }
+        return series;
+    }
+
+    /**
+     *
+     * MERGES TWO TIMESERIES
+     *
+     * @param left timeseries 1
+     * @param right timeseries 2
+     * @param leftTakesPrecedent which timeseries is definitive
+     * @return
+     */
+    public static TimeSeries merge(TimeSeries left, TimeSeries right, boolean leftTakesPrecedent) {
+        TimeSeries merged = leftTakesPrecedent ? left.noBlanks() : right.noBlanks();
+        TimeSeries add = leftTakesPrecedent ? right.noBlanks() : left.noBlanks();
+        for(TimeSeriesPoint point: add.points.values()) {
+            if(merged.points.containsKey(point.timeLabel) == false) {
+                merged.addPoint(point);
+            }
+        }
+
+        merged.fillInTheBlanks();
+        return merged;
     }
 
     public static void main(String[] args) {
@@ -77,6 +135,8 @@ public class TimeSeries {
         series.addPoint(new TimeSeriesPoint("2014 Oct", "100"));
         series.addPoint(new TimeSeriesPoint("2013 Nov", "100"));
         series.fillInTheBlanks();
+
+
 
         // When
         //... we search for points that we didn't add but exist

@@ -27,8 +27,6 @@ public class Eat {
      *
      * @throws java.io.IOException
      */
-
-
     @POST
     public boolean eatThis(HttpServletRequest request,
                            HttpServletResponse response) throws IOException {

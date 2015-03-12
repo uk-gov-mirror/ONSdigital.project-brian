@@ -2,8 +2,8 @@ package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Startup;
 import com.github.onsdigital.data.DataSet;
+import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
-import com.github.onsdigital.readers.DataSetReaderCSV;
 
 import java.io.IOException;
 
@@ -18,12 +18,17 @@ public class Root implements Startup {
     @Override
     public void init() {
         try {
-            master = DataSetReaderCSDB.readFile("/imports/IOS1");
+            master = DataSetReaderCSDB.readFile("/imports/csdb/IOS1");
             //master = DataSetReaderCSV.readFile("/imports/Published.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
         System.out.println("Startup");
         System.out.println(master.timeSeries.keySet());
+    }
+
+    //TODO Replace this with code worth the effort
+    public static TimeSeries getTimeSeries(String taxi) {
+        return master.timeSeries.get(taxi);
     }
 }

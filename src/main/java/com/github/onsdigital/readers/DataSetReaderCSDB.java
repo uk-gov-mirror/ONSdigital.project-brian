@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,7 +146,7 @@ public class DataSetReaderCSDB {
 
     public static void main(String[] args) throws IOException {
         DataSet csvSet = DataSetReaderCSV.readFile("/imports/IOS1.csv");
-        DataSet csdbSet = DataSetReaderCSDB.readFile("/imports/IOS1");
+        DataSet csdbSet = DataSetReaderCSDB.readFile("/imports/csdb/IOS1");
 
         for (TimeSeries t : csvSet.timeSeries.values()) {
             try {

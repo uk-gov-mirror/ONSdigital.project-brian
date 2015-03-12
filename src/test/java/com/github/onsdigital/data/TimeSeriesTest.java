@@ -57,4 +57,74 @@ public class TimeSeriesTest {
         assertEquals("300", series.getPoint("2014 Jan").value);
 
     }
+
+    @Test
+    public void canMergeSeries() throws Exception {
+        // Given
+        //... two overlapping time series
+        TimeSeries left = new TimeSeries();
+        left.addPoint(new TimeSeriesPoint("2013", "100"));
+        left.addPoint(new TimeSeriesPoint("2014", "200"));
+        left.addPoint(new TimeSeriesPoint("2015", "400"));
+
+        TimeSeries right = new TimeSeries();
+        right.addPoint(new TimeSeriesPoint("2014", "400"));
+        right.addPoint(new TimeSeriesPoint("2017", "400"));
+
+        // When
+        //... we run a merge
+        TimeSeries leftPrecedent = TimeSeries.merge(left, right, true);
+        TimeSeries rightPrecedent = TimeSeries.merge(left, right, false);
+
+        // Then
+        //... we expect 5 points in each series
+        assertEquals(5, leftPrecedent.points.size());
+        assertEquals(5, rightPrecedent.points.size());
+
+        //... identical points are consistent
+        assertEquals("100", leftPrecedent.getPoint("2013").value);
+        assertEquals("100", rightPrecedent.getPoint("2013").value);
+
+        //... gaps have been filled
+        assertEquals("", leftPrecedent.getPoint("2016").value);
+        assertEquals("", rightPrecedent.getPoint("2016").value);
+
+        //... and conflicts are sorted out
+        assertEquals("200", leftPrecedent.getPoint("2014").value);
+        assertEquals("400", rightPrecedent.getPoint("2014").value);
+
+    }
+
+    @Test
+    public void canMergeDisjointSeries() throws Exception {
+        // Given
+        //... two overlapping time series
+        TimeSeries left = new TimeSeries();
+        left.addPoint(new TimeSeriesPoint("2000", "100"));
+        left.addPoint(new TimeSeriesPoint("2002", "200"));
+        left.addPoint(new TimeSeriesPoint("2012", "400"));
+
+        TimeSeries right = new TimeSeries();
+        right.addPoint(new TimeSeriesPoint("2014", "400"));
+        right.addPoint(new TimeSeriesPoint("2017", "400"));
+
+        // When
+        //... we run a merge
+        TimeSeries leftPrecedent = TimeSeries.merge(left, right, true);
+        TimeSeries rightPrecedent = TimeSeries.merge(left, right, false);
+
+        // Then
+        //... we expect 18 points in each series
+        assertEquals(18, leftPrecedent.points.size());
+        assertEquals(18, rightPrecedent.points.size());
+
+        //... identical points are consistent
+        assertEquals("400", leftPrecedent.getPoint("2014").value);
+        assertEquals("400", rightPrecedent.getPoint("2014").value);
+
+        //... gaps have been filled
+        assertEquals("", leftPrecedent.getPoint("2016").value);
+        assertEquals("", rightPrecedent.getPoint("2016").value);
+
+    }
 }
