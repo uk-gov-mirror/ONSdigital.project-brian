@@ -19,7 +19,7 @@ public class TimeSeries {
 
     public HashMap<String, TimeSeriesPoint> points = new HashMap<>();
 
-    public void addPoint(TimeSeriesPoint point) throws ParseException {
+    public void addPoint(TimeSeriesPoint point) {
         points.put(point.timeLabel, point);
         if(point.period == TimeSeriesPoint.PERIOD_YEARS){
             hasYearly = true;
@@ -38,7 +38,7 @@ public class TimeSeries {
         if(hasQuarterly == true) { periods.add(TimeSeriesPoint.PERIOD_QUARTERS);}
 
         for(String period: periods) {
-            try {
+
                 TimeSeriesPoint minPoint = new TimeSeriesPoint("2049", "");
                 TimeSeriesPoint maxPoint = new TimeSeriesPoint("1800", "");
                 for(TimeSeriesPoint point: points.values()) {
@@ -59,9 +59,6 @@ public class TimeSeries {
                     curPoint = new TimeSeriesPoint(TimeSeriesPoint.nextTimeLabel(curPoint.timeLabel), "");
                 }
 
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
 
 
         }
@@ -71,7 +68,7 @@ public class TimeSeries {
         return points.get(timeLabel);
     }
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         TimeSeries series = new TimeSeries();
 
         // Given

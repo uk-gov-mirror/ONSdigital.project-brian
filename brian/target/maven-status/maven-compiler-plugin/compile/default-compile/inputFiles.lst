@@ -4,6 +4,7 @@
 /Users/thomasridd/Projects/brian/src/main/java/com/github/onsdigital/api/Eat.java
 /Users/thomasridd/Projects/brian/src/main/java/com/github/onsdigital/api/Root.java
 /Users/thomasridd/Projects/brian/src/main/java/com/github/onsdigital/readers/DataSetReaderCSV.java
+/Users/thomasridd/Projects/brian/src/main/java/com/github/onsdigital/writers/DataSetWriterJSON.java
 /Users/thomasridd/Projects/brian/src/main/java/com/github/onsdigital/api/Convert.java
 /Users/thomasridd/Projects/brian/src/main/java/com/github/onsdigital/data/TimeSeries.java
 /Users/thomasridd/Projects/brian/src/main/java/com/github/onsdigital/generators/AlphaConverter.java

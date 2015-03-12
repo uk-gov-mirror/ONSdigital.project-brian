@@ -19,8 +19,8 @@ public class TimeSeriesPoint {
 
     public String timeLabel;
     public String value;
-    //public int year;
-    public Date startDate;
+
+    public Date startDate; // ONLY ISSUE IS THAT START DATE MAY NOT PARSE
     public String period;
 
     @Override
@@ -32,13 +32,13 @@ public class TimeSeriesPoint {
         }
     }
 
-    public TimeSeriesPoint(String aTimeLabel, String aValue) throws ParseException {
+    public TimeSeriesPoint(String aTimeLabel, String aValue) {
         value = aValue;
         timeLabel = aTimeLabel;
         parseTimeLabel();
     }
 
-    private boolean parseTimeLabel() throws ParseException {
+    private boolean parseTimeLabel() {
         // TODO FIND OUT WHETHER LEAP YEAR CORRECTIONS ARE NECESSARY
         String[] quarters = {"q1", "q2", "q3", "q4"};
         String[] quarterMonth = {"jan", "apr", "jul", "oct"};
@@ -86,13 +86,17 @@ public class TimeSeriesPoint {
 
                 // SET THE DATE
                 DateFormat df = new SimpleDateFormat("MMM dd yyyy");
-                startDate = df.parse(startMonth + " 01 " + year);
+                try {
+                    startDate = df.parse(startMonth + " 01 " + year);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
                 // STANDARDISE THE TIME LABEL
                 timeLabel = StringUtils.trim(timeLabel);
-                if(isMonth) {
+                if (isMonth) {
                     timeLabel = year + " " + StringUtils.capitalize(startMonth);
-                } else if(isQuarter) {
+                } else if (isQuarter) {
                     timeLabel = year + " " + StringUtils.upperCase(quarter);
                 }
                 return true;
@@ -104,7 +108,7 @@ public class TimeSeriesPoint {
         return false;
     }
 
-    public static String parseTimeLabel(String timeLabel) throws ParseException {
+    public static String parseTimeLabel(String timeLabel) {
         TimeSeriesPoint point = new TimeSeriesPoint(timeLabel, "");
         return point.timeLabel;
     }
@@ -116,37 +120,34 @@ public class TimeSeriesPoint {
         int startYear = 0;
         int startMonth = 0;
 
-        try {
-            // CREATE A POINT (WHICH DOES ALL OUR PARSING)
-            TimeSeriesPoint pt = new TimeSeriesPoint(timeLabel, "");
+        // CREATE A POINT (WHICH DOES ALL OUR PARSING)
+        TimeSeriesPoint pt = new TimeSeriesPoint(timeLabel, "");
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(pt.startDate);
-            startYear = calendar.get(Calendar.YEAR);
-            startMonth = calendar.get(Calendar.MONTH) + 1;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(pt.startDate);
+        startYear = calendar.get(Calendar.YEAR);
+        startMonth = calendar.get(Calendar.MONTH) + 1;
 
-            // UPDATE THE STRING
-            if(pt.period.equals(TimeSeriesPoint.PERIOD_YEARS)) { // FOR YEAR LABELS
-                return String.format("%d", startYear + 1);
-            } else if(pt.period.equals(TimeSeriesPoint.PERIOD_MONTHS)) { // FOR MONTH LABELS
-                if(startMonth == 12) {
-                    startYear += 1;
-                    startMonth = 1;
-                } else {
-                    startMonth += 1;
-                }
-                return String.format("%d %s", startYear, months[startMonth - 1]);
-            } else if(pt.period.equals(TimeSeriesPoint.PERIOD_QUARTERS)) { // FOR QUARTER LABELS
-                int nextQuarter = (((startMonth + 3 - 1) / 3) + 1);
-                if(nextQuarter == 5) {
-                    nextQuarter = 1;
-                    startYear += 1;
-                }
-                return String.format("%d Q%d", startYear, nextQuarter);
+        // UPDATE THE STRING
+        if (pt.period.equals(TimeSeriesPoint.PERIOD_YEARS)) { // FOR YEAR LABELS
+            return String.format("%d", startYear + 1);
+        } else if (pt.period.equals(TimeSeriesPoint.PERIOD_MONTHS)) { // FOR MONTH LABELS
+            if (startMonth == 12) {
+                startYear += 1;
+                startMonth = 1;
+            } else {
+                startMonth += 1;
             }
-        } catch (ParseException e) {
-            return "";
+            return String.format("%d %s", startYear, months[startMonth - 1]);
+        } else if (pt.period.equals(TimeSeriesPoint.PERIOD_QUARTERS)) { // FOR QUARTER LABELS
+            int nextQuarter = (((startMonth + 3 - 1) / 3) + 1);
+            if (nextQuarter == 5) {
+                nextQuarter = 1;
+                startYear += 1;
+            }
+            return String.format("%d Q%d", startYear, nextQuarter);
         }
+
         return timeLabel;
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.012" errors="0" skipped="0" tests="2" name="com.github.onsdigital.data.TimeSeriesTest">
+<testsuite failures="0" time="0.01" errors="0" skipped="0" tests="2" name="com.github.onsdigital.data.TimeSeriesTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.7.0_75.jdk/Contents/Home/jre/lib"/>
@@ -63,5 +63,5 @@
     <property name="sun.cpu.isalist" value=""/>
   </properties>
   <testcase time="0" classname="com.github.onsdigital.data.TimeSeriesTest" name="testGetPoint"/>
-  <testcase time="0.012" classname="com.github.onsdigital.data.TimeSeriesTest" name="shouldCreateUnbrokenTimeSeries"/>
+  <testcase time="0.01" classname="com.github.onsdigital.data.TimeSeriesTest" name="shouldCreateUnbrokenTimeSeries"/>
 </testsuite>

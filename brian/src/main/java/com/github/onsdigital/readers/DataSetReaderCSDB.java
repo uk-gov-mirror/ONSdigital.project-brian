@@ -35,7 +35,7 @@ public class DataSetReaderCSDB {
             ArrayList<String> seriesBuffer = new ArrayList<>();
 
             //WALK THROUGH THE FILE
-            for(String line : lines) {
+            for (String line : lines) {
                 try {
                     int LineType = Integer.parseInt(line.substring(0, 2));
 
@@ -46,9 +46,9 @@ public class DataSetReaderCSDB {
                             TimeSeries series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
 
                             // COMBINE IT WITH AN EXISTING SERIES
-                            if(serieses.containsKey(series.taxi)) {
+                            if (serieses.containsKey(series.taxi)) {
                                 TimeSeries existing = serieses.get(series.taxi);
-                                for(TimeSeriesPoint point : series.points.values()) {
+                                for (TimeSeriesPoint point : series.points.values()) {
                                     existing.addPoint(point);
                                 }
 
@@ -63,8 +63,6 @@ public class DataSetReaderCSDB {
                     }
                 } catch (NumberFormatException e) {
 
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
             }
         } catch (URISyntaxException e) {
@@ -84,31 +82,29 @@ public class DataSetReaderCSDB {
         String mqa = "A";
         int iteration = 1;
 
-        for(String line: lines) {
+        for (String line : lines) {
             try {
                 int LineType = Integer.parseInt(line.substring(0, 2));
-                if(LineType == 92) { // TOP LINE (SERIES CODE)
-                    series.taxi = line.substring(2,6);
+                if (LineType == 92) { // TOP LINE (SERIES CODE)
+                    series.taxi = line.substring(2, 6);
 
                 } else if (LineType == 93) { // SECOND LINE (DESCRIPTION)
                     series.name = line.substring(2);
 
                 } else if (LineType == 96) { // THIRD LINE (START DATE)
-                    startInd = Integer.parseInt(line.substring(9,11).trim());
-                    mqa = line.substring(2,3);
+                    startInd = Integer.parseInt(line.substring(9, 11).trim());
+                    mqa = line.substring(2, 3);
                     year = Integer.parseInt(line.substring(4, 8));
 
                 } else if (LineType == 97) { // OTHER LINES (APPEND IN BLOCKS)
                     String values = line.substring(2);
-                    while(values.length() > 9) {
+                    while (values.length() > 9) {
                         // GET FIRST VALUE
                         String oneValue = values.substring(0, 10).trim();
-                        try {
-                            TimeSeriesPoint point = new TimeSeriesPoint(DateLabel(year, startInd, mqa, iteration), oneValue);
-                            series.addPoint(point);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+
+                        TimeSeriesPoint point = new TimeSeriesPoint(DateLabel(year, startInd, mqa, iteration), oneValue);
+                        series.addPoint(point);
+
                         // TRIM OFF THE BEGINNING
                         values = values.substring(10);
                         iteration += 1;
@@ -123,14 +119,16 @@ public class DataSetReaderCSDB {
     }
 
     private static String DateLabel(int year, int startInd, String mqa, int iteration) {
-        if(mqa.equals("Y") || mqa.equals("A")) {return (year + iteration - 1) + "";}
+        if (mqa.equals("Y") || mqa.equals("A")) {
+            return (year + iteration - 1) + "";
+        }
 
         // NO GREAT BIT OF CALCULATION HERE
         int yr = year;
         int it = startInd;
-        for(int i = 1; i < iteration; i++) {
+        for (int i = 1; i < iteration; i++) {
             it += 1;
-            if(mqa.equals("M") & it > 12) {
+            if (mqa.equals("M") & it > 12) {
                 it = 1;
                 yr += 1;
             } else if (mqa.equals("Q") & it > 4) {
@@ -140,7 +138,7 @@ public class DataSetReaderCSDB {
         }
 
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-        if(mqa.equals("M")) {
+        if (mqa.equals("M")) {
             return yr + " " + months[it - 1];
         } else {
             return yr + " Q" + it;
@@ -151,7 +149,7 @@ public class DataSetReaderCSDB {
         DataSet csvSet = DataSetReaderCSV.readFile("/imports/IOS1.csv");
         DataSet csdbSet = DataSetReaderCSDB.readFile("/imports/IOS1");
 
-        for(TimeSeries t: csvSet.timeSeries.values()) {
+        for (TimeSeries t : csvSet.timeSeries.values()) {
             try {
                 TimeSeries t2 = csdbSet.timeSeries.get(t.taxi);
                 System.out.println(t.taxi + " csv:" + t.points.size() + " points    csdb:" + t2.points.size());

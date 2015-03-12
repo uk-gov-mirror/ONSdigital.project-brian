@@ -87,14 +87,12 @@ public class DataSetReaderCSV {
                     series.taxi = row[seriesColumn];
                 } else {
                     String data = row[seriesColumn];
-                    try {
-                        if(data.equals("") == false) { // IGNORE MISSING VALUES (FOR NOW)
-                            TimeSeriesPoint point = new TimeSeriesPoint(rowTitle, data);
-                            series.addPoint(point);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+
+                    if (data.equals("") == false) { // IGNORE MISSING VALUES (FOR NOW)
+                        TimeSeriesPoint point = new TimeSeriesPoint(rowTitle, data);
+                        series.addPoint(point);
                     }
+
                 }
             }
 
