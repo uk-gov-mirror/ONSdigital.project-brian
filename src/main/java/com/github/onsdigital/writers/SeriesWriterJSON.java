@@ -3,7 +3,7 @@ package com.github.onsdigital.writers;
 import com.github.davidcarboni.restolino.json.Serialiser;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
-import com.github.onsdigital.writers.objects.simpleJSONTimeSeries;
+import com.github.onsdigital.writers.objects.ListedTimeSeries;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -32,7 +32,7 @@ public class SeriesWriterJSON {
         if(prettyPrinting == true) {
             Serialiser.getBuilder().setPrettyPrinting();
         }
-        return Serialiser.serialise(new simpleJSONTimeSeries(series));
+        return Serialiser.serialise(new ListedTimeSeries(series));
     }
 
     public static void writeToJsonFile(TimeSeries series, File file) throws IOException {

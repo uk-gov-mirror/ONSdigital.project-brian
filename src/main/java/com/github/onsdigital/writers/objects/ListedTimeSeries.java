@@ -10,7 +10,7 @@ import java.util.Collections;
 /**
  * Created by thomasridd on 13/03/15.
  */
-public class simpleJSONTimeSeries {
+public class ListedTimeSeries {
     public String taxi;
     public String name;
     public Boolean hasYearly = false;
@@ -18,7 +18,7 @@ public class simpleJSONTimeSeries {
     public Boolean hasQuarterly = false;
     public ArrayList<TimeSeriesPoint> points = new ArrayList<>();
 
-    public simpleJSONTimeSeries(TimeSeries series) {
+    public ListedTimeSeries(TimeSeries series) {
         taxi = series.taxi;
         name = series.name;
         hasMonthly = series.hasMonthly;
@@ -30,5 +30,20 @@ public class simpleJSONTimeSeries {
         }
 
         Collections.sort(points, new TimeSeriesPointComparator());
+    }
+
+    public TimeSeries toTimeSeries() {
+        TimeSeries series = new TimeSeries();
+        series.taxi = taxi;
+        series.name = name;
+        series.hasQuarterly = hasQuarterly;
+        series.hasYearly = hasYearly;
+        series.hasMonthly = hasMonthly;
+
+        for(TimeSeriesPoint point: points) {
+            series.addPoint(point);
+        }
+
+        return series;
     }
 }

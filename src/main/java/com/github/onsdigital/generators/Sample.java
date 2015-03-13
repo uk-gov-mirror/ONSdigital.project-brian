@@ -1,5 +1,6 @@
 package com.github.onsdigital.generators;
 
+import com.github.onsdigital.api.Data;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
@@ -99,6 +100,20 @@ public class Sample {
             TimeSeries series = randomWalk(seed, start, volatility, firstYear, lastYear, withMonths, withQuarters, withYears);
             dataSet.timeSeries.put(series.taxi, series);
             seed += 1;
+        }
+        return dataSet;
+    }
+
+    public static TimeSeries quickWalk(long seed) {
+        return randomWalk(seed, 100, 1, 2010, 2014, true, true, true);
+    }
+
+    public static DataSet randomWalkDataSet(int count, long seedZero, double start, double volatility, int firstYear, int lastYear, boolean withMonths, boolean withQuarters, boolean withYears){
+        DataSet dataSet = new DataSet();
+        dataSet.name = String.format("Random DataSet with %d series and start seed %05d", count, seedZero);
+        dataSet.source = "Sample random walk dataset";
+        for(int i = 0; i < count; i++) {
+            dataSet.addSeries(Sample.randomWalk(seedZero + i, start, volatility, firstYear, lastYear, withMonths, withQuarters, withYears));
         }
         return dataSet;
     }

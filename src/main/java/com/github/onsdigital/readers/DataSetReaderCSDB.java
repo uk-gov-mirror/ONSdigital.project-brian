@@ -16,13 +16,22 @@ import java.util.List;
 
 /**
  * Created by thomasridd on 10/03/15.
+ *
+ * METHODS TO READ DATA FROM CSDB STANDARD TEXT FILES
+ *
  */
 public class DataSetReaderCSDB {
 
-    // CHEWS THROUGH THE CSDB BRIDGE FILES
+    /**
+     * READS A DATASET FROM A RESOURCE FILE
+     *
+     * @param resourceName - THE INTERNAL FILE PATH OF THE RESOURCE
+     * @return - THE DATASET REPRESENTATION
+     * @throws IOException
+     */
     public static DataSet readFile(String resourceName) throws IOException {
 
-        HashMap<String, TimeSeries> serieses = new HashMap<>();
+        DataSet dataSet = new DataSet();
 
         // FIRST THINGS FIRST - GET THE FILE
         URL resource = DataSet.class.getResource(resourceName);
@@ -45,14 +54,14 @@ public class DataSetReaderCSDB {
                             TimeSeries series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
 
                             // COMBINE IT WITH AN EXISTING SERIES
-                            if (serieses.containsKey(series.taxi)) {
-                                TimeSeries existing = serieses.get(series.taxi);
+                            if (dataSet.timeSeries.containsKey(series.taxi)) {
+                                TimeSeries existing = dataSet.timeSeries.get(series.taxi);
                                 for (TimeSeriesPoint point : series.points.values()) {
                                     existing.addPoint(point);
                                 }
 
                             } else { // OR CREATE A NEW SERIES
-                                serieses.put(series.taxi, series);
+                                dataSet.addSeries(series);
                             }
                         }
                         seriesBuffer = new ArrayList<>();
@@ -68,10 +77,7 @@ public class DataSetReaderCSDB {
             e.printStackTrace();
         }
 
-        DataSet data = new DataSet();
-        data.timeSeries = serieses;
-
-        return data;
+        return dataSet;
     }
 
     public static TimeSeries seriesFromStringList(ArrayList<String> lines) {
