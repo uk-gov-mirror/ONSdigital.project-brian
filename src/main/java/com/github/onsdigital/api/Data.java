@@ -66,7 +66,7 @@ public class Data {
         response.setCharacterEncoding("UTF8");
         response.setContentType("application/json");
         try {
-            response.getWriter().println(SeriesWriterJSON.seriesAsJSON(series, true));
+            response.getWriter().println(SeriesWriterJSON.seriesAsSortedJSON(series, true));
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class Data {
             response.setCharacterEncoding("UTF8");
             response.setContentType("application/json");
             try {
-                response.getWriter().println(SeriesWriterJSON.seriesAsJSON(series, true));
+                response.getWriter().println(SeriesWriterJSON.seriesAsSortedJSON(series, true));
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();

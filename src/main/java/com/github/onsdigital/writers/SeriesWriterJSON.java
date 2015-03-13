@@ -3,6 +3,7 @@ package com.github.onsdigital.writers;
 import com.github.davidcarboni.restolino.json.Serialiser;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
+import com.github.onsdigital.writers.objects.simpleJSONTimeSeries;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -22,6 +23,16 @@ public class SeriesWriterJSON {
             Serialiser.getBuilder().setPrettyPrinting();
         }
         return Serialiser.serialise(series);
+    }
+
+    public static String seriesAsSortedJSON(TimeSeries series) {
+        return seriesAsSortedJSON(series, false);
+    }
+    public static String seriesAsSortedJSON(TimeSeries series, boolean prettyPrinting) {
+        if(prettyPrinting == true) {
+            Serialiser.getBuilder().setPrettyPrinting();
+        }
+        return Serialiser.serialise(new simpleJSONTimeSeries(series));
     }
 
     public static void writeToJsonFile(TimeSeries series, File file) throws IOException {
