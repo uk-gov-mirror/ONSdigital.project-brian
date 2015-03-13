@@ -32,7 +32,7 @@ public class TimeSeriesTest {
 
         // When
         //... we search for points we didn't add explicitly
-        String[] filledPoints = {"2013 Dec", "2014 Feb"};
+        String[] filledPoints = {"2013-12", "2014-02"};
 
         // Then
         //... we expect them to exist
@@ -46,7 +46,7 @@ public class TimeSeriesTest {
         // Given
         //... a time series
         TimeSeries series = new TimeSeries();
-        series.addPoint(new TimeSeriesPoint("2014 Jan", "300"));
+        series.addPoint(new TimeSeriesPoint("2014-01", "300"));
         series.addPoint(new TimeSeriesPoint("2014 Q1", "200"));
         series.addPoint(new TimeSeriesPoint("2013", "100"));
 
@@ -54,7 +54,7 @@ public class TimeSeriesTest {
         //... we ask for a point
         assertEquals("100", series.getPoint("2013").value);
         assertEquals("200", series.getPoint("2014 Q1").value);
-        assertEquals("300", series.getPoint("2014 Jan").value);
+        assertEquals("300", series.getPoint("2014-01").value);
 
     }
 

@@ -138,7 +138,8 @@ public class DataSetReaderCSDB {
 
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         if (mqa.equals("M")) {
-            return yr + " " + months[it - 1];
+//            return yr + " " + months[it - 1];
+            return yr + " " + String.format("%02d", it);
         } else {
             return yr + " Q" + it;
         }

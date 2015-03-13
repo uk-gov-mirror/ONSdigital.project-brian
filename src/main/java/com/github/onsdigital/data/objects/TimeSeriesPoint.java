@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 /**
  * Created by Tom.Ridd on 03/03/15.
  */
@@ -38,16 +37,22 @@ public class TimeSeriesPoint {
         parseTimeLabel();
     }
 
+    /**
+     * PARSES AN INPUT TIME LABEL
+     *
+     * @return success
+     */
     private boolean parseTimeLabel() {
         // TODO FIND OUT WHETHER LEAP YEAR CORRECTIONS ARE NECESSARY
         String[] quarters = {"q1", "q2", "q3", "q4"};
-        String[] quarterMonth = {"jan", "apr", "jul", "oct"};
+        String[] quarterMonth = {"01", "04", "07", "10"};
 
         String[] months = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
+        String[] outputMonths = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
 
         int year;
         String lowerLabel = StringUtils.lowerCase(timeLabel);
-        String startMonth = "jan";
+        String startMonth = outputMonths[0];
         String quarter = "q1";
         boolean isMonth = false;
         boolean isQuarter = false;
@@ -66,10 +71,25 @@ public class TimeSeriesPoint {
 
         // CHECK FOR MONTHS
         if (!isQuarter) {
+            if (lowerLabel.length() > 6) { // OPTION 1 - MONTH NUMBER
+                try {
+                    int monthNumber = Integer.parseInt(StringUtils.right(lowerLabel, 2));
+                    if ((monthNumber > 0) & (monthNumber <= 12)) {
+                        isMonth = true;
+                        startMonth = outputMonths[monthNumber - 1];
+                        period = PERIOD_MONTHS;
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+            }
+        }
+        // CHECK FOR MONTHS - OPTION 2 - MONTH LABELS
+        if (!isQuarter & !isMonth) { //
             for (int i = 0; i < months.length; i++) {
                 if (StringUtils.contains(lowerLabel, months[i])) {
                     isMonth = true;
-                    startMonth = months[i];
+                    startMonth = outputMonths[i];
                     period = PERIOD_MONTHS;
                     break;
                 }
@@ -85,9 +105,9 @@ public class TimeSeriesPoint {
                 }
 
                 // SET THE DATE
-                DateFormat df = new SimpleDateFormat("MMM dd yyyy");
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 try {
-                    startDate = df.parse(startMonth + " 01 " + year);
+                    startDate = df.parse(year + "-" + startMonth + "-01");
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -95,7 +115,7 @@ public class TimeSeriesPoint {
                 // STANDARDISE THE TIME LABEL
                 timeLabel = StringUtils.trim(timeLabel);
                 if (isMonth) {
-                    timeLabel = year + " " + StringUtils.capitalize(startMonth);
+                    timeLabel = year + "-" + StringUtils.capitalize(startMonth);
                 } else if (isQuarter) {
                     timeLabel = year + " " + StringUtils.upperCase(quarter);
                 }
@@ -115,6 +135,7 @@ public class TimeSeriesPoint {
 
     public static String nextTimeLabel(String timeLabel) {
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String[] numberMonths = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
 
 
         int startYear = 0;
@@ -138,7 +159,7 @@ public class TimeSeriesPoint {
             } else {
                 startMonth += 1;
             }
-            return String.format("%d %s", startYear, months[startMonth - 1]);
+            return String.format("%d-%s", startYear, numberMonths[startMonth - 1]);
         } else if (pt.period.equals(TimeSeriesPoint.PERIOD_QUARTERS)) { // FOR QUARTER LABELS
             int nextQuarter = (((startMonth + 3 - 1) / 3) + 1);
             if (nextQuarter == 5) {
