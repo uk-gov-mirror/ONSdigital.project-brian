@@ -1,9 +1,11 @@
 package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Startup;
+import com.github.davidcarboni.restolino.helpers.Path;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
+import com.github.onsdigital.writers.DataSetWriterJSON;
 import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,37 +20,34 @@ import java.net.URISyntaxException;
  */
 public class Upload {
 
-    /** GET
+    /**
+     * API Access to the site
      *
      *
      * @param request
-     * JSON update manifest
+     * List of data series required. Filter options
      *
      * @param response
-     * result
+     * Initially will return json only
      *
      * @throws java.io.IOException
+     *
      */
     @GET
-    public boolean runUpload(HttpServletRequest request,
-                           HttpServletResponse response) throws IOException {
-        boolean result = false;
-
-        // Convert and merge the change set:
-        // 1. Read in the CSV
-        // 2.
+    public Object get(HttpServletRequest request,
+                      HttpServletResponse response) throws IOException {
 
         try {
             Root.master = DataSetReaderCSDB.readDirectory("/imports/csdb");
+            response.getWriter().println("Success");
+            response.setStatus(HttpStatus.OK_200);
+            return null;
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
-        // Change the status code if necessary:
-        if (!result) {
-            response.setStatus(HttpStatus.BAD_REQUEST_400);
-        }
-
-        return result;
+        
+        response.setStatus(HttpStatus.NOT_FOUND_404);
+        return null;
     }
+
 }

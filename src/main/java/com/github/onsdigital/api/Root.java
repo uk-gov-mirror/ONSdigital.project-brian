@@ -18,6 +18,7 @@ public class Root implements Startup {
     @Override
     public void init() {
         try {
+            master = new DataSet();
 //            master = DataSetReaderCSDB.readDirectory("/imports/csdb");
         } catch (Exception e) {
             e.printStackTrace();
