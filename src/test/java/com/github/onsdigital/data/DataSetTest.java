@@ -108,23 +108,5 @@ public class DataSetTest {
 
     }
 
-    @Test
-    public void canScaleNewData() {
-        // Given
-        //... some big random data sets
-        DataSet r1 = Sample.quickWalks(1000, 1);
 
-        // When
-        //... we time the
-        for(int i = 1; i < 5; i++) {
-            DataSet r2 = Sample.quickWalks(1000, 1000 * i);
-            long startTime = System.nanoTime();
-            r1.mergeWith(r2, true);
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime) / 10000000;
-            System.out.println("Time " + i + ": " + duration + "ms");
-        }
-
-
-    }
 }

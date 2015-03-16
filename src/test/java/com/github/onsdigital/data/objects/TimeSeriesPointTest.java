@@ -58,9 +58,9 @@ public class TimeSeriesPointTest {
         //... we expect to get some standard values
         assertEquals(monthPoint.value, "200");
         assertEquals(monthPoint.startDate, df.parse("01/10/2014") );
-        assertEquals(monthPoint.timeLabel, "2014 Oct");
+        assertEquals(monthPoint.timeLabel, "2014-10");
         assertEquals(monthPoint.period, TimeSeriesPoint.PERIOD_MONTHS);
-        assertEquals(monthPoint.toString(), "2014 Oct: 200");
+        assertEquals(monthPoint.toString(), "2014-10: 200");
     }
 
     @Test
@@ -99,7 +99,7 @@ public class TimeSeriesPointTest {
         }
         // Then
         //... we expect to get standard format time labels
-        String[] expected = {"2014", "2014 Q1", "2014 Q4", "2014 Sep", "2014 Dec"};
+        String[] expected = {"2014", "2014 Q1", "2014 Q4", "2014-09", "2014-12"};
         for(int i = 0; i < expected.length; i++) {
             assertEquals(expected[i], returned.get(i));
         }
@@ -119,7 +119,7 @@ public class TimeSeriesPointTest {
         }
         // Then
         //... we expect to get standard format time labels
-        String[] expected = {"2015", "2014 Q2", "2015 Q1", "2014 Oct", "2015 Jan"};
+        String[] expected = {"2015", "2014 Q2", "2015 Q1", "2014-10", "2015-01"};
         for(int i = 0; i < expected.length; i++) {
             assertEquals(expected[i], returned.get(i));
         }
