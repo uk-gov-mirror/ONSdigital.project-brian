@@ -20,7 +20,7 @@ public class Root implements Startup {
         try {
             master = DataSetReaderCSDB.readFile("/imports/csdb/IOS1");
             //master = DataSetReaderCSV.readFile("/imports/Published.csv");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("Startup");
