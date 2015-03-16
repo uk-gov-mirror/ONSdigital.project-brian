@@ -1,11 +1,11 @@
 package com.github.onsdigital.readers;
 
-import com.github.davidcarboni.ResourceUtils;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -88,9 +87,11 @@ public class DataSetReaderCSDB {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public static DataSet readFile(String resourceName) throws IOException {
+    public static DataSet readFile(String resourceName) throws IOException, URISyntaxException {
         // FIRST THINGS FIRST - GET THE FILE
-        Path filePath = ResourceUtils.getPath(resourceName);
+        URL resource = DataSet.class.getResource(resourceName);
+        Path filePath = Paths.get(resource.toURI());
+
         return readFile(filePath);
     }
 
@@ -102,12 +103,14 @@ public class DataSetReaderCSDB {
      * @return
      * @throws IOException
      */
-    public static DataSet readDirectory(String resourceName) throws IOException {
+    public static DataSet readDirectory(String resourceName) throws IOException, URISyntaxException {
 
         DataSet dataSet = new DataSet();
 
         // FIRST THINGS FIRST - GET THE PATH
-        Path filePath = ResourceUtils.getPath(resourceName);
+        URL resource = DataSet.class.getResource(resourceName);
+        Path filePath = Paths.get(resource.toURI());
+
         long startTime = System.nanoTime();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(filePath)){
             for(Path entry: stream) {
@@ -192,9 +195,13 @@ public class DataSetReaderCSDB {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        String resourceName = "/imports/csdb/IOS1";
+        File file = new File(resourceName);
+        Path filePath = file.toPath();
 
-        DataSet dataSet = DataSetReaderCSDB.readDirectory("/imports/csdb");
+        System.out.println(filePath);
+        DataSet dataSet = DataSetReaderCSDB.readDirectory("/imports/csdb/");
 
     }
 
