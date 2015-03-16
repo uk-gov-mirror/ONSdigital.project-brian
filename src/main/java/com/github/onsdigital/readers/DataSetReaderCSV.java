@@ -101,14 +101,6 @@ public class DataSetReaderCSV {
             dataset.timeSeries.put(series.taxi, series);
         }
 
-        /*
-         * ADD TABLE - (BUT ONLY IF THE DATE COLUMN CHECKS OUT)
-         */
-        //TODO APPROPRIATE ERROR CATCHING
-
-        dataset.timeTables.add(table);
-
-
         return dataset;
     }
 
@@ -126,14 +118,6 @@ public class DataSetReaderCSV {
     }
 
     public static void main(String[] args) throws IOException {
-        DataSet dataset = DataSetReaderCSV.readFile("/imports/Published.csv");
-
-        try {
-            assert dataset.timeTables.size() > 0 : "table not read";
-            assert dataset.timeTables.get(0).taxi.equals("BUS.CON.001") : "reading all fine";
-        } catch (AssertionError e) {
-            System.out.println(e.toString());
-        }
 
     }
 

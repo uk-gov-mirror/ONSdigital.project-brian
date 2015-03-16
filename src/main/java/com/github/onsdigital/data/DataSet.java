@@ -33,7 +33,7 @@ public class DataSet implements Cloneable {
         dataSet.name = name;
         dataSet.source = source;
         for(TimeSeries series: timeSeries.values()) {
-            addSeries(series);
+            dataSet.addSeries(series);
         }
         return dataSet;
     }
@@ -52,7 +52,7 @@ public class DataSet implements Cloneable {
         return "";
     }
 
-    public void mergeWith(DataSet newData, boolean newDataTakePrecedent) {
+    public DataSet mergeWith(DataSet newData, boolean newDataTakePrecedent) {
         for(TimeSeries series: newData.timeSeries.values()) {
 
             if(timeSeries.containsKey(series.taxi)) {
@@ -62,5 +62,6 @@ public class DataSet implements Cloneable {
                 addSeries(series);
             }
         }
+        return this;
     }
 }

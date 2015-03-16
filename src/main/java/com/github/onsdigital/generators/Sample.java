@@ -91,6 +91,19 @@ public class Sample {
         return series;
     }
 
+    /**
+     * GENERATE A DATASET OF RANDOM WALKS
+     * @param count
+     * @param firstSeed
+     * @param start
+     * @param volatility
+     * @param firstYear
+     * @param lastYear
+     * @param withMonths
+     * @param withQuarters
+     * @param withYears
+     * @return
+     */
     public static DataSet randomWalks(int count, long firstSeed, double start, double volatility, int firstYear, int lastYear, boolean withMonths, boolean withQuarters, boolean withYears) {
         DataSet dataSet = new DataSet();
         dataSet.name = "RAND%05d";
@@ -108,19 +121,19 @@ public class Sample {
         return randomWalk(seed, 100, 1, 2010, 2014, true, true, true);
     }
 
-    public static DataSet randomWalkDataSet(int count, long seedZero, double start, double volatility, int firstYear, int lastYear, boolean withMonths, boolean withQuarters, boolean withYears){
+    public static DataSet quickWalks(int count, long seedZero){
         DataSet dataSet = new DataSet();
-        dataSet.name = String.format("Random DataSet with %d series and start seed %05d", count, seedZero);
-        dataSet.source = "Sample random walk dataset";
+        dataSet.name = String.format("Random DataSet with %d series starting with RAND%05d", count, seedZero);
+        dataSet.source = "Sample.quickWalks()";
         for(int i = 0; i < count; i++) {
-            dataSet.addSeries(Sample.randomWalk(seedZero + i, start, volatility, firstYear, lastYear, withMonths, withQuarters, withYears));
+            dataSet.addSeries(Sample.quickWalk(seedZero + i));
         }
         return dataSet;
     }
 
     public static void main(String[] args) {
         TimeSeries series = randomWalk(100, 100, 1, 1997, 1998, true, false, true);
-
-        System.out.println(series);
+        DataSet dataSet = quickWalks(2,1);
+        System.out.println(dataSet);
     }
 }

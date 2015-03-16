@@ -1,5 +1,6 @@
 package com.github.onsdigital.readers;
 
+import com.github.davidcarboni.ResourceUtils;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
@@ -8,6 +9,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,18 +28,16 @@ public class DataSetReaderCSDB {
     /**
      * READS A DATASET FROM A RESOURCE FILE
      *
-     * @param resourceName - THE INTERNAL FILE PATH OF THE RESOURCE
+     * @param filePath - THE INTERNAL FILE PATH OF THE RESOURCE
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public static DataSet readFile(String resourceName) throws IOException {
+    public static DataSet readFile(Path filePath) throws IOException {
 
         DataSet dataSet = new DataSet();
 
-        // FIRST THINGS FIRST - GET THE FILE
-        URL resource = DataSet.class.getResource(resourceName);
         try {
-            Path filePath = Paths.get(resource.toURI());
+
             List<String> lines = FileUtils.readLines(filePath.toFile());
             lines.add("92"); // THROW A 92 ON THE END
 
@@ -73,14 +74,55 @@ public class DataSetReaderCSDB {
 
                 }
             }
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return dataSet;
     }
 
-    public static TimeSeries seriesFromStringList(ArrayList<String> lines) {
+    /**
+     * READS A DATASET FROM A RESOURCE FILE
+     *
+     * @param resourceName - THE INTERNAL FILE PATH OF THE RESOURCE
+     * @return - THE DATASET REPRESENTATION
+     * @throws IOException
+     */
+    public static DataSet readFile(String resourceName) throws IOException {
+        // FIRST THINGS FIRST - GET THE FILE
+        Path filePath = ResourceUtils.getPath(resourceName);
+        return readFile(filePath);
+    }
+
+
+    /**
+     * CREATES A SUPER DATASET FROM ALL FILES IN A FOLDER
+     *
+     * @param resourceName
+     * @return
+     * @throws IOException
+     */
+    public static DataSet readDirectory(String resourceName) throws IOException {
+
+        DataSet dataSet = new DataSet();
+
+        // FIRST THINGS FIRST - GET THE PATH
+        Path filePath = ResourceUtils.getPath(resourceName);
+        long startTime = System.nanoTime();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(filePath)){
+            for(Path entry: stream) {
+
+                dataSet = dataSet.mergeWith(DataSetReaderCSDB.readFile(entry), true);
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime) / 10000000;
+                System.out.println("Time " + entry.getFileName() + ": " + duration + "ms");
+            }
+        }
+
+        return dataSet;
+    }
+
+    private static TimeSeries seriesFromStringList(ArrayList<String> lines) {
         TimeSeries series = new TimeSeries();
         int startInd = 1;
         int year = 1881;
@@ -142,7 +184,6 @@ public class DataSetReaderCSDB {
             }
         }
 
-        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         if (mqa.equals("M")) {
 //            return yr + " " + months[it - 1];
             return yr + " " + String.format("%02d", it);
@@ -152,17 +193,9 @@ public class DataSetReaderCSDB {
     }
 
     public static void main(String[] args) throws IOException {
-        DataSet csvSet = DataSetReaderCSV.readFile("/imports/IOS1.csv");
-        DataSet csdbSet = DataSetReaderCSDB.readFile("/imports/csdb/IOS1");
 
-        for (TimeSeries t : csvSet.timeSeries.values()) {
-            try {
-                TimeSeries t2 = csdbSet.timeSeries.get(t.taxi);
-                System.out.println(t.taxi + " csv:" + t.points.size() + " points    csdb:" + t2.points.size());
-            } catch (Exception e) {
-                System.out.println("Problem with " + t.taxi);
-            }
-        }
+        DataSet dataSet = DataSetReaderCSDB.readDirectory("/imports/csdb");
+
     }
 
 
