@@ -18,12 +18,11 @@ public class Root implements Startup {
     @Override
     public void init() {
         try {
-            master = DataSetReaderCSDB.readDirectory("/imports/csdb");
+//            master = DataSetReaderCSDB.readDirectory("/imports/csdb");
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("Startup");
-        System.out.println(master.timeSeries.keySet());
     }
 
     //TODO Replace this with code worth the effort
