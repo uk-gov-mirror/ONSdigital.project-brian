@@ -1,23 +1,25 @@
 package com.github.onsdigital.api;
 
-import com.github.davidcarboni.restolino.framework.Startup;
+import com.github.davidcarboni.restolino.framework.Api;
 import com.github.davidcarboni.restolino.helpers.Path;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.generators.Sample;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
-import com.github.onsdigital.writers.DataSetWriterJSON;
 import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 /**
  * Created by thomasridd on 16/03/15.
  */
+
+@Api
 public class Upload {
 
     /**
@@ -45,7 +47,7 @@ public class Upload {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        
+
         response.setStatus(HttpStatus.NOT_FOUND_404);
         return null;
     }
