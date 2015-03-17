@@ -7,6 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by Tom.Ridd on 03/03/15.
  */
@@ -97,31 +100,57 @@ public class TimeSeriesPoint {
         }
 
         // TRY AND WORK OUT THE RELEVANT YEAR - IF A YEAR IS FOUND RETURN TRUE
-        for (int tryYear = 1800; tryYear < 2050; tryYear++) {
-            if (StringUtils.contains(timeLabel, tryYear + "")) {
-                year = tryYear;
-                if (!isMonth & !isQuarter) {
-                    period = PERIOD_YEARS;
-                }
 
-                // SET THE DATE
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                try {
-                    startDate = df.parse(year + "-" + startMonth + "-01");
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                // STANDARDISE THE TIME LABEL
-                timeLabel = StringUtils.trim(timeLabel);
-                if (isMonth) {
-                    timeLabel = year + "-" + StringUtils.capitalize(startMonth);
-                } else if (isQuarter) {
-                    timeLabel = year + " " + StringUtils.upperCase(quarter);
-                }
-                return true;
+        Pattern yearPattern = Pattern.compile("\\d{4}");
+        Matcher m1 = yearPattern.matcher(timeLabel);
+        if(m1.find()) {
+            year = Integer.parseInt(m1.group(0));
+            if (!isMonth & !isQuarter) {
+                period = PERIOD_YEARS;
             }
+
+            // SET THE DATE
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                startDate = df.parse(year + "-" + startMonth + "-01");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            // STANDARDISE THE TIME LABEL
+            timeLabel = StringUtils.trim(timeLabel);
+            if (isMonth) {
+                timeLabel = year + "-" + StringUtils.capitalize(startMonth);
+            } else if (isQuarter) {
+                timeLabel = year + " " + StringUtils.upperCase(quarter);
+            }
+            return true;
         }
+//        for (int tryYear = 1800; tryYear < 2050; tryYear++) {
+//            if (StringUtils.contains(timeLabel, tryYear + "")) {
+//                year = tryYear;
+//                if (!isMonth & !isQuarter) {
+//                    period = PERIOD_YEARS;
+//                }
+//
+//                // SET THE DATE
+//                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//                try {
+//                    startDate = df.parse(year + "-" + startMonth + "-01");
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                // STANDARDISE THE TIME LABEL
+//                timeLabel = StringUtils.trim(timeLabel);
+//                if (isMonth) {
+//                    timeLabel = year + "-" + StringUtils.capitalize(startMonth);
+//                } else if (isQuarter) {
+//                    timeLabel = year + " " + StringUtils.upperCase(quarter);
+//                }
+//                return true;
+//            }
+//        }
 
         // DATE OR PARTIAL DATE - RETURN FALSE
         period = PERIOD_ERROR;
@@ -173,19 +202,13 @@ public class TimeSeriesPoint {
     }
 
     public static void main(String[] args) throws ParseException {
-        TimeSeriesPoint p = new TimeSeriesPoint("2014 Oct", "100");
-        p.parseTimeLabel();
-        System.out.println(p);
-        System.out.println(TimeSeriesPoint.nextTimeLabel(p.timeLabel));
 
-        p = new TimeSeriesPoint("2014", "100");
-        p.parseTimeLabel();
-        System.out.println(p);
-        System.out.println(TimeSeriesPoint.nextTimeLabel(p.timeLabel));
+        Pattern yearPattern = Pattern.compile("\\d{4}");
+        String label1 = "I'm a little teapot 22014 Oct";
 
-        p = new TimeSeriesPoint("2014 q3", "100");
-        p.parseTimeLabel();
-        System.out.println(p);
-        System.out.println(TimeSeriesPoint.nextTimeLabel(p.timeLabel));
+        Matcher m1 = yearPattern.matcher(label1);
+        while(m1.find()) {
+            System.out.println(m1.group(0));
+        }
     }
 }

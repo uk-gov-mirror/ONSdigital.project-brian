@@ -19,7 +19,7 @@ public class Root implements Startup {
     public void init() {
         try {
             master = new DataSet();
-//            master = DataSetReaderCSDB.readDirectory("/imports/csdb");
+            master = DataSetReaderCSDB.readDirectory("/imports/csdb");
         } catch (Exception e) {
             e.printStackTrace();
         }

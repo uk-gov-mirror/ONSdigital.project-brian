@@ -3,6 +3,7 @@ package com.github.onsdigital.readers;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
+import com.github.onsdigital.generators.Sample;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -171,39 +172,54 @@ public class DataSetReaderCSDB {
     private static String DateLabel(int year, int startInd, String mqa, int iteration) {
         if (mqa.equals("Y") || mqa.equals("A")) {
             return (year + iteration - 1) + "";
+        } else if(mqa.equals("M")) {
+            int finalMonth = (startInd + iteration - 2) % 12;
+            int yearsTaken = iteration / 12;
+            return (year + yearsTaken) + " " + String.format("%02d", finalMonth + 1);
+        } else {
+            int finalQuarter = (startInd + iteration - 2) % 4;
+            int yearsTaken = iteration / 4;
+            return String.format("%d Q%d", year + yearsTaken, finalQuarter + 1);
         }
 
         // NO GREAT BIT OF CALCULATION HERE
-        int yr = year;
-        int it = startInd;
-        for (int i = 1; i < iteration; i++) {
-            it += 1;
-            if (mqa.equals("M") & it > 12) {
-                it = 1;
-                yr += 1;
-            } else if (mqa.equals("Q") & it > 4) {
-                it = 1;
-                yr += 1;
-            }
-        }
-
-        if (mqa.equals("M")) {
-//            return yr + " " + months[it - 1];
-            return yr + " " + String.format("%02d", it);
-        } else {
-            return yr + " Q" + it;
-        }
+//        int yr = year;
+//        int it = startInd;
+//        for (int i = 1; i < iteration; i++) {
+//            it += 1;
+//            if (mqa.equals("M") & it > 12) {
+//                it = 1;
+//                yr += 1;
+//            } else if (mqa.equals("Q") & it > 4) {
+//                it = 1;
+//                yr += 1;
+//            }
+//        }
+//
+//        if (mqa.equals("M")) {
+////            return yr + " " + months[it - 1];
+//            return yr + " " + String.format("%02d", it);
+//        } else {
+//            return yr + " Q" + it;
+//        }
     }
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        String resourceName = "/imports/csdb/IOS1";
-        File file = new File(resourceName);
-        Path filePath = file.toPath();
 
-        System.out.println(filePath);
+    public static void main(String[] args) throws IOException, URISyntaxException {
+
+//        for(int i = 1; i < 6; i++) {
+//            long startTime = System.nanoTime();
+//            DataSet randset = Sample.quickWalks(1000 * (i + 1), 1);
+//
+//            long endTime = System.nanoTime();
+//            long duration = (endTime - startTime) / 10000000;
+//            System.out.println("Time for " + randset.timeSeries.size() + ": " + duration + "ms");
+//        }
+
         DataSet dataSet = DataSetReaderCSDB.readDirectory("/imports/csdb/");
 
     }
+
 
 
 }
