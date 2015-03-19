@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.SortedMap;
 
 
 @Api
@@ -43,7 +44,8 @@ public class Data {
         if(requestPath.segments().size() == 1) { // RETURN ALL DATA
             response.setCharacterEncoding("UTF8");
             response.setContentType("application/json");
-            response.getWriter().println(DataSetWriterJSON.dataSetAsJSON(Root.master, true));
+            response.getWriter().println("Temporarily not available pending Future");
+            //response.getWriter().println(DataSetWriterJSON.dataSetAsJSON(Root.master, true));
             response.setStatus(HttpStatus.OK_200);
 
         } else if (returnSeries(requestPath, response)) {

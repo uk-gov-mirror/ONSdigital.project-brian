@@ -42,6 +42,10 @@ public class DataSet implements Cloneable {
         timeSeries.put(series.taxi, series);
     }
 
+    public TimeSeries getSeries(String taxi) {
+        return timeSeries.get(taxi);
+    }
+
     public String newId(String prefix) {
         for(int i = 1; i<100000; i++){
             String id = String.format("%s%05d", prefix, i);

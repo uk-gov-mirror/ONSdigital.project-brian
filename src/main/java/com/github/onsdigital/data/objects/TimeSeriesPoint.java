@@ -25,6 +25,8 @@ public class TimeSeriesPoint {
     public Date startDate; // ONLY ISSUE IS THAT START DATE MAY NOT PARSE
     public String period;
 
+    public Date recordDate;
+
     @Override
     public String toString() {
         try {
@@ -61,50 +63,52 @@ public class TimeSeriesPoint {
         boolean isQuarter = false;
 
 
-        // CHECK FOR THE QUARTER
-        for (int i = 0; i < quarters.length; i++) {
-            if (StringUtils.contains(lowerLabel, quarters[i])) {
-                isQuarter = true;
-                quarter = quarters[i];
-                startMonth = quarterMonth[i];
-                period = PERIOD_QUARTERS;
-                break;
-            }
+        // CHECK FOR THE QUARTER USING A REGEX
+        Matcher matcher = Pattern.compile("q\\d{1}").matcher(lowerLabel);
+        if(matcher.find()) {
+            quarter = matcher.group(0).toUpperCase();
+            startMonth = quarterMonth[Integer.parseInt(quarter.substring(1)) - 1];
+
+            isQuarter = true;
+            period = PERIOD_QUARTERS;
         }
 
         // CHECK FOR MONTHS
         if (!isQuarter) {
-            if (lowerLabel.length() > 6) { // OPTION 1 - MONTH NUMBER
-                try {
-                    int monthNumber = Integer.parseInt(StringUtils.right(lowerLabel, 2));
-                    if ((monthNumber > 0) & (monthNumber <= 12)) {
-                        isMonth = true;
-                        startMonth = outputMonths[monthNumber - 1];
-                        period = PERIOD_MONTHS;
-                    }
-                } catch (NumberFormatException e) {
+                if (lowerLabel.length() > 6) { // OPTION 1 - MONTH NUMBER
+                    try {
+                        int monthNumber = Integer.parseInt(StringUtils.right(lowerLabel, 2));
+                        if ((monthNumber > 0) & (monthNumber <= 12)) {
+                            isMonth = true;
+                            startMonth = outputMonths[monthNumber - 1];
+                            period = PERIOD_MONTHS;
+                        }
+                    } catch (NumberFormatException e) {
 
+                    }
                 }
-            }
         }
+
         // CHECK FOR MONTHS - OPTION 2 - MONTH LABELS
         if (!isQuarter & !isMonth) { //
-            for (int i = 0; i < months.length; i++) {
-                if (StringUtils.contains(lowerLabel, months[i])) {
-                    isMonth = true;
-                    startMonth = outputMonths[i];
-                    period = PERIOD_MONTHS;
-                    break;
+            matcher = Pattern.compile("[a-z]{3}").matcher(lowerLabel); // SPEED THINGS UP BY CHECKING WHETHER A MONTH CAN EXIST
+            if (matcher.find()) {
+                for (int i = 0; i < months.length; i++) {
+                    if (StringUtils.contains(lowerLabel, months[i])) {
+                        isMonth = true;
+                        startMonth = outputMonths[i];
+                        period = PERIOD_MONTHS;
+                        break;
+                    }
                 }
             }
         }
 
         // TRY AND WORK OUT THE RELEVANT YEAR - IF A YEAR IS FOUND RETURN TRUE
+        matcher = Pattern.compile("\\d{4}").matcher(timeLabel);
 
-        Pattern yearPattern = Pattern.compile("\\d{4}");
-        Matcher m1 = yearPattern.matcher(timeLabel);
-        if(m1.find()) {
-            year = Integer.parseInt(m1.group(0));
+        if(matcher.find()) {
+            year = Integer.parseInt(matcher.group(0));
             if (!isMonth & !isQuarter) {
                 period = PERIOD_YEARS;
             }
@@ -126,31 +130,6 @@ public class TimeSeriesPoint {
             }
             return true;
         }
-//        for (int tryYear = 1800; tryYear < 2050; tryYear++) {
-//            if (StringUtils.contains(timeLabel, tryYear + "")) {
-//                year = tryYear;
-//                if (!isMonth & !isQuarter) {
-//                    period = PERIOD_YEARS;
-//                }
-//
-//                // SET THE DATE
-//                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-//                try {
-//                    startDate = df.parse(year + "-" + startMonth + "-01");
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                // STANDARDISE THE TIME LABEL
-//                timeLabel = StringUtils.trim(timeLabel);
-//                if (isMonth) {
-//                    timeLabel = year + "-" + StringUtils.capitalize(startMonth);
-//                } else if (isQuarter) {
-//                    timeLabel = year + " " + StringUtils.upperCase(quarter);
-//                }
-//                return true;
-//            }
-//        }
 
         // DATE OR PARTIAL DATE - RETURN FALSE
         period = PERIOD_ERROR;
@@ -203,12 +182,5 @@ public class TimeSeriesPoint {
 
     public static void main(String[] args) throws ParseException {
 
-        Pattern yearPattern = Pattern.compile("\\d{4}");
-        String label1 = "I'm a little teapot 22014 Oct";
-
-        Matcher m1 = yearPattern.matcher(label1);
-        while(m1.find()) {
-            System.out.println(m1.group(0));
-        }
     }
 }

@@ -13,9 +13,13 @@ public class TimeSeries {
 
     public String taxi;
     public String name;
-    public Boolean hasYearly = false;
-    public Boolean hasMonthly = false;
-    public Boolean hasQuarterly = false;
+    public boolean hasYearly = false;
+    public boolean hasMonthly = false;
+    public boolean hasQuarterly = false;
+
+    public transient boolean shouldHaveYearly = false;
+    public transient boolean shouldHaveMonthly = false;
+    public transient boolean shouldHaveQuarterly = false;
 
     public HashMap<String, TimeSeriesPoint> points = new HashMap<>();
 
@@ -147,5 +151,9 @@ public class TimeSeries {
                 System.out.println("Expected point missing for: " + timeLabel);
             }
         }
+    }
+
+    public boolean isComplete() {
+        return (hasMonthly == shouldHaveMonthly) & (hasQuarterly == shouldHaveQuarterly) & (hasYearly == shouldHaveYearly);
     }
 }

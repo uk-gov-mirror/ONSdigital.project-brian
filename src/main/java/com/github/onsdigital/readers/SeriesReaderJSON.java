@@ -29,4 +29,16 @@ public class SeriesReaderJSON {
         }
         return null;
     }
+
+    public static TimeSeries readSeriesFromJSON(Path path) {
+        try(InputStream stream = Files.newInputStream(path)) {
+            TimeSeries series = Serialiser.deserialise(stream, TimeSeries.class);
+            return series;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }

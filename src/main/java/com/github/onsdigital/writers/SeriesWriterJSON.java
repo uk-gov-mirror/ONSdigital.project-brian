@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.ParseException;
 
 /**
@@ -40,6 +41,10 @@ public class SeriesWriterJSON {
     }
     public static void writeToJsonFile(TimeSeries series, File file, boolean prettyPrinting) throws IOException {
         FileUtils.writeStringToFile(file, seriesAsJSON(series, prettyPrinting));
+    }
+
+    public static void writeSeriesToJSON(TimeSeries series, Path path, boolean prettyPrinting) throws IOException {
+        FileUtils.writeStringToFile(path.toFile(), seriesAsJSON(series, prettyPrinting));
     }
 
     public static void main(String[] args) throws ParseException, IOException {
