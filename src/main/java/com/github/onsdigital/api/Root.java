@@ -34,7 +34,11 @@ public class Root implements Startup {
     //TODO Replace this with code worth the effort
     public static TimeSeries getTimeSeries(String taxi) {
         try {
-            return master.timeSeries.get(taxi).get();
+            if(master.timeSeries.get(taxi) == null || master.timeSeries.get(taxi).isDone() == false) {
+                return null;
+            } else {
+                return master.timeSeries.get(taxi).get();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
