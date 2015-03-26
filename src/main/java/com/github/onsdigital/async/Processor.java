@@ -14,6 +14,8 @@ import java.util.concurrent.*;
 
 /**
  * Created by thomasridd on 18/03/15.
+ *
+ * Processes a
  */
 public class Processor implements  Runnable{
 
@@ -29,12 +31,19 @@ public class Processor implements  Runnable{
         this.file = file;
     }
 
+    public Path getFile() {
+        return file;
+    }
+
     /**
+     * CONCEPT - Skeleton - a Dataset object with only the outline of timeseries and the levels of periodicity
+     * they contain
+     *
      * Does a first pass through the files
      *
      * Generates a DataFuture object and their accompanying time series
      *
-     * @return a promise of a DataFuture with
+     * @return a promise of a DataFuture with the outline of timeseries
      */
     public Future<DataFuture> getSkeleton() {
         Callable<DataFuture> task = new Callable<DataFuture>() {
