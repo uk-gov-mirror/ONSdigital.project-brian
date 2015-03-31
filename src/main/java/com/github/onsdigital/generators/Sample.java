@@ -1,6 +1,7 @@
 package com.github.onsdigital.generators;
 
 import com.github.onsdigital.api.Data;
+import com.github.onsdigital.data.DataCube;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
@@ -130,6 +131,7 @@ public class Sample {
         }
         return dataSet;
     }
+
 
     public static void main(String[] args) {
         TimeSeries series = randomWalk(100, 100, 1, 1997, 1998, true, false, true);
