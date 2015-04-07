@@ -1,6 +1,6 @@
 package com.github.onsdigital.data;
 
-import com.github.onsdigital.api.Data;
+import com.github.onsdigital.data.objects.DataDimension;
 
 import java.util.HashMap;
 
@@ -10,9 +10,11 @@ import java.util.HashMap;
  * Datacube is structured as an implementation of JSON-STAT
  */
 public class DataCube {
+    public String name;
     public HashMap<String, DataDimension> dimensions = new HashMap<>();
     double [] values;
     String [] tags;
+    boolean complete = false;
 
     /**
      * Adds a value to the datacube using its position
@@ -39,16 +41,25 @@ public class DataCube {
         return tags[indexFor(dimensionValues)];
     }
 
+    /**
+     * Values are stored in a massive list
+     * IndexFor is a function interpreting
+     *
+     * @param dimensionValues
+     * @return
+     */
     private int indexFor(HashMap<String, String> dimensionValues) {
         int unit = 1;
         int index = 0;
-        for(String key: dimensionValues.keySet()) {
+
+        for(String key: dimensions.keySet()) {
             DataDimension dimension = dimensions.get(key);
             String dimensionValue = dimensionValues.get(key);
-
-            int subIndex = dimension.values.get(dimensionValue);
-            index += subIndex * unit;
-            unit *= dimension.values.size();
+            if(dimensionValue != null) {
+                int subIndex = dimension.values.get(dimensionValue);
+                index += subIndex * unit;
+                unit *= dimension.values.size();
+            }
         }
         return index;
     }
@@ -66,6 +77,8 @@ public class DataCube {
         tags = new String[size];
     }
 
-
+    public boolean isComplete() {
+        return complete;
+    }
 
 }

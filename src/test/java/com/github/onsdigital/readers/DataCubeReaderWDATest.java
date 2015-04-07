@@ -1,19 +1,12 @@
 package com.github.onsdigital.readers;
 
 import au.com.bytecode.opencsv.CSVReader;
-import com.github.onsdigital.api.Data;
 import com.github.onsdigital.data.DataCube;
-import com.github.onsdigital.data.DataDimension;
-import org.junit.After;
-import org.junit.Before;
+import com.github.onsdigital.data.objects.DataDimension;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -204,6 +197,21 @@ public class DataCubeReaderWDATest {
         String expected = "XXX";
 
         assertEquals(expected, value);
+    }
+
+    @Test
+    public void shouldSaveCubeNameFromFile() throws IOException, URISyntaxException {
+        // Given...
+        // a test file
+        String path = smallPath;
+
+        // When...
+        // we load a cube
+        DataCube cube = DataCubeReaderWDA.readFile(path);
+
+        // Expect...
+        // a non null result
+        assertEquals("smallWDA", cube.name);
     }
 
     @Test

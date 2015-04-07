@@ -1,5 +1,6 @@
 package com.github.onsdigital.data;
 
+import com.github.onsdigital.data.objects.DataDimension;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

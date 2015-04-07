@@ -1,13 +1,18 @@
 package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Startup;
+import com.github.onsdigital.async.CubeProcessor;
 import com.github.onsdigital.async.Processor;
+import com.github.onsdigital.data.DataCube;
 import com.github.onsdigital.data.DataFuture;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.objects.DataCubeSet;
+import com.github.onsdigital.readers.DataCubeReaderWDA;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -17,16 +22,19 @@ import java.util.concurrent.ExecutionException;
 public class Root implements Startup {
 
     public static DataFuture master;
+    public static DataCubeSet cubeMaster;
 
     @Override
     public void init() {
         try {
             master = new DataFuture();
             master = DataSetReaderCSDB.readDirectory("/imports/csdb");
+            cubeMaster = DataCubeReaderWDA.readDirectory("/imports/wda");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             Processor.shutdown();
+            CubeProcessor.shutdown();
         }
         System.out.println("Startup");
     }
