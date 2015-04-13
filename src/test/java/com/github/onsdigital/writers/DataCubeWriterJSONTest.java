@@ -8,11 +8,14 @@ import com.github.onsdigital.readers.DataCubeReaderWDA;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -116,5 +119,20 @@ public class DataCubeWriterJSONTest {
             assertTrue(dimValues.size() >= 2); // With a minimum of two values
         }
         System.out.println(JSON);
+    }
+
+    @Test
+    public void testDataCubeSlicedJSON() throws ExecutionException, InterruptedException {
+        // Given...
+        // the first data cube from the test set
+        DataCube cube = dataCubeSet.cubes.get("fertility").get();
+        String query = "Age=15&Geography=Wales";
+        List<NameValuePair> slice = URLEncodedUtils.parse(query, Charset.forName("utf8"));
+        // When...
+        // we generate JSON for the cube
+        String JSON = DataCubeWriterJSON.dataCubeSlicedAsJSON(cube, slice);
+
+        // We expect...
+        assertNotNull(JSON);
     }
 }

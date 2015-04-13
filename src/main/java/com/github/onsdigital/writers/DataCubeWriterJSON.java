@@ -3,10 +3,13 @@ package com.github.onsdigital.writers;
 import com.github.davidcarboni.restolino.json.Serialiser;
 import com.github.onsdigital.api.Data;
 import com.github.onsdigital.data.DataCube;
+import com.github.onsdigital.data.DataCubeQuery;
 import com.github.onsdigital.data.objects.DataCubeSet;
 import com.github.onsdigital.data.objects.DataDimension;
+import org.apache.http.NameValuePair;
 
 import java.awt.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -90,5 +93,16 @@ public class DataCubeWriterJSON {
 
     public static String dataCubeAsJSON(DataCube dataCube) {
         return Serialiser.serialise(dataCube);
+    }
+
+    public static String dataCubeSlicedAsJSON(DataCube dataCube, List<NameValuePair> slice) {
+        DataCubeQuery dataCubeQuery = new DataCubeQuery(dataCube);
+
+        for(NameValuePair pair: slice) {
+            dataCubeQuery.addFilter(pair.getName(), pair.getValue());
+        }
+        DataCube cube = dataCubeQuery.run();
+
+        return dataCubeAsJSON(cube);
     }
 }
