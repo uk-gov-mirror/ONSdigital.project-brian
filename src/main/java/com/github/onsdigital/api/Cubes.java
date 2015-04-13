@@ -2,22 +2,14 @@ package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.davidcarboni.restolino.helpers.Path;
-import com.github.onsdigital.data.TimeSeries;
-import com.github.onsdigital.generators.Sample;
 import com.github.onsdigital.writers.DataCubeWriterJSON;
-import com.github.onsdigital.writers.DataSetWriterJSON;
-import com.github.onsdigital.writers.SeriesWriterJSON;
-import com.javafx.tools.doclets.formats.html.SourceToHTMLConverter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
-import javax.xml.soap.SOAPPart;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -73,9 +65,6 @@ public class Cubes {
             cubeName = requestPath.segments().get(1);
             if(Root.cubeMaster.cubes.containsKey(cubeName)) {
                 String requestType = requestPath.segments().get(2);
-
-                //List<NameValuePair> parse = URLEncodedUtils.parse(request.getQueryString(), Charset.forName("utf8"));
-                //System.out.println("parse = " + parse);
 
                 if(requestType.equalsIgnoreCase("data")) {
                     String queryString = request.getQueryString();
