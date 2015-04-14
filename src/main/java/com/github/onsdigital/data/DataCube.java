@@ -28,9 +28,16 @@ public class DataCube {
         tags[index] = "";
     }
     public void put(HashMap<String, String> dimensionValues, double value, String tag) {
-        int index = indexFor(dimensionValues);
-        values[index] = value;
-        tags[index] = tag;
+
+        try {
+            int index = indexFor(dimensionValues);
+            values[index] = value;
+            tags[index] = tag;
+        }catch (Exception e) {
+            System.out.print(e);
+            System.out.println();
+        }
+
     }
 
     public double get(HashMap<String, String> dimensionValues) {

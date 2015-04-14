@@ -11,6 +11,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
@@ -35,7 +36,7 @@ public class Upload {
      * @throws java.io.IOException
      *
      */
-    @GET
+    @POST
     public Object get(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
 

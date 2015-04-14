@@ -8,6 +8,7 @@ import com.github.onsdigital.data.DataFuture;
 import com.github.onsdigital.data.DataSet;
 import com.github.onsdigital.data.TimeSeries;
 import com.github.onsdigital.data.objects.DataCubeSet;
+import com.github.onsdigital.readers.DataCubeReaderTable;
 import com.github.onsdigital.readers.DataCubeReaderWDA;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
 
@@ -30,6 +31,12 @@ public class Root implements Startup {
             master = new DataFuture();
             master = DataSetReaderCSDB.readDirectory("/imports/csdb");
             cubeMaster = DataCubeReaderWDA.readDirectory("/imports/wda");
+
+            DataCubeSet moreCubes = DataCubeReaderTable.readDirectory("/imports/tabular");
+            for(String key: moreCubes.cubes.keySet()) {
+                cubeMaster.cubes.put(key, moreCubes.cubes.get(key));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

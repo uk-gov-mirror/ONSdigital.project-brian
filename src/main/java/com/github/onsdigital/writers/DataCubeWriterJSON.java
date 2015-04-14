@@ -1,21 +1,17 @@
 package com.github.onsdigital.writers;
 
 import com.github.davidcarboni.restolino.json.Serialiser;
-import com.github.onsdigital.api.Data;
 import com.github.onsdigital.data.DataCube;
 import com.github.onsdigital.data.DataCubeQuery;
 import com.github.onsdigital.data.objects.DataCubeSet;
 import com.github.onsdigital.data.objects.DataDimension;
 import org.apache.http.NameValuePair;
 
-import java.awt.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * Created by thomasridd on 01/04/15.
