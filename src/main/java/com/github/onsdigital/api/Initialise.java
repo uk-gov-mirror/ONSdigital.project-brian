@@ -21,7 +21,7 @@ import java.util.Objects;
  */
 
 @Api
-public class Upload {
+public class Initialise {
 
     /**
      * API Access to the site

@@ -50,7 +50,7 @@ public class DataCube {
 
     /**
      * Values are stored in a massive list
-     * IndexFor is a function interpreting
+     * IndexFor is a function interpreting the list
      *
      * @param dimensionValues
      * @return
