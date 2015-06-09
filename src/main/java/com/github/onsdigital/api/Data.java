@@ -3,7 +3,7 @@ package com.github.onsdigital.api;
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.davidcarboni.restolino.helpers.Path;
 
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.generators.Sample;
 import com.github.onsdigital.writers.DataSetWriterJSON;
 import com.github.onsdigital.writers.SeriesWriterJSON;
@@ -57,7 +57,7 @@ public class Data {
     }
 
     private boolean returnSeries(Path requestPath, HttpServletResponse response) {
-        TimeSeries series = Root.getTimeSeries(requestPath.segments().get(1));
+        TimeSeriesObject series = Root.getTimeSeries(requestPath.segments().get(1));
         if (series == null) { return false; }
 
         response.setCharacterEncoding("UTF8");
@@ -76,7 +76,7 @@ public class Data {
         String isRand = requestPath.segments().get(1).toUpperCase();
         if(StringUtils.startsWith(isRand,"RAND")) {
             long seed = Long.parseLong(StringUtils.substring(isRand, 4));
-            TimeSeries series = Sample.randomWalk(seed, 100, 1, 1997, 2014, true, true, true);
+            TimeSeriesObject series = Sample.randomWalk(seed, 100, 1, 1997, 2014, true, true, true);
 
             response.setCharacterEncoding("UTF8");
             response.setContentType("application/json");

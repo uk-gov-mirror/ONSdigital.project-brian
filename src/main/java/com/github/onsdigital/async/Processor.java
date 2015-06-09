@@ -1,8 +1,7 @@
 package com.github.onsdigital.async;
 
 import com.github.onsdigital.data.DataFuture;
-import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +24,7 @@ public class Processor implements  Runnable{
 
     private Path file;
 
-    private Map<String, TimeSeries> timeSerieses = new HashMap<>();
+    private Map<String, TimeSeriesObject> timeSerieses = new HashMap<>();
 
     public Processor(Path file) {
         this.file = file;
@@ -65,24 +64,24 @@ public class Processor implements  Runnable{
                         char periodicity = line.charAt(4);
 
                         // Get or create the TimeSeries
-                        TimeSeries timeSeries = timeSerieses.get(taxi);
-                        if (timeSeries == null) {
-                            timeSeries = new TimeSeries();
-                            timeSeries.taxi = taxi;
+                        TimeSeriesObject timeSeriesObject = timeSerieses.get(taxi);
+                        if (timeSeriesObject == null) {
+                            timeSeriesObject = new TimeSeriesObject();
+                            timeSeriesObject.taxi = taxi;
 
-                            TimeSeriesCallable callable = new TimeSeriesCallable(timeSeries);
+                            TimeSeriesCallable callable = new TimeSeriesCallable(timeSeriesObject);
                             result.addSeries(taxi, timeSeriesPool.submit(callable));
 
-                            timeSerieses.put(taxi, timeSeries);
+                            timeSerieses.put(taxi, timeSeriesObject);
                         }
 
                         // Add to the TimeSeries:
                         if (periodicity == 'A') {
-                            timeSeries.shouldHaveYearly = true;
+                            timeSeriesObject.shouldHaveYearly = true;
                         } else if (periodicity == 'Q') {
-                            timeSeries.shouldHaveQuarterly = true;
+                            timeSeriesObject.shouldHaveQuarterly = true;
                         } else if (periodicity == 'M') {
-                            timeSeries.shouldHaveMonthly = true;
+                            timeSeriesObject.shouldHaveMonthly = true;
                         }
                     }
                 }
@@ -99,8 +98,8 @@ public class Processor implements  Runnable{
      * @param lines
      * @return
      */
-    private TimeSeries seriesFromStringList(ArrayList<String> lines) {
-        TimeSeries series = new TimeSeries();
+    private TimeSeriesObject seriesFromStringList(ArrayList<String> lines) {
+        TimeSeriesObject series = new TimeSeriesObject();
         int startInd = 1;
         int year = 1881;
         String mqa = "A";
@@ -190,11 +189,11 @@ public class Processor implements  Runnable{
                     if (LineType == 92) {
                         if (seriesBuffer.size() > 0) {
                             // PARSE THE BLOCK JUST COLLECTED
-                            TimeSeries series = seriesFromStringList(seriesBuffer);
+                            TimeSeriesObject series = seriesFromStringList(seriesBuffer);
 
                             // COMBINE IT WITH AN EXISTING SERIES
                             if (timeSerieses.containsKey(series.taxi)) {
-                                TimeSeries existing = timeSerieses.get(series.taxi);
+                                TimeSeriesObject existing = timeSerieses.get(series.taxi);
                                 for (TimeSeriesPoint point : series.points.values()) {
                                     existing.addPoint(point);
                                 }

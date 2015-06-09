@@ -1,6 +1,5 @@
 package com.github.onsdigital.data.objects;
 
-import com.github.onsdigital.data.TimeSeries;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

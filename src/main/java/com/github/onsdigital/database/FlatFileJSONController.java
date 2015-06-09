@@ -1,15 +1,12 @@
 package com.github.onsdigital.database;
 
 
-import com.github.onsdigital.data.TimeSeries;
-import com.github.onsdigital.generators.Sample;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.readers.SeriesReaderJSON;
 import com.github.onsdigital.writers.SeriesWriterJSON;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,13 +28,13 @@ public class FlatFileJSONController {
         }
     }
 
-    public static void create(TimeSeries series) throws IOException {
+    public static void create(TimeSeriesObject series) throws IOException {
         Path path = filePath.resolve(series.taxi + suffix);
 
         SeriesWriterJSON.writeSeriesToJSON(series, path, doPrettyPrint);
     }
 
-    public static void update(TimeSeries series) throws IOException {
+    public static void update(TimeSeriesObject series) throws IOException {
         Path path = filePath.resolve(series.taxi + suffix);
         if(exists(series.taxi)) {
             SeriesWriterJSON.writeSeriesToJSON(series, path, doPrettyPrint);
@@ -56,7 +53,7 @@ public class FlatFileJSONController {
         return Files.exists(path);
     }
 
-    public static TimeSeries get(String taxi) {
+    public static TimeSeriesObject get(String taxi) {
         Path path = filePath.resolve(taxi + suffix);
         return SeriesReaderJSON.readSeriesFromJSON(path);
     }

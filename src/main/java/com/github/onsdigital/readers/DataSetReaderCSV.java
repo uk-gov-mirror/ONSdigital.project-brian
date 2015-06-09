@@ -1,13 +1,12 @@
 package com.github.onsdigital.readers;
 
-import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesDataSet;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 import com.github.onsdigital.data.objects.TimeSeriesTable;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * Created by Tom.Ridd on 03/03/15.
@@ -33,12 +32,12 @@ public class DataSetReaderCSV {
      * @param resourceName The internal source path
      * @return The constructed dataset
      */
-    public static DataSet readFile(String resourceName) throws IOException {
+    public static TimeSeriesDataSet readFile(String resourceName) throws IOException {
         // 1. Read from the source
         Csv source = new Csv(resourceName);
         source.read(0);
 
-        DataSet dataset = new DataSet();
+        TimeSeriesDataSet dataset = new TimeSeriesDataSet();
         TimeSeriesTable table = new TimeSeriesTable();
 
         int rowNumber = 0;
@@ -75,7 +74,7 @@ public class DataSetReaderCSV {
         // READ TIME SERIES
         int seriesCount = source.row(rowNumber).length - 1;
         for (int seriesColumn = 1; seriesColumn <= seriesCount; seriesColumn++) {
-            TimeSeries series = new TimeSeries();
+            TimeSeriesObject series = new TimeSeriesObject();
 
             for (int seriesRow = rowNumber; seriesRow < source.size(); seriesRow++) {
                 String[] row = source.row(seriesRow);
@@ -113,7 +112,7 @@ public class DataSetReaderCSV {
      * @param resourcePath The internal source path
      * @return The constructed dataset
      */
-    public static DataSet readFlatFileDataSet(String resourcePath) throws IOException {
+    public static TimeSeriesDataSet readFlatFileDataSet(String resourcePath) throws IOException {
         return null;
     }
 

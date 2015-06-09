@@ -1,7 +1,5 @@
 package com.github.onsdigital.data;
 
-import com.github.onsdigital.readers.SeriesReaderJSON;
-
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -13,14 +11,14 @@ public class DataFuture {
     public String name;
     public String source;
 
-    public HashMap<String, Future<TimeSeries>> timeSeries = new HashMap<>();
+    public HashMap<String, Future<TimeSeriesObject>> timeSeries = new HashMap<>();
 
 
-    public void addSeries(String taxi, Future<TimeSeries> series) {
+    public void addSeries(String taxi, Future<TimeSeriesObject> series) {
         timeSeries.put(taxi, series);
     }
 
-    public TimeSeries getSeries(String taxi)  {
+    public TimeSeriesObject getSeries(String taxi)  {
         try {
             return timeSeries.get(taxi).get();
         } catch (InterruptedException e) {

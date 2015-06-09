@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TimeSeriesTest {
+public class TimeSeriesObjectTest {
 
     @Before
     public void setUp() throws Exception {
@@ -21,7 +21,7 @@ public class TimeSeriesTest {
 
     @Test
     public void shouldCreateUnbrokenTimeSeries() throws Exception {
-        TimeSeries series = new TimeSeries();
+        TimeSeriesObject series = new TimeSeriesObject();
 
         // Given
         //... a time series with holes in
@@ -45,7 +45,7 @@ public class TimeSeriesTest {
     public void testGetPoint() throws Exception {
         // Given
         //... a time series
-        TimeSeries series = new TimeSeries();
+        TimeSeriesObject series = new TimeSeriesObject();
         series.addPoint(new TimeSeriesPoint("2014-01", "300"));
         series.addPoint(new TimeSeriesPoint("2014 Q1", "200"));
         series.addPoint(new TimeSeriesPoint("2013", "100"));
@@ -62,19 +62,19 @@ public class TimeSeriesTest {
     public void canMergeSeries() throws Exception {
         // Given
         //... two overlapping time series
-        TimeSeries left = new TimeSeries();
+        TimeSeriesObject left = new TimeSeriesObject();
         left.addPoint(new TimeSeriesPoint("2013", "100"));
         left.addPoint(new TimeSeriesPoint("2014", "200"));
         left.addPoint(new TimeSeriesPoint("2015", "400"));
 
-        TimeSeries right = new TimeSeries();
+        TimeSeriesObject right = new TimeSeriesObject();
         right.addPoint(new TimeSeriesPoint("2014", "400"));
         right.addPoint(new TimeSeriesPoint("2017", "400"));
 
         // When
         //... we run a merge
-        TimeSeries leftPrecedent = TimeSeries.merge(left, right, true);
-        TimeSeries rightPrecedent = TimeSeries.merge(left, right, false);
+        TimeSeriesObject leftPrecedent = TimeSeriesObject.merge(left, right, true);
+        TimeSeriesObject rightPrecedent = TimeSeriesObject.merge(left, right, false);
 
         // Then
         //... we expect 5 points in each series
@@ -99,19 +99,19 @@ public class TimeSeriesTest {
     public void canMergeDisjointSeries() throws Exception {
         // Given
         //... two overlapping time series
-        TimeSeries left = new TimeSeries();
+        TimeSeriesObject left = new TimeSeriesObject();
         left.addPoint(new TimeSeriesPoint("2000", "100"));
         left.addPoint(new TimeSeriesPoint("2002", "200"));
         left.addPoint(new TimeSeriesPoint("2012", "400"));
 
-        TimeSeries right = new TimeSeries();
+        TimeSeriesObject right = new TimeSeriesObject();
         right.addPoint(new TimeSeriesPoint("2014", "400"));
         right.addPoint(new TimeSeriesPoint("2017", "400"));
 
         // When
         //... we run a merge
-        TimeSeries leftPrecedent = TimeSeries.merge(left, right, true);
-        TimeSeries rightPrecedent = TimeSeries.merge(left, right, false);
+        TimeSeriesObject leftPrecedent = TimeSeriesObject.merge(left, right, true);
+        TimeSeriesObject rightPrecedent = TimeSeriesObject.merge(left, right, false);
 
         // Then
         //... we expect 18 points in each series

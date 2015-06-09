@@ -2,8 +2,8 @@ package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.davidcarboni.restolino.json.Serialiser;
-import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesDataSet;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -13,12 +13,10 @@ import org.apache.commons.io.IOUtils;
 
 import org.eclipse.jetty.http.HttpStatus;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.POST;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -49,10 +47,10 @@ public class Services {
 
         if (csdbFile != null) {
             // Convert it to dataSet
-            DataSet dataSet = DataSetReaderCSDB.readFile(csdbFile);
+            TimeSeriesDataSet timeSeriesDataSet = DataSetReaderCSDB.readFile(csdbFile);
 
             // Write to response
-            List<TimeSeries> series = new ArrayList<TimeSeries>(dataSet.timeSeries.values());
+            List<TimeSeriesObject> series = new ArrayList<TimeSeriesObject>(timeSeriesDataSet.timeSeries.values());
             System.out.println(series);
             String dataSetJson = Serialiser.serialise(series);
             try(InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = response.getOutputStream()) {

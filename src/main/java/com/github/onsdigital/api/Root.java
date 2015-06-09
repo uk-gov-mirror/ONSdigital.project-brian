@@ -1,19 +1,10 @@
 package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Startup;
-import com.github.onsdigital.async.CubeProcessor;
-import com.github.onsdigital.async.Processor;
-import com.github.onsdigital.data.DataCube;
 import com.github.onsdigital.data.DataFuture;
-import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.DataCubeSet;
-import com.github.onsdigital.readers.DataCubeReaderTable;
-import com.github.onsdigital.readers.DataCubeReaderWDA;
-import com.github.onsdigital.readers.DataSetReaderCSDB;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -48,7 +39,7 @@ public class Root implements Startup {
     }
 
     //TODO Replace this with code worth the effort
-    public static TimeSeries getTimeSeries(String taxi) {
+    public static TimeSeriesObject getTimeSeries(String taxi) {
         try {
             if(master.timeSeries.get(taxi) == null || master.timeSeries.get(taxi).isDone() == false) {
                 return null;

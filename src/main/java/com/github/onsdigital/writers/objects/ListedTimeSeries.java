@@ -1,6 +1,6 @@
 package com.github.onsdigital.writers.objects;
 
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 import com.github.onsdigital.data.objects.TimeSeriesPointComparator;
 
@@ -18,7 +18,7 @@ public class ListedTimeSeries {
     public Boolean hasQuarterly = false;
     public ArrayList<TimeSeriesPoint> points = new ArrayList<>();
 
-    public ListedTimeSeries(TimeSeries series) {
+    public ListedTimeSeries(TimeSeriesObject series) {
         taxi = series.taxi;
         name = series.name;
         hasMonthly = series.hasMonthly;
@@ -32,8 +32,8 @@ public class ListedTimeSeries {
         Collections.sort(points, new TimeSeriesPointComparator());
     }
 
-    public TimeSeries toTimeSeries() {
-        TimeSeries series = new TimeSeries();
+    public TimeSeriesObject toTimeSeries() {
+        TimeSeriesObject series = new TimeSeriesObject();
         series.taxi = taxi;
         series.name = name;
         series.hasQuarterly = hasQuarterly;

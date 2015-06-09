@@ -1,10 +1,9 @@
 package com.github.onsdigital.readers;
 
 import au.com.bytecode.opencsv.CSVReader;
-import com.github.onsdigital.async.CubeProcessor;
 import com.github.onsdigital.async.TableProcessor;
 import com.github.onsdigital.data.DataCube;
-import com.github.onsdigital.data.DataSet;
+import com.github.onsdigital.data.TimeSeriesDataSet;
 import com.github.onsdigital.data.objects.DataCubeSet;
 import com.github.onsdigital.data.objects.DataDimension;
 import org.apache.commons.io.FilenameUtils;
@@ -58,7 +57,7 @@ public class DataCubeReaderTable {
 
 
     public static DataCube readFile(String resourceName) throws IOException, URISyntaxException {
-        URL resource = DataSet.class.getResource(resourceName);
+        URL resource = TimeSeriesDataSet.class.getResource(resourceName);
         Path filePath = Paths.get(resource.toURI());
 
         return readFile(filePath);
@@ -127,7 +126,7 @@ public class DataCubeReaderTable {
      */
     static CSVReader openStream(String resourceName) throws IOException, URISyntaxException {
         // FIRST THINGS FIRST - GET THE FILE
-        URL resource = DataSet.class.getResource(resourceName);
+        URL resource = TimeSeriesDataSet.class.getResource(resourceName);
         Path filePath = Paths.get(resource.toURI());
 
         return new CSVReader(new FileReader(filePath.toFile()));

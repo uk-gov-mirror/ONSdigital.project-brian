@@ -1,11 +1,8 @@
 package com.github.onsdigital.writers.objects;
 
-import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.data.TimeSeries;
-import com.github.onsdigital.data.objects.TimeSeriesPoint;
-import com.github.onsdigital.data.objects.TimeSeriesPointComparator;
+import com.github.onsdigital.data.TimeSeriesDataSet;
+import com.github.onsdigital.data.TimeSeriesObject;
 
-import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -15,13 +12,13 @@ public class ListedDataSet {
     public String name;
     public String source;
 
-    public HashMap<String, TimeSeries> listedTimeSeries = new HashMap<>();
+    public HashMap<String, TimeSeriesObject> listedTimeSeries = new HashMap<>();
 
-    public ListedDataSet(DataSet dataSet) {
-        name = dataSet.name;
-        source = dataSet.source;
+    public ListedDataSet(TimeSeriesDataSet timeSeriesDataSet) {
+        name = timeSeriesDataSet.name;
+        source = timeSeriesDataSet.source;
 
-        for(TimeSeries series: dataSet.timeSeries.values()){
+        for(TimeSeriesObject series: timeSeriesDataSet.timeSeries.values()){
             listedTimeSeries.put(series.taxi, series);
         }
     }

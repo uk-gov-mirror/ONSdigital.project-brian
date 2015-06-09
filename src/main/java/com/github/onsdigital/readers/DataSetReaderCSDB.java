@@ -2,8 +2,8 @@ package com.github.onsdigital.readers;
 
 import com.github.onsdigital.async.Processor;
 import com.github.onsdigital.data.DataFuture;
-import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesDataSet;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 import org.apache.commons.io.FileUtils;
 
@@ -35,9 +35,9 @@ public class DataSetReaderCSDB {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public static DataSet readFile(Path filePath) throws IOException {
+    public static TimeSeriesDataSet readFile(Path filePath) throws IOException {
 
-        DataSet dataSet = new DataSet();
+        TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
 
         try {
             // USE WINDOWS ENCODING TO READ THE FILE BECAUSE IT IS A WIN CSDB
@@ -55,17 +55,17 @@ public class DataSetReaderCSDB {
                     if (LineType == 92) {
                         if (seriesBuffer.size() > 0) {
                             // PARSE THE BLOCK JUST COLLECTED
-                            TimeSeries series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
+                            TimeSeriesObject series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
 
                             // COMBINE IT WITH AN EXISTING SERIES
-                            if (dataSet.timeSeries.containsKey(series.taxi)) {
-                                TimeSeries existing = dataSet.timeSeries.get(series.taxi);
+                            if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
+                                TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
                                 for (TimeSeriesPoint point : series.points.values()) {
                                     existing.addPoint(point);
                                 }
 
                             } else { // OR CREATE A NEW SERIES
-                                dataSet.addSeries(series);
+                                timeSeriesDataSet.addSeries(series);
                             }
                         }
                         seriesBuffer = new ArrayList<>();
@@ -81,7 +81,7 @@ public class DataSetReaderCSDB {
             e.printStackTrace();
         }
 
-        return dataSet;
+        return timeSeriesDataSet;
     }
 
 
@@ -94,9 +94,9 @@ public class DataSetReaderCSDB {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public static DataSet readFile(String resourceName) throws IOException, URISyntaxException {
+    public static TimeSeriesDataSet readFile(String resourceName) throws IOException, URISyntaxException {
         // FIRST THINGS FIRST - GET THE FILE
-        URL resource = DataSet.class.getResource(resourceName);
+        URL resource = TimeSeriesDataSet.class.getResource(resourceName);
         Path filePath = Paths.get(resource.toURI());
 
         return readFile(filePath);
@@ -173,8 +173,8 @@ public class DataSetReaderCSDB {
      * @param lines
      * @return
      */
-    private static TimeSeries seriesFromStringList(ArrayList<String> lines) {
-        TimeSeries series = new TimeSeries();
+    private static TimeSeriesObject seriesFromStringList(ArrayList<String> lines) {
+        TimeSeriesObject series = new TimeSeriesObject();
         int startInd = 1;
         int year = 1881;
         String mqa = "A";
@@ -253,7 +253,7 @@ public class DataSetReaderCSDB {
         Processor.shutdown();
 
         int j = 0;
-        for(Future<TimeSeries> timeSeriesFuture : dataFuture.timeSeries.values()) {
+        for(Future<TimeSeriesObject> timeSeriesFuture : dataFuture.timeSeries.values()) {
             try {
                 System.out.println(++j + " " + timeSeriesFuture.get().taxi);
             } catch (InterruptedException e) {

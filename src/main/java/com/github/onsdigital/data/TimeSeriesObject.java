@@ -2,14 +2,13 @@ package com.github.onsdigital.data;
 
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by Tom.Ridd on 03/03/15.
  */
-public class TimeSeries {
+public class TimeSeriesObject {
 
     public String taxi;
     public String name;
@@ -96,8 +95,8 @@ public class TimeSeries {
      *
      * @return TIMESERIES WHERE ALL POINTS CONTAIN VALUES
      */
-    public TimeSeries noBlanks() {
-        TimeSeries series = new TimeSeries();
+    public TimeSeriesObject noBlanks() {
+        TimeSeriesObject series = new TimeSeriesObject();
         series.taxi = taxi;
         series.name = name;
         for(TimeSeriesPoint point: points.values()) {
@@ -117,9 +116,9 @@ public class TimeSeries {
      * @param leftTakesPrecedent which timeseries is definitive
      * @return
      */
-    public static TimeSeries merge(TimeSeries left, TimeSeries right, boolean leftTakesPrecedent) {
-        TimeSeries merged = leftTakesPrecedent ? left.noBlanks() : right.noBlanks();
-        TimeSeries add = leftTakesPrecedent ? right.noBlanks() : left.noBlanks();
+    public static TimeSeriesObject merge(TimeSeriesObject left, TimeSeriesObject right, boolean leftTakesPrecedent) {
+        TimeSeriesObject merged = leftTakesPrecedent ? left.noBlanks() : right.noBlanks();
+        TimeSeriesObject add = leftTakesPrecedent ? right.noBlanks() : left.noBlanks();
         for(TimeSeriesPoint point: add.points.values()) {
             if(merged.points.containsKey(point.timeLabel) == false) {
                 merged.addPoint(point);
@@ -131,7 +130,7 @@ public class TimeSeries {
     }
 
     public static void main(String[] args) {
-        TimeSeries series = new TimeSeries();
+        TimeSeriesObject series = new TimeSeriesObject();
 
         // Given
         //... a time series with holes in

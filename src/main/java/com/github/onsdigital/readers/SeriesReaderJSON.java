@@ -1,8 +1,8 @@
 package com.github.onsdigital.readers;
 
 import com.github.davidcarboni.restolino.json.Serialiser;
-import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesDataSet;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.writers.objects.ListedTimeSeries;
 
 import java.io.IOException;
@@ -17,8 +17,8 @@ import java.nio.file.Paths;
  * Created by thomasridd on 13/03/15.
  */
 public class SeriesReaderJSON {
-    public static TimeSeries readFileFromListedJSON(String resourceName) throws IOException, URISyntaxException {
-        URL resource = DataSet.class.getResource(resourceName);
+    public static TimeSeriesObject readFileFromListedJSON(String resourceName) throws IOException, URISyntaxException {
+        URL resource = TimeSeriesDataSet.class.getResource(resourceName);
 
         Path filePath = Paths.get(resource.toURI());
         try(InputStream stream = Files.newInputStream(filePath)) {
@@ -30,9 +30,9 @@ public class SeriesReaderJSON {
         return null;
     }
 
-    public static TimeSeries readSeriesFromJSON(Path path) {
+    public static TimeSeriesObject readSeriesFromJSON(Path path) {
         try(InputStream stream = Files.newInputStream(path)) {
-            TimeSeries series = Serialiser.deserialise(stream, TimeSeries.class);
+            TimeSeriesObject series = Serialiser.deserialise(stream, TimeSeriesObject.class);
             return series;
         } catch (IOException e) {
             e.printStackTrace();

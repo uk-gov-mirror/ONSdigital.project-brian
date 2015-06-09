@@ -1,12 +1,9 @@
 package com.github.onsdigital.generators;
 
-import com.github.onsdigital.api.Data;
-import com.github.onsdigital.data.DataCube;
-import com.github.onsdigital.data.DataSet;
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesDataSet;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 
-import java.util.Date;
 import java.util.Random;
 
 /**
@@ -25,23 +22,23 @@ public class Sample {
      * @param withYears
      * @return
      */
-    public static TimeSeries randomWalk(long seed, double start, double volatility, int firstYear, int lastYear, boolean withMonths, boolean withQuarters, boolean withYears) {
+    public static TimeSeriesObject randomWalk(long seed, double start, double volatility, int firstYear, int lastYear, boolean withMonths, boolean withQuarters, boolean withYears) {
 
-        TimeSeries series = new TimeSeries();
+        TimeSeriesObject series = new TimeSeriesObject();
 
 
         series.taxi = String.format("RAND%05d", seed) ;
         series.name = "Random Series " + series.taxi + " from " + firstYear;
-        if ( withYears ) { series = TimeSeries.merge(series, randomWalkYear(seed, start, volatility, firstYear, lastYear), true); }
-        if ( withMonths ) { series = TimeSeries.merge(series, randomWalkMonths(seed, start, volatility, firstYear, lastYear), true); }
-        if ( withQuarters ) { series = TimeSeries.merge(series, randomWalkQuarters(seed, start, volatility, firstYear, lastYear), true); }
+        if ( withYears ) { series = TimeSeriesObject.merge(series, randomWalkYear(seed, start, volatility, firstYear, lastYear), true); }
+        if ( withMonths ) { series = TimeSeriesObject.merge(series, randomWalkMonths(seed, start, volatility, firstYear, lastYear), true); }
+        if ( withQuarters ) { series = TimeSeriesObject.merge(series, randomWalkQuarters(seed, start, volatility, firstYear, lastYear), true); }
 
         return series;
     }
 
-    private static TimeSeries randomWalkYear(long seed, double start, double volatility, int firstYear, int lastYear) {
+    private static TimeSeriesObject randomWalkYear(long seed, double start, double volatility, int firstYear, int lastYear) {
         Random generator = new Random(seed);
-        TimeSeries series = new TimeSeries();
+        TimeSeriesObject series = new TimeSeriesObject();
 
         double current = start;
         for(int year = firstYear; year <= lastYear; year++) {
@@ -56,9 +53,9 @@ public class Sample {
 
         return series;
     }
-    private static TimeSeries randomWalkQuarters(long seed, double start, double volatility, int firstYear, int lastYear) {
+    private static TimeSeriesObject randomWalkQuarters(long seed, double start, double volatility, int firstYear, int lastYear) {
         Random generator = new Random(seed);
-        TimeSeries series = new TimeSeries();
+        TimeSeriesObject series = new TimeSeriesObject();
 
         double current = start;
         for(int year = firstYear; year <= lastYear; year++) {
@@ -75,9 +72,9 @@ public class Sample {
 
         return series;
     }
-    private static TimeSeries randomWalkMonths(long seed, double start, double volatility, int firstYear, int lastYear) {
+    private static TimeSeriesObject randomWalkMonths(long seed, double start, double volatility, int firstYear, int lastYear) {
         Random generator = new Random(seed);
-        TimeSeries series = new TimeSeries();
+        TimeSeriesObject series = new TimeSeriesObject();
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
         double current = start;
@@ -105,37 +102,31 @@ public class Sample {
      * @param withYears
      * @return
      */
-    public static DataSet randomWalks(int count, long firstSeed, double start, double volatility, int firstYear, int lastYear, boolean withMonths, boolean withQuarters, boolean withYears) {
-        DataSet dataSet = new DataSet();
-        dataSet.name = "RAND%05d";
+    public static TimeSeriesDataSet randomWalks(int count, long firstSeed, double start, double volatility, int firstYear, int lastYear, boolean withMonths, boolean withQuarters, boolean withYears) {
+        TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
+        timeSeriesDataSet.name = "RAND%05d";
         long seed = firstSeed;
 
         for(int i = 0; i < count; i++) {
-            TimeSeries series = randomWalk(seed, start, volatility, firstYear, lastYear, withMonths, withQuarters, withYears);
-            dataSet.timeSeries.put(series.taxi, series);
+            TimeSeriesObject series = randomWalk(seed, start, volatility, firstYear, lastYear, withMonths, withQuarters, withYears);
+            timeSeriesDataSet.timeSeries.put(series.taxi, series);
             seed += 1;
         }
-        return dataSet;
+        return timeSeriesDataSet;
     }
 
-    public static TimeSeries quickWalk(long seed) {
+    public static TimeSeriesObject quickWalk(long seed) {
         return randomWalk(seed, 100, 1, 2010, 2014, true, true, true);
     }
 
-    public static DataSet quickWalks(int count, long seedZero){
-        DataSet dataSet = new DataSet();
-        dataSet.name = String.format("Random DataSet with %d series starting with RAND%05d", count, seedZero);
-        dataSet.source = "Sample.quickWalks()";
+    public static TimeSeriesDataSet quickWalks(int count, long seedZero){
+        TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
+        timeSeriesDataSet.name = String.format("Random DataSet with %d series starting with RAND%05d", count, seedZero);
+        timeSeriesDataSet.source = "Sample.quickWalks()";
         for(int i = 0; i < count; i++) {
-            dataSet.addSeries(Sample.quickWalk(seedZero + i));
+            timeSeriesDataSet.addSeries(Sample.quickWalk(seedZero + i));
         }
-        return dataSet;
+        return timeSeriesDataSet;
     }
 
-
-    public static void main(String[] args) {
-        TimeSeries series = randomWalk(100, 100, 1, 1997, 1998, true, false, true);
-        DataSet dataSet = quickWalks(2,1);
-        System.out.println(dataSet);
-    }
 }

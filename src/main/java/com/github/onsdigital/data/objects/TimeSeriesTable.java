@@ -1,9 +1,7 @@
 package com.github.onsdigital.data.objects;
 
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesObject;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -17,9 +15,9 @@ public class TimeSeriesTable {
     public String name; // TABLE NAME
     public String taxi; // TAXONOMY-BASED ID
 
-    public HashMap<String , TimeSeries> serieses = new HashMap<>();
+    public HashMap<String , TimeSeriesObject> serieses = new HashMap<>();
 
-    public void addSeries(TimeSeries series) {
+    public void addSeries(TimeSeriesObject series) {
         serieses.put(series.taxi, series);
     }
 }

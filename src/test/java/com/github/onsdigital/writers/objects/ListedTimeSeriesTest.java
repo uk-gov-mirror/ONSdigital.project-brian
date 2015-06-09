@@ -1,10 +1,8 @@
 package com.github.onsdigital.writers.objects;
 
-import com.github.onsdigital.data.TimeSeries;
+import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 import com.github.onsdigital.generators.Sample;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -16,7 +14,7 @@ public class ListedTimeSeriesTest {
 
         // Given
         //... a random time series
-        TimeSeries test = Sample.quickWalk(12345);
+        TimeSeriesObject test = Sample.quickWalk(12345);
 
 
         // When
@@ -40,12 +38,12 @@ public class ListedTimeSeriesTest {
     public void listedTimeSeriesShouldConvertBackToNormal() throws Exception {
         // Given
         //... a random time series that we have turned into listed time series
-        TimeSeries test1 = Sample.quickWalk(12345);
+        TimeSeriesObject test1 = Sample.quickWalk(12345);
         ListedTimeSeries listed = new ListedTimeSeries(test1);
 
         // When
         //... we convert it to a back to a time series
-        TimeSeries test2 = listed.toTimeSeries();
+        TimeSeriesObject test2 = listed.toTimeSeries();
 
         // Then
         //... we expect the converted series to be the identical to the original
