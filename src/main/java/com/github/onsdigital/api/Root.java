@@ -28,23 +28,23 @@ public class Root implements Startup {
     @Override
     public void init() {
 
-        try {
-            master = new DataFuture();
-            master = DataSetReaderCSDB.readDirectory("/imports/csdb");
-            cubeMaster = DataCubeReaderWDA.readDirectory("/imports/wda");
-
-            DataCubeSet moreCubes = DataCubeReaderTable.readDirectory("/imports/tabular");
-            for(String key: moreCubes.cubes.keySet()) {
-                cubeMaster.cubes.put(key, moreCubes.cubes.get(key));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            Processor.shutdown();
-            CubeProcessor.shutdown();
-        }
-        System.out.println("Startup");
+//        try {
+//            master = new DataFuture();
+//            master = DataSetReaderCSDB.readDirectory("/imports/csdb");
+//            cubeMaster = DataCubeReaderWDA.readDirectory("/imports/wda");
+//
+//            DataCubeSet moreCubes = DataCubeReaderTable.readDirectory("/imports/tabular");
+//            for(String key: moreCubes.cubes.keySet()) {
+//                cubeMaster.cubes.put(key, moreCubes.cubes.get(key));
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            Processor.shutdown();
+//            CubeProcessor.shutdown();
+//        }
+//        System.out.println("Startup");
     }
 
     //TODO Replace this with code worth the effort
