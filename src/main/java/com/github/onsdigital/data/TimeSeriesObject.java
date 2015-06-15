@@ -15,6 +15,7 @@ public class TimeSeriesObject {
     public boolean hasYearly = false;
     public boolean hasMonthly = false;
     public boolean hasQuarterly = false;
+    public boolean seasonallyAdjusted = false;
 
     public transient boolean shouldHaveYearly = false;
     public transient boolean shouldHaveMonthly = false;

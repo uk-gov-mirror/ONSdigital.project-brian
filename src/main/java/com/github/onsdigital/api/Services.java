@@ -2,13 +2,17 @@ package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.davidcarboni.restolino.json.Serialiser;
+import com.github.onsdigital.content.serialiser.ContentSerialiser;
+import com.github.onsdigital.content.statistic.data.TimeSeries;
 import com.github.onsdigital.data.TimeSeriesDataSet;
 import com.github.onsdigital.data.TimeSeriesObject;
+import com.github.onsdigital.publishers.TimeSeriesPublisher;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import org.eclipse.jetty.http.HttpStatus;
@@ -19,6 +23,7 @@ import javax.ws.rs.POST;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,13 +55,24 @@ public class Services {
             TimeSeriesDataSet timeSeriesDataSet = DataSetReaderCSDB.readFile(csdbFile);
 
             // Write to response
-            List<TimeSeriesObject> series = new ArrayList<TimeSeriesObject>(timeSeriesDataSet.timeSeries.values());
-            System.out.println(series);
-            String dataSetJson = Serialiser.serialise(series);
+            List<TimeSeriesObject> brianSeries = new ArrayList<TimeSeriesObject>(timeSeriesDataSet.timeSeries.values());
+
+            List<TimeSeries> contentSeries = new ArrayList<>();
+            for (TimeSeriesObject series: brianSeries) {
+                contentSeries.add(TimeSeriesPublisher.convertToContentLibraryTimeSeries(series));
+            }
+
+            String dataSetJson = new ContentSerialiser().serialise(contentSeries);
             try(InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = response.getOutputStream()) {
                 IOUtils.copy(inputStream, output);
             }
 
+            if (System.getenv("exportLog") != null) {
+                Path logPath = Paths.get(System.getenv("exportLog")).resolve("convertCSDB.json");
+                try (InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = FileUtils.openOutputStream(logPath.toFile())) {
+                    IOUtils.copy(inputStream, output);
+                }
+            }
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST_400);
         }

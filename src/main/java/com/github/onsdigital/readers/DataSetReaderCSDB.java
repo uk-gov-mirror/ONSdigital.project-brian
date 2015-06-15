@@ -186,6 +186,13 @@ public class DataSetReaderCSDB {
                 if (LineType == 92) { // TOP LINE (SERIES CODE)
                     series.taxi = line.substring(2, 6);
 
+                    String seasonallyAdjusted = line.substring(7,8);
+                    if (seasonallyAdjusted.equalsIgnoreCase("U")) {
+                        series.seasonallyAdjusted = false;
+                    } else {
+                        series.seasonallyAdjusted = true;
+                    }
+
                 } else if (LineType == 93) { // SECOND LINE (DESCRIPTION)
                     series.name = line.substring(2);
 
