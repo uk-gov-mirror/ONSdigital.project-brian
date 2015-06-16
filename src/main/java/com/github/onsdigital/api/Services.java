@@ -1,9 +1,8 @@
 package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
-import com.github.davidcarboni.restolino.json.Serialiser;
-import com.github.onsdigital.content.serialiser.ContentSerialiser;
-import com.github.onsdigital.content.statistic.data.TimeSeries;
+import com.github.onsdigital.content.page.statistics.data.TimeSeries;
+import com.github.onsdigital.content.util.ContentUtil;
 import com.github.onsdigital.data.TimeSeriesDataSet;
 import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.publishers.TimeSeriesPublisher;
@@ -62,7 +61,7 @@ public class Services {
                 contentSeries.add(TimeSeriesPublisher.convertToContentLibraryTimeSeries(series));
             }
 
-            String dataSetJson = new ContentSerialiser().serialise(contentSeries);
+            String dataSetJson = ContentUtil.serialise(contentSeries);
             try(InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = response.getOutputStream()) {
                 IOUtils.copy(inputStream, output);
             }

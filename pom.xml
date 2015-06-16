@@ -54,14 +54,7 @@
             <version>2.3</version>
         </dependency>
 
-        <!-- Taxonomy generator -->
-        <dependency>
-            <groupId>net.sf.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>2.3</version>
-        </dependency>
-
-        <!-- Spreadsheet handling -->
+         <!--Spreadsheet handling-->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -116,7 +109,7 @@
         <dependency>
             <groupId>com.github.ONSdigital</groupId>
             <artifactId>content-library</artifactId>
-            <version>content-library-1.0.8</version>
+            <version>content-library-1.0.19</version>
         </dependency>
     </dependencies>
 

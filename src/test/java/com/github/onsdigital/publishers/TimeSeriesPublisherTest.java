@@ -1,6 +1,7 @@
 package com.github.onsdigital.publishers;
 
-import com.github.onsdigital.content.statistic.data.TimeSeries;
+
+import com.github.onsdigital.content.page.statistics.data.TimeSeries;
 import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.generators.Sample;
 import org.junit.Before;
@@ -28,7 +29,5 @@ public class TimeSeriesPublisherTest {
         // we expect a result
         assertNotNull(series);
         assertEquals(ts.taxi, series.cdid);
-
-
     }
 }
