@@ -1,3 +1,4 @@
+#@IgnoreInspection BashAddShebang
 from java:7
 
 
@@ -39,7 +40,7 @@ ENV PACKAGE_PREFIX=com.github.onsdigital.api
 # Entrypoint script
 RUN echo "#!/bin/bash" >> container.sh
 ## Disabled for now: RUN echo "consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join=dockerhost &" > container.sh
-RUN echo "java $JAVA_OPTS \
+RUN echo "java \
           -Drestolino.packageprefix=$PACKAGE_PREFIX \
           -jar target/*-jar-with-dependencies.jar" >> container.sh
 RUN chmod u+x container.sh
