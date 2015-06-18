@@ -1,7 +1,7 @@
 package com.github.onsdigital.api;
 
 import com.github.davidcarboni.restolino.framework.Api;
-import com.github.onsdigital.content.page.statistics.data.TimeSeries;
+import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.content.util.ContentUtil;
 import com.github.onsdigital.data.TimeSeriesDataSet;
 import com.github.onsdigital.data.TimeSeriesObject;

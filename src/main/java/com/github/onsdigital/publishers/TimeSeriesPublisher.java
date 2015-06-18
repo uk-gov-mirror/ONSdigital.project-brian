@@ -1,7 +1,9 @@
 package com.github.onsdigital.publishers;
 
-import com.github.onsdigital.content.page.statistics.data.TimeSeries;
+import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
+import com.github.onsdigital.content.page.statistics.data.timeseries.TimeseriesDescription;
 import com.github.onsdigital.content.partial.TimeseriesValue;
+import com.github.onsdigital.content.partial.markdown.MarkdownSection;
 import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
 
@@ -11,9 +13,18 @@ import com.github.onsdigital.data.objects.TimeSeriesPoint;
 public class TimeSeriesPublisher {
     public static TimeSeries convertToContentLibraryTimeSeries(TimeSeriesObject timeSeriesObject) {
         TimeSeries timeSeriesPage = new TimeSeries();
-        timeSeriesPage.cdid = timeSeriesObject.taxi;
-        timeSeriesPage.description = timeSeriesObject.name;
-        timeSeriesPage.seasonalAdjustment = timeSeriesObject.seasonallyAdjusted ? "SA" : "NSA";
+        timeSeriesPage.setCdid(timeSeriesObject.taxi);
+
+        TimeseriesDescription description = new TimeseriesDescription();
+        description.setCdid(timeSeriesObject.taxi);
+
+        MarkdownSection section = new MarkdownSection();
+        section.setTitle("description");
+        section.setMarkdown(timeSeriesObject.name);
+
+        timeSeriesPage.setSection(new MarkdownSection());
+        description.setSeasonalAdjustment(timeSeriesObject.seasonallyAdjusted ? "SA" : "NSA");
+        timeSeriesPage.setDescription(description);
 
         for (String key: timeSeriesObject.points.keySet()) {
             TimeSeriesPoint point = timeSeriesObject.points.get(key);
