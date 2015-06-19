@@ -13,7 +13,6 @@ import com.github.onsdigital.data.objects.TimeSeriesPoint;
 public class TimeSeriesPublisher {
     public static TimeSeries convertToContentLibraryTimeSeries(TimeSeriesObject timeSeriesObject) {
         TimeSeries timeSeriesPage = new TimeSeries();
-        timeSeriesPage.setCdid(timeSeriesObject.taxi);
 
         TimeseriesDescription description = new TimeseriesDescription();
         description.setCdid(timeSeriesObject.taxi);
