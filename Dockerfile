@@ -16,6 +16,7 @@ RUN git checkout develop
 RUN mvn install -DskipTests
 
 # Update the entry point script
+
 ENV PACKAGE_PREFIX=com.github.onsdigital.api
 RUN echo "java \
           -Drestolino.packageprefix=$PACKAGE_PREFIX \
