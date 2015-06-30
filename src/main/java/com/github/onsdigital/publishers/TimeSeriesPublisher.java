@@ -16,6 +16,7 @@ public class TimeSeriesPublisher {
 
         TimeseriesDescription description = new TimeseriesDescription();
         description.setCdid(timeSeriesObject.taxi);
+        description.setTitle(timeSeriesObject.name);
 
         MarkdownSection section = new MarkdownSection();
         section.setTitle("description");
