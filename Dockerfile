@@ -1,21 +1,17 @@
 from carboni.io/java-component
 
 # Consul
-
 WORKDIR /etc/consul.d
 RUN echo '{"service": {"name": "brian", "tags": ["blue"], "port": 8080, "check": {"script": "curl http://localhost:8080 >/dev/null 2>&1", "interval": "10s"}}}' > brian.json
 
-# Check out from Github
-
+# Add the repo source
 WORKDIR /usr/src
-RUN git clone -b staging --single-branch --depth 1 https://github.com/thomasridd/project-brian.git .
+ADD . /usr/src
 
 # Build jar-with-dependencies
-
 RUN mvn install -DskipTests
 
 # Update the entry point script
-
 RUN mv /usr/entrypoint/container.sh /usr/src/
 ENV PACKAGE_PREFIX=com.github.onsdigital.api
 RUN echo "java -Xmx4094m \
