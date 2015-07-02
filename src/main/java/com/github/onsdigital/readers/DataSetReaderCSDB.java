@@ -81,7 +81,6 @@ public class DataSetReaderCSDB {
             e.printStackTrace();
         }
 
-        Processor.shutdown();
         return timeSeriesDataSet;
     }
 
