@@ -18,9 +18,10 @@ import java.util.concurrent.*;
  */
 public class Processor implements  Runnable{
 
-    public static final ExecutorService timeSeriesPool = Executors.newFixedThreadPool(100);
-    public static final ExecutorService fileProcessPool = Executors.newFixedThreadPool(100);
-    public static final ExecutorService processorPool = Executors.newFixedThreadPool(20);
+    public static ExecutorService timeSeriesPool = Executors.newCachedThreadPool();
+    public static ExecutorService fileProcessPool = Executors.newCachedThreadPool();
+    public static ExecutorService processorPool = Executors.newCachedThreadPool();
+    private static int users = 0;
 
     private Path file;
 
@@ -218,9 +219,10 @@ public class Processor implements  Runnable{
         // Shut down the pools.
         // This instructs them to shut down once all tasks have completed
         // but does not block until that time.
-        Processor.fileProcessPool.shutdown();
-        Processor.processorPool.shutdown();
-        Processor.timeSeriesPool.shutdown();
+//
+//        Processor.fileProcessPool.shutdown();
+//        Processor.processorPool.shutdown();
+//        Processor.timeSeriesPool.shutdown();
     }
 
 }
