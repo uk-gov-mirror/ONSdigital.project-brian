@@ -44,8 +44,6 @@ public class TimeSeriesPublisherTest {
         // When
         // we read it to a csdb file
         Path path = ResourceUtils.getPath(resourceName);
-        //String resourcePath = TimeSeriesPublisherTest.class.getResource(resourceName).getPath();
-        //TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(Paths.get(resourcePath));
         TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(path);
 
         // Then
