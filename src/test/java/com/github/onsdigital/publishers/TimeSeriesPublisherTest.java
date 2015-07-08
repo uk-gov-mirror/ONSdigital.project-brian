@@ -63,6 +63,6 @@ public class TimeSeriesPublisherTest {
     }
 
     public void assertDatasetCorrespondsToCSDB(TimeSeriesDataSet dataSet) {
-        assertEquals(88, dataSet.timeSeries.size());
+        assertEquals(128, dataSet.timeSeries.size());
     }
 }
