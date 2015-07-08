@@ -1,17 +1,15 @@
 package com.github.onsdigital.publishers;
 
 
+import com.github.davidcarboni.ResourceUtils;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.data.TimeSeriesDataSet;
 import com.github.onsdigital.data.TimeSeriesObject;
-import com.github.onsdigital.data.objects.TimeSeriesPoint;
 import com.github.onsdigital.generators.Sample;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
@@ -45,8 +43,10 @@ public class TimeSeriesPublisherTest {
 
         // When
         // we read it to a csdb file
-        String resourcePath = TimeSeriesPublisherTest.class.getResource(resourceName).getPath();
-        TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(Paths.get(resourcePath));
+        Path path = ResourceUtils.getPath(resourceName);
+        //String resourcePath = TimeSeriesPublisherTest.class.getResource(resourceName).getPath();
+        //TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(Paths.get(resourcePath));
+        TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(path);
 
         // Then
         // we expect a the correct number of time series to be returned
