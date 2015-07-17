@@ -12,7 +12,7 @@ ADD ./target/*-jar-with-dependencies.jar /usr/src/target
 #RUN mvn install -DskipTests
 
 # Update the entry point script
-RUN mv /usr/entrypoint/container.sh /usr/src/
+RUN mv /usr/entrypoint/container.sh /usr/src/target
 ENV PACKAGE_PREFIX=com.github.onsdigital.api
 RUN echo "java -Xmx4094m \
           -Drestolino.packageprefix=$PACKAGE_PREFIX \
