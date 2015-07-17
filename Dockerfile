@@ -1,4 +1,4 @@
-from java
+from carboni.io/java-component
 
 # Consul
 WORKDIR /etc/consul.d
