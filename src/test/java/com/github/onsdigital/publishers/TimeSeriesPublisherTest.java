@@ -60,6 +60,42 @@ public class TimeSeriesPublisherTest {
         }
     }
 
+    @Test
+    public void testDataSetReaderKicksOutTheCorrectFinalNumberForTimeSeries() throws Exception {
+        // Given
+        // a time series
+        String resourceName = "/examples/SmallExample";
+        Path path = ResourceUtils.getPath(resourceName);
+        TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(path);
+        TimeSeriesObject series = csdb.getSeries("DS38");
+
+        // When
+        // we convert it to the return type
+        TimeSeries contentLibraryTimeSeries = TimeSeriesPublisher.convertToContentLibraryTimeSeries(series);
+
+        // Then
+        // we expect the number will be returned
+        assertEquals("2120", contentLibraryTimeSeries.getDescription().getNumber());
+    }
+
+    @Test
+    public void testDataSetReaderKicksOutTheCorrectFinalDateForTimeSeries() throws Exception {
+        // Given
+        // a time series
+        String resourceName = "/examples/SmallExample";
+        Path path = ResourceUtils.getPath(resourceName);
+        TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(path);
+        TimeSeriesObject series = csdb.getSeries("DS38");
+
+        // When
+        // we convert it to the return type
+        TimeSeries contentLibraryTimeSeries = TimeSeriesPublisher.convertToContentLibraryTimeSeries(series);
+
+        // Then
+        // we expect the number will be returned
+        assertEquals("2014 Q3", contentLibraryTimeSeries.getDescription().getDate());
+    }
+
     public void assertDatasetCorrespondsToCSDB(TimeSeriesDataSet dataSet) {
         assertEquals(128, dataSet.timeSeries.size());
     }

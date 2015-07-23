@@ -4,8 +4,14 @@ import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeseriesDescription;
 import com.github.onsdigital.content.partial.TimeseriesValue;
 import com.github.onsdigital.content.partial.markdown.MarkdownSection;
+import com.github.onsdigital.content.util.ContentUtil;
 import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
+import org.apache.commons.io.IOUtils;
+
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.*;
 
 /**
  * Created by thomasridd on 09/06/15.
@@ -32,6 +38,11 @@ public class TimeSeriesPublisher {
 
             timeSeriesPage.add(value);
         }
+
+        TimeseriesValue value = getTimeSeriesHighlightPoint(timeSeriesPage);
+        timeSeriesPage.getDescription().setNumber(value.value);
+        timeSeriesPage.getDescription().setDate(value.date);
+
         return timeSeriesPage;
     }
 
@@ -60,5 +71,40 @@ public class TimeSeriesPublisher {
         }
 
         return value;
+    }
+
+    static TimeseriesValue getTimeSeriesHighlightPoint(TimeSeries series) {
+        List<TimeseriesValue> values = new ArrayList<>();
+
+        if (series.months != null && series.months.size() > 0) {
+            Iterator<TimeseriesValue> iterator = series.months.iterator();
+            while (iterator.hasNext()) {
+                values.add(iterator.next());
+            }
+        } else if (series.quarters != null && series.quarters.size() > 0) {
+            Iterator<TimeseriesValue> iterator = series.quarters.iterator();
+            while (iterator.hasNext()) {
+                values.add(iterator.next());
+            }
+        } else if (series.years != null && series.years.size() > 0) {
+            Iterator<TimeseriesValue> iterator = series.years.iterator();
+            while (iterator.hasNext()) {
+                values.add(iterator.next());
+            }
+        }
+
+        class CustomComparator implements Comparator<TimeseriesValue> {
+            @Override
+            public int compare(TimeseriesValue o1, TimeseriesValue o2) {
+                return o1.toDate().compareTo(o2.toDate());
+            }
+        }
+
+        if (values.size() > 0) {
+            Collections.sort(values, new CustomComparator());
+            TimeseriesValue value = values.get(values.size() - 1);
+            return value;
+        }
+        return null;
     }
 }
