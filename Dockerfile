@@ -4,12 +4,9 @@ from carboni.io/java-component
 WORKDIR /etc/consul.d
 RUN echo '{"service": {"name": "brian", "tags": ["blue"], "port": 8080, "check": {"script": "curl http://localhost:8080 >/dev/null 2>&1", "interval": "10s"}}}' > brian.json
 
-# Add the repo source
+# Add the built artifact
 WORKDIR /usr/src
-ADD . /usr/src
-
-# Build jar-with-dependencies
-RUN mvn install -DskipTests
+ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
 
 # Update the entry point script
 RUN mv /usr/entrypoint/container.sh /usr/src/
