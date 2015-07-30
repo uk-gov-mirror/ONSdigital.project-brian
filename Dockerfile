@@ -6,6 +6,7 @@ RUN echo '{"service": {"name": "brian", "tags": ["blue"], "port": 8080, "check":
 
 # Add the built artifact
 WORKDIR /usr/src
+ADD git_commit_id /usr/src/
 ADD ./target/*-jar-with-dependencies.jar /usr/src/target/
 
 # Update the entry point script
