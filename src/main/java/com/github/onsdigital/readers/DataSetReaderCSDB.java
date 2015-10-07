@@ -240,11 +240,11 @@ public class DataSetReaderCSDB {
             return (year + iteration - 1) + "";
         } else if(mqa.equals("M")) {
             int finalMonth = (startInd + iteration - 2) % 12;
-            int yearsTaken = (iteration - 1) / 12;
+            int yearsTaken = (startInd + iteration - 2) / 12;
             return (year + yearsTaken) + " " + String.format("%02d", finalMonth + 1);
         } else {
             int finalQuarter = (startInd + iteration - 2) % 4;
-            int yearsTaken = (iteration - 1) / 4;
+            int yearsTaken = (startInd + iteration - 2) / 4;
             return String.format("%d Q%d", year + yearsTaken, finalQuarter + 1);
         }
 
