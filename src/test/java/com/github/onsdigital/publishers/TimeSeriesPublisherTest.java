@@ -1,7 +1,6 @@
 package com.github.onsdigital.publishers;
 
 
-import com.github.davidcarboni.ResourceUtils;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.data.TimeSeriesDataSet;
 import com.github.onsdigital.data.TimeSeriesObject;
@@ -9,7 +8,11 @@ import com.github.onsdigital.generators.Sample;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
@@ -43,8 +46,7 @@ public class TimeSeriesPublisherTest {
 
         // When
         // we read it to a csdb file
-        Path path = ResourceUtils.getPath(resourceName);
-        TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(path);
+        TimeSeriesDataSet csdb = readFile(resourceName);
 
         // Then
         // we expect a the correct number of time series to be returned
@@ -65,8 +67,7 @@ public class TimeSeriesPublisherTest {
         // Given
         // a time series
         String resourceName = "/examples/SmallExample";
-        Path path = ResourceUtils.getPath(resourceName);
-        TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(path);
+        TimeSeriesDataSet csdb = readFile(resourceName);
         TimeSeriesObject series = csdb.getSeries("DS38");
 
         // When
@@ -83,8 +84,7 @@ public class TimeSeriesPublisherTest {
         // Given
         // a time series
         String resourceName = "/examples/SmallExample";
-        Path path = ResourceUtils.getPath(resourceName);
-        TimeSeriesDataSet csdb = DataSetReaderCSDB.readFile(path);
+        TimeSeriesDataSet csdb = readFile(resourceName);
         TimeSeriesObject series = csdb.getSeries("DS38");
 
         // When
@@ -98,5 +98,24 @@ public class TimeSeriesPublisherTest {
 
     public void assertDatasetCorrespondsToCSDB(TimeSeriesDataSet dataSet) {
         assertEquals(128, dataSet.timeSeries.size());
+    }
+
+
+
+
+
+    /**
+     * READS A DATASET FROM A RESOURCE FILE -
+     *
+     * @param resourceName - THE INTERNAL FILE PATH OF THE RESOURCE
+     * @return - THE DATASET REPRESENTATION
+     * @throws IOException
+     */
+    public static TimeSeriesDataSet readFile(String resourceName) throws IOException, URISyntaxException {
+        // FIRST THINGS FIRST - GET THE FILE
+        URL resource = TimeSeriesDataSet.class.getResource(resourceName);
+        Path filePath = Paths.get(resource.toURI());
+
+        return DataSetReaderCSDB.readFile(filePath, null);
     }
 }
