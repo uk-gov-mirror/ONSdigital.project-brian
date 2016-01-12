@@ -1,11 +1,11 @@
-package com.github.onsdigital.readers;
+package com.github.onsdigital.brian.readers;
 
 import com.github.davidcarboni.cryptolite.Crypto;
-import com.github.onsdigital.async.Processor;
-import com.github.onsdigital.data.DataFuture;
-import com.github.onsdigital.data.TimeSeriesDataSet;
-import com.github.onsdigital.data.TimeSeriesObject;
-import com.github.onsdigital.data.objects.TimeSeriesPoint;
+import com.github.onsdigital.brian.async.Processor;
+import com.github.onsdigital.brian.data.DataFuture;
+import com.github.onsdigital.brian.data.TimeSeriesDataSet;
+import com.github.onsdigital.brian.data.TimeSeriesObject;
+import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 import org.apache.commons.io.IOUtils;
 
 import javax.crypto.SecretKey;

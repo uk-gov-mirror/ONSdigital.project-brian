@@ -1,6 +1,6 @@
-package com.github.onsdigital.data;
+package com.github.onsdigital.brian.data;
 
-import com.github.onsdigital.data.objects.TimeSeriesPoint;
+import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.github.onsdigital.api;
+package com.github.onsdigital.brian.api;
 
 import com.github.davidcarboni.cryptolite.Crypto;
 import com.github.davidcarboni.cryptolite.Keys;
@@ -6,10 +6,10 @@ import com.github.davidcarboni.encryptedfileupload.EncryptedFileItemFactory;
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.content.util.ContentUtil;
-import com.github.onsdigital.data.TimeSeriesDataSet;
-import com.github.onsdigital.data.TimeSeriesObject;
-import com.github.onsdigital.publishers.TimeSeriesPublisher;
-import com.github.onsdigital.readers.DataSetReaderCSDB;
+import com.github.onsdigital.brian.data.TimeSeriesDataSet;
+import com.github.onsdigital.brian.data.TimeSeriesObject;
+import com.github.onsdigital.brian.publishers.TimeSeriesPublisher;
+import com.github.onsdigital.brian.readers.DataSetReaderCSDB;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
