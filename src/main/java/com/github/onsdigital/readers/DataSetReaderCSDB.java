@@ -1,22 +1,24 @@
 package com.github.onsdigital.readers;
 
+import com.github.davidcarboni.cryptolite.Crypto;
 import com.github.onsdigital.async.Processor;
 import com.github.onsdigital.data.DataFuture;
 import com.github.onsdigital.data.TimeSeriesDataSet;
 import com.github.onsdigital.data.TimeSeriesObject;
 import com.github.onsdigital.data.objects.TimeSeriesPoint;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
-
+import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -35,13 +37,16 @@ public class DataSetReaderCSDB {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public static TimeSeriesDataSet readFile(Path filePath) throws IOException {
+    public static TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException {
 
         TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
 
         try {
             // USE WINDOWS ENCODING TO READ THE FILE BECAUSE IT IS A WIN CSDB
-            List<String> lines = FileUtils.readLines(filePath.toFile(), "cp1252");
+            InputStream inputStream = Files.newInputStream(filePath);
+            // The tests don't need to use encryption, so this is for them:
+            if (key !=null) inputStream = new Crypto().decrypt(inputStream, key);
+            List<String> lines = IOUtils.readLines(inputStream, "cp1252");
             lines.add("92"); // THROW A 92 ON THE END
 
             ArrayList<String> seriesBuffer = new ArrayList<>();
@@ -82,24 +87,6 @@ public class DataSetReaderCSDB {
         }
 
         return timeSeriesDataSet;
-    }
-
-
-
-
-    /**
-     * READS A DATASET FROM A RESOURCE FILE -
-     *
-     * @param resourceName - THE INTERNAL FILE PATH OF THE RESOURCE
-     * @return - THE DATASET REPRESENTATION
-     * @throws IOException
-     */
-    public static TimeSeriesDataSet readFile(String resourceName) throws IOException, URISyntaxException {
-        // FIRST THINGS FIRST - GET THE FILE
-        URL resource = TimeSeriesDataSet.class.getResource(resourceName);
-        Path filePath = Paths.get(resource.toURI());
-
-        return readFile(filePath);
     }
 
 

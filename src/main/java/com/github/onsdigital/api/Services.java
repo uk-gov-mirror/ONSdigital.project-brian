@@ -1,5 +1,8 @@
 package com.github.onsdigital.api;
 
+import com.github.davidcarboni.cryptolite.Crypto;
+import com.github.davidcarboni.cryptolite.Keys;
+import com.github.davidcarboni.encryptedfileupload.EncryptedFileItemFactory;
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.content.util.ContentUtil;
@@ -9,17 +12,19 @@ import com.github.onsdigital.publishers.TimeSeriesPublisher;
 import com.github.onsdigital.readers.DataSetReaderCSDB;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-
 import org.eclipse.jetty.http.HttpStatus;
 
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.POST;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,11 +52,12 @@ public class Services {
                              HttpServletResponse response) throws IOException, FileUploadException {
 
         // Get the input file
-        Path csdbFile = getFileFromMultipartRequest(request);
+        SecretKey key = Keys.newSecretKey();
+        Path csdbFile = getFileFromMultipartRequest(request, key);
 
         if (csdbFile != null) {
             // Convert it to dataSet
-            TimeSeriesDataSet timeSeriesDataSet = DataSetReaderCSDB.readFile(csdbFile);
+            TimeSeriesDataSet timeSeriesDataSet = DataSetReaderCSDB.readFile(csdbFile, key);
 
             // Write to response
             List<TimeSeriesObject> brianSeries = new ArrayList<TimeSeriesObject>(timeSeriesDataSet.timeSeries.values());
@@ -77,11 +83,11 @@ public class Services {
         }
     }
 
-    private Path getFileFromMultipartRequest(HttpServletRequest request) throws IOException, FileUploadException {
+    private Path getFileFromMultipartRequest(HttpServletRequest request, SecretKey key) throws IOException, FileUploadException {
         if(!ServletFileUpload.isMultipartContent(request)) {return null;}
 
         // Create a factory for disk-based file items
-        DiskFileItemFactory factory = new DiskFileItemFactory();
+        EncryptedFileItemFactory factory = new EncryptedFileItemFactory();
 
         // Configure a repository (to ensure a secure temp location is used)
         File repository = Files.createTempDirectory("csdb").toFile();
@@ -95,7 +101,7 @@ public class Services {
         for(FileItem item: items) {
             if (!item.isFormField()) {
                 Path tempFile = Files.createTempFile("csdb",".csdb");
-                try(OutputStream stream = Files.newOutputStream(tempFile)) {
+                try(OutputStream stream = new Crypto().encrypt(Files.newOutputStream(tempFile), key)) {
                     IOUtils.copy(item.getInputStream(), stream);
                 }
                 return tempFile;
