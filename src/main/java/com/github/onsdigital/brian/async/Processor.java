@@ -1,8 +1,8 @@
-package com.github.onsdigital.async;
+package com.github.onsdigital.brian.async;
 
-import com.github.onsdigital.data.DataFuture;
-import com.github.onsdigital.data.TimeSeriesObject;
-import com.github.onsdigital.data.objects.TimeSeriesPoint;
+import com.github.onsdigital.brian.data.DataFuture;
+import com.github.onsdigital.brian.data.TimeSeriesObject;
+import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 

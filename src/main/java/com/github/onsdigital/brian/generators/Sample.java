@@ -1,8 +1,8 @@
-package com.github.onsdigital.generators;
+package com.github.onsdigital.brian.generators;
 
-import com.github.onsdigital.data.TimeSeriesDataSet;
-import com.github.onsdigital.data.TimeSeriesObject;
-import com.github.onsdigital.data.objects.TimeSeriesPoint;
+import com.github.onsdigital.brian.data.TimeSeriesDataSet;
+import com.github.onsdigital.brian.data.TimeSeriesObject;
+import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 
 import java.util.Random;
 

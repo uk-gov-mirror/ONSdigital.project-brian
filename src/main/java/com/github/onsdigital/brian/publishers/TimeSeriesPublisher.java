@@ -1,16 +1,12 @@
-package com.github.onsdigital.publishers;
+package com.github.onsdigital.brian.publishers;
 
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeseriesDescription;
 import com.github.onsdigital.content.partial.TimeseriesValue;
 import com.github.onsdigital.content.partial.markdown.MarkdownSection;
-import com.github.onsdigital.content.util.ContentUtil;
-import com.github.onsdigital.data.TimeSeriesObject;
-import com.github.onsdigital.data.objects.TimeSeriesPoint;
-import org.apache.commons.io.IOUtils;
+import com.github.onsdigital.brian.data.TimeSeriesObject;
+import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.*;
 
 /**

@@ -1,4 +1,4 @@
-package com.github.onsdigital.data.objects;
+package com.github.onsdigital.brian.data.objects;
 
 import org.junit.After;
 import org.junit.Before;

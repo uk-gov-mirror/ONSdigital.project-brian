@@ -1,4 +1,4 @@
-package com.github.onsdigital.data;
+package com.github.onsdigital.brian.data;
 
 import java.util.HashMap;
 
