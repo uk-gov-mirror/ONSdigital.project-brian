@@ -1,4 +1,4 @@
-package com.github.onsdigital.readers;
+package com.github.onsdigital.brian.readers;
 
 import java.io.IOException;
 import java.io.InputStream;

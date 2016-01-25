@@ -1,6 +1,6 @@
-package com.github.onsdigital.async;
+package com.github.onsdigital.brian.async;
 
-import com.github.onsdigital.data.TimeSeriesObject;
+import com.github.onsdigital.brian.data.TimeSeriesObject;
 
 import java.util.concurrent.*;
 

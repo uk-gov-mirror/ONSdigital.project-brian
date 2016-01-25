@@ -1,11 +1,11 @@
-package com.github.onsdigital.publishers;
+package com.github.onsdigital.brian.publishers;
 
 
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
-import com.github.onsdigital.data.TimeSeriesDataSet;
-import com.github.onsdigital.data.TimeSeriesObject;
-import com.github.onsdigital.generators.Sample;
-import com.github.onsdigital.readers.DataSetReaderCSDB;
+import com.github.onsdigital.brian.data.TimeSeriesDataSet;
+import com.github.onsdigital.brian.data.TimeSeriesObject;
+import com.github.onsdigital.brian.generators.Sample;
+import com.github.onsdigital.brian.readers.DataSetReaderCSDB;
 import org.junit.Test;
 
 import java.io.IOException;
