@@ -1,7 +1,7 @@
 package com.github.onsdigital.brian.publishers;
 
+import com.github.onsdigital.content.page.base.PageDescription;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
-import com.github.onsdigital.content.page.statistics.data.timeseries.TimeseriesDescription;
 import com.github.onsdigital.content.partial.TimeseriesValue;
 import com.github.onsdigital.content.partial.markdown.MarkdownSection;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
@@ -16,7 +16,7 @@ public class TimeSeriesPublisher {
     public static TimeSeries convertToContentLibraryTimeSeries(TimeSeriesObject timeSeriesObject) {
         TimeSeries timeSeriesPage = new TimeSeries();
 
-        TimeseriesDescription description = new TimeseriesDescription();
+        PageDescription description = new PageDescription();
         description.setCdid(timeSeriesObject.taxi);
         description.setTitle(timeSeriesObject.name);
 
