@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
  * METHODS TO READ DATA FROM CSDB STANDARD TEXT FILES
  *
  */
-public class DataSetReaderCSDB implements DataSetReader {
+public class DataSetReaderCSV implements DataSetReader {
 
     /**
      * READS A DATASET FROM A RESOURCE FILE GIVEN AN ABSOLUTE PATH
@@ -60,7 +60,7 @@ public class DataSetReaderCSDB implements DataSetReader {
                     if (LineType == 92) {
                         if (seriesBuffer.size() > 0) {
                             // PARSE THE BLOCK JUST COLLECTED
-                            TimeSeriesObject series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
+                            TimeSeriesObject series = DataSetReaderCSV.seriesFromStringList(seriesBuffer);
 
                             // COMBINE IT WITH AN EXISTING SERIES
                             if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
