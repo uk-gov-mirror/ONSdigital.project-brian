@@ -1,32 +1,28 @@
 package com.github.onsdigital.brian.readers;
 
+import au.com.bytecode.opencsv.CSVReader;
 import com.github.davidcarboni.cryptolite.Crypto;
-import com.github.onsdigital.brian.async.Processor;
-import com.github.onsdigital.brian.data.DataFuture;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
 import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
-import org.apache.commons.io.IOUtils;
+import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
+import com.github.onsdigital.content.partial.TimeseriesValue;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.DirectoryStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by thomasridd on 10/03/15.
- *
+ * <p>
  * METHODS TO READ DATA FROM CSDB STANDARD TEXT FILES
- *
  */
 public class DataSetReaderCSV implements DataSetReader {
 
@@ -41,46 +37,27 @@ public class DataSetReaderCSV implements DataSetReader {
 
         TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
 
-        try {
-            // USE WINDOWS ENCODING TO READ THE FILE BECAUSE IT IS A WIN CSDB
-            InputStream inputStream = Files.newInputStream(filePath);
-            // The tests don't need to use encryption, so this is for them:
-            if (key !=null) inputStream = new Crypto().decrypt(inputStream, key);
-            List<String> lines = IOUtils.readLines(inputStream, "cp1252");
-            lines.add("92"); // THROW A 92 ON THE END
+        try (InputStream initialStream = Files.newInputStream(filePath)) {
+            try (CSVReader reader = new CSVReader(new InputStreamReader(decryptIfNecessary(initialStream, key)))) {
 
-            ArrayList<String> seriesBuffer = new ArrayList<>();
+                // Read the file as a list of rows
+                List<String[]> rows = reader.readAll();
 
-            //WALK THROUGH THE FILE
-            for (String line : lines) {
-                try {
-                    int LineType = Integer.parseInt(line.substring(0, 2));
+                // Convert it to a map keyed by row name
+                Map<String, String[]> map = rowsAsMap(rows);
 
-                    // WHEN WE GET TO A LINE 92 (TIME SERIES BLOCK START)
-                    if (LineType == 92) {
-                        if (seriesBuffer.size() > 0) {
-                            // PARSE THE BLOCK JUST COLLECTED
-                            TimeSeriesObject series = DataSetReaderCSV.seriesFromStringList(seriesBuffer);
+                // Get a list of cdids
+                Map<String, Integer> cdidMap = cdidMap(map);
+                Map<String, TimeSeriesObject> timeSeriesMap = constructTimeSeriesMap(cdidMap);
 
-                            // COMBINE IT WITH AN EXISTING SERIES
-                            if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
-                                TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
-                                for (TimeSeriesPoint point : series.points.values()) {
-                                    existing.addPoint(point);
-                                }
+                // Set metadata
+                setMetaData(cdidMap, map, timeSeriesMap);
 
-                            } else { // OR CREATE A NEW SERIES
-                                timeSeriesDataSet.addSeries(series);
-                            }
-                        }
-                        seriesBuffer = new ArrayList<>();
-                        seriesBuffer.add(line);
-                    } else if (LineType > 92) {
-                        seriesBuffer.add(line);
-                    }
-                } catch (NumberFormatException e) {
+                // Get values
+                getValues(cdidMap, map, timeSeriesMap);
 
-                }
+                // Return values to the timeSeries list
+                cdidMap.keySet().forEach(cdid -> timeSeriesDataSet.addSeries(timeSeriesMap.get(cdid)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,155 +66,169 @@ public class DataSetReaderCSV implements DataSetReader {
         return timeSeriesDataSet;
     }
 
-
-
-
     /**
-     * CREATES A SUPER DATASET FROM ALL FILES IN A FOLDER
+     * extract a map of cdid to column number we can use to interpret the rest of the table
      *
-     * @param resourceName
+     * @param dataMap the map of data as pulled out of file
      * @return
-     * @throws IOException
      */
-    public static DataFuture readDirectory(String resourceName) throws IOException, URISyntaxException {
-
-
-
-        // Get the path
-        URL resource = DataFuture.class.getResource(resourceName);
-        Path filePath = Paths.get(resource.toURI());
-
-        // Processors exist to walk through each file
-        List<Processor> processors = new ArrayList<>();
-
-        // Begins by generating an outline of the series we are expecting from each dataset
-        List<Future<DataFuture>> skeletonDatasets = new ArrayList<>();
-
-
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(filePath)){ // NOW LOAD THE FILES
-            for(Path entry: stream) {
-                // System.out.println("Creating processor for " + entry);
-                Processor processor = new Processor(entry);
-
-                // Process each dataset to get the skeleton
-                skeletonDatasets.add(processor.getSkeleton());
-
-                // Add the processor our list of jobs to be completed
-                processors.add(processor);
-            }
+    private Map<String, Integer> cdidMap(Map<String, String[]> dataMap) {
+        String[] cdidRow;
+        if (dataMap.containsKey("id")) {
+            cdidRow = dataMap.get("id");
+        } else if (dataMap.containsKey("cdid")) {
+            cdidRow = dataMap.get("cdid");
+        } else {
+            return null;
         }
 
-        // Now build a super dataset from all the sub-sets
-        DataFuture dataFuture = new DataFuture();
-        for (Future<DataFuture> skeletonDataset : skeletonDatasets) {
-            try {
-                //System.out.println("Getting ID map..");
-                DataFuture promised = skeletonDataset.get();
-                for(String key: promised.timeSeries.keySet())
-                    dataFuture.addSeries(key, promised.timeSeries.get(key));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 1; i < cdidRow.length; i++)
+            map.put(cdidRow[i], Integer.valueOf(i));
 
-        // Now set our processors running to process all the timeseries in the DataFuture
-        for (Processor processor: processors) {
-            //System.out.println("Processing ");
-            processor.process();
-        }
 
-        return dataFuture;
+        return map;
     }
 
 
-
-
     /**
-     *  CONVERTS A SERIES OF STRINGS READ FROM A CSDB FILE BY THE READFILE METHODS TO A SERIES
+     * Set timeseries metadata that can be taken from these spreadsheets
      *
-     * @param lines
-     * @return
+     * @param cdidMap cdids mapped to row number
+     * @param dataMap the data as read from a spreadsheet (column names unknown)
+     * @param seriesObjectMap the target series keyed into a map by cdid
      */
-    private static TimeSeriesObject seriesFromStringList(ArrayList<String> lines) {
-        TimeSeriesObject series = new TimeSeriesObject();
-        int startInd = 1;
-        int year = 1881;
-        String mqa = "A";
-        int iteration = 1;
+    private void setMetaData(Map<String, Integer> cdidMap, Map<String, String[]> dataMap, Map<String, TimeSeriesObject> seriesObjectMap) {
 
-        for (String line : lines) {
-            try {
-                int LineType = Integer.parseInt(line.substring(0, 2));
-                if (LineType == 92) { // TOP LINE (SERIES CODE)
-                    series.taxi = line.substring(2, 6);
+        //
+        if (dataMap.containsKey("id"))
+            cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).taxi = dataMap.get("id")[cdidMap.get(cdid)]);
+        if (dataMap.containsKey("cdid"))
+            cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).taxi = dataMap.get("cdid")[cdidMap.get(cdid)]);
 
-                    String seasonallyAdjusted = line.substring(7,8);
-                    if (seasonallyAdjusted.equalsIgnoreCase("U")) {
-                        series.seasonallyAdjusted = false;
-                    } else {
-                        series.seasonallyAdjusted = true;
-                    }
+        if (dataMap.containsKey("name"))
+            cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).name = dataMap.get("name")[cdidMap.get(cdid)]);
+        if (dataMap.containsKey("title"))
+            cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).name = dataMap.get("title")[cdidMap.get(cdid)]);
 
-                } else if (LineType == 93) { // SECOND LINE (DESCRIPTION)
-                    series.name = line.substring(2);
+        if (dataMap.containsKey("seasonallyadjusted"))
+            cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).seasonallyAdjusted = isSeasonallyAdjusted(dataMap.get("seasonallyadjusted")[cdidMap.get(cdid)]));
+        if (dataMap.containsKey("sa"))
+            cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).seasonallyAdjusted = isSeasonallyAdjusted(dataMap.get("sa")[cdidMap.get(cdid)]));
+    }
 
-                } else if (LineType == 96) { // THIRD LINE (START DATE)
-                    startInd = Integer.parseInt(line.substring(9, 11).trim());
-                    mqa = line.substring(2, 3);
-                    year = Integer.parseInt(line.substring(4, 8));
+    private void getValues(Map<String, Integer> cdidMap, Map<String, String[]> dataMap, Map<String, TimeSeriesObject> seriesObjectMap) {
 
-                } else if (LineType == 97) { // OTHER LINES (APPEND IN BLOCKS)
-                    String values = line.substring(2);
-                    while (values.length() > 9) {
-                        // GET FIRST VALUE
-                        String oneValue = values.substring(0, 10).trim();
+        // For each row
+        for(String row: dataMap.keySet()) {
 
-                        TimeSeriesPoint point = new TimeSeriesPoint(DateLabel(year, startInd, mqa, iteration), oneValue);
-                        series.addPoint(point);
+            // If it is a date row
+            if (parseDate(row) != null) {
 
-                        // TRIM OFF THE BEGINNING
-                        values = values.substring(10);
-                        iteration += 1;
+                // For each timeseries
+                for (String cdid: cdidMap.keySet()) {
+
+                    // Grab the value
+                    String value = dataMap.get(row)[cdidMap.get(cdid)];
+                    if( value.trim().length() != 0) {
+
+                        TimeSeriesObject timeSeriesObject = seriesObjectMap.get(cdid);
+                        timeSeriesObject.addPoint(new TimeSeriesPoint(row.trim(), value));
                     }
                 }
-            } catch (NumberFormatException e) {
-
             }
         }
-
-        return series;
     }
 
+
+
+    private boolean isSeasonallyAdjusted(String toBool) {
+        if (toBool == null || toBool.trim().equalsIgnoreCase(""))
+            return false;
+
+        String val = toBool.trim().toLowerCase();
+        if (val.equalsIgnoreCase("y") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("sa") || val.equalsIgnoreCase("true"))
+            return true;
+        if (val.equalsIgnoreCase("n") || val.equalsIgnoreCase("no") || val.equalsIgnoreCase("nsa") || val.equalsIgnoreCase("false"))
+            return false;
+
+        return Boolean.getBoolean(toBool);
+    }
+
+    public static Date parseDate(String date) {
+        try {
+            String e = StringUtils.lowerCase(StringUtils.trim(date));
+            Date result;
+            if(TimeSeries.year.matcher(e).matches()) {
+                result = (new SimpleDateFormat("yyyy")).parse(e);
+            } else if(TimeSeries.month.matcher(e).matches()) {
+                result = (new SimpleDateFormat("yyyy MMM")).parse(e);
+            } else if(TimeSeries.monthNumVal.matcher(e).matches()) {
+                result = (new SimpleDateFormat("yyyy MM")).parse(e);
+            } else if(TimeSeries.quarter.matcher(e).matches()) {
+                Date parsed = (new SimpleDateFormat("yyyy")).parse(e);
+                Calendar calendar = Calendar.getInstance(Locale.UK);
+                calendar.setTime(parsed);
+                if(e.endsWith("1")) {
+                    calendar.set(2, 0);
+                } else if(e.endsWith("2")) {
+                    calendar.set(2, 3);
+                } else if(e.endsWith("3")) {
+                    calendar.set(2, 6);
+                } else {
+                    if(!e.endsWith("4")) {
+                        throw new RuntimeException("Didn\'t detect quarter in " + e);
+                    }
+
+                    calendar.set(2, 9);
+                }
+
+                result = calendar.getTime();
+            } else if(TimeSeries.yearInterval.matcher(e).matches()) {
+                result = (new SimpleDateFormat("yyyy")).parse(e.substring("yyyy-".length()));
+            } else if(TimeSeries.yearPair.matcher(e).matches()) {
+                result = (new SimpleDateFormat("yy")).parse(e.substring("yyyy/".length()));
+            } else {
+                if(!TimeSeries.yearEnd.matcher(e).matches()) {
+                    throw new ParseException("Unknown format: \'" + date + "\'", 0);
+                }
+
+                result = (new SimpleDateFormat("MMM yy")).parse(e.substring("YE ".length()));
+            }
+
+            return result;
+        } catch (ParseException var5) {
+            return null;
+        }
+    }
+
+    private Map<String, TimeSeriesObject> constructTimeSeriesMap(Map<String, Integer> cdidMap) {
+        Map<String, TimeSeriesObject> timeSeries = new HashMap<>();
+
+        // Create a new timeseries for each cdid
+        cdidMap.keySet().forEach(cdid -> timeSeries.put(cdid, new TimeSeriesObject()));
+
+        return timeSeries;
+    }
 
 
 
     /**
-     * HELPER METHOD THAT DETERMINES THE CORRECT LABEL BASED ON START DATE, A TIME PERIOD, AND THE ITERATION
-     *
-     * @param year
-     * @param startInd
-     * @param mqa
-     * @param iteration
+     * get the row list as a map
+     * @param rows
      * @return
      */
-    private static String DateLabel(int year, int startInd, String mqa, int iteration) {
-        if (mqa.equals("Y") || mqa.equals("A")) {
-            return (year + iteration - 1) + "";
-        } else if(mqa.equals("M")) {
-            int finalMonth = (startInd + iteration - 2) % 12;
-            int yearsTaken = (startInd + iteration - 2) / 12;
-            return (year + yearsTaken) + " " + String.format("%02d", finalMonth + 1);
-        } else {
-            int finalQuarter = (startInd + iteration - 2) % 4;
-            int yearsTaken = (startInd + iteration - 2) / 4;
-            return String.format("%d Q%d", year + yearsTaken, finalQuarter + 1);
-        }
-
+    private Map<String, String[]> rowsAsMap(List<String[]> rows) {
+        Map<String, String[]> rowMap = new HashMap<>();
+        rows.forEach(row -> rowMap.put(row[0].toLowerCase(), row));
+        return rowMap;
     }
 
-
-
-
+    private InputStream decryptIfNecessary(InputStream stream, SecretKey key) throws IOException {
+        if (key == null) {
+            return stream;
+        } else {
+            return new Crypto().decrypt(stream, key);
+        }
+    }
 }
