@@ -238,26 +238,6 @@ public class DataSetReaderCSDB {
     }
 
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
-
-
-        DataFuture dataFuture = DataSetReaderCSDB.readDirectory("/imports/csdb/");
-
-        // Shut down the pools:
-        Processor.shutdown();
-
-        int j = 0;
-        for(Future<TimeSeriesObject> timeSeriesFuture : dataFuture.timeSeries.values()) {
-            try {
-                System.out.println(++j + " " + timeSeriesFuture.get().taxi);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
 
 }

@@ -37,26 +37,4 @@ public class TimeSeriesDataSet implements Cloneable {
         return timeSeries.get(taxi);
     }
 
-    public String newId(String prefix) {
-        for(int i = 1; i<100000; i++){
-            String id = String.format("%s%05d", prefix, i);
-            if(!timeSeries.containsKey(id)) {
-                return id;
-            }
-        }
-        return "";
-    }
-
-    public TimeSeriesDataSet mergeWith(TimeSeriesDataSet newData, boolean newDataTakePrecedent) {
-        for(TimeSeriesObject series: newData.timeSeries.values()) {
-
-            if(timeSeries.containsKey(series.taxi)) {
-                TimeSeriesObject destSeries = timeSeries.get(series.taxi);
-                timeSeries.put(series.taxi, TimeSeriesObject.merge(series, destSeries, newDataTakePrecedent));
-            } else {
-                addSeries(series);
-            }
-        }
-        return this;
-    }
 }

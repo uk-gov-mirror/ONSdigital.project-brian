@@ -215,14 +215,5 @@ public class Processor implements  Runnable{
         }
     }
 
-    public static void shutdown() {
-        // Shut down the pools.
-        // This instructs them to shut down once all tasks have completed
-        // but does not block until that time.
-//
-//        Processor.fileProcessPool.shutdown();
-//        Processor.processorPool.shutdown();
-//        Processor.timeSeriesPool.shutdown();
-    }
 
 }
