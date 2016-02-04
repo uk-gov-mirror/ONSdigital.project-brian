@@ -40,7 +40,7 @@ import java.util.List;
 public class Services {
 
     @POST
-    public void postToServices(HttpServletRequest request,
+    public List<TimeSeries> postToServices(HttpServletRequest request,
                       HttpServletResponse response) throws IOException, FileUploadException {
 
         String[] segments = request.getPathInfo().split("/");
@@ -48,11 +48,14 @@ public class Services {
         if (segments.length > 2 && segments[2].equalsIgnoreCase("ConvertCSDB")) {
 
             // Convert with CSDB Reader
-            convert(request, response, new DataSetReaderCSDB());
+            return convert(request, response, new DataSetReaderCSDB());
         } else if (segments.length > 2 && segments[2].equalsIgnoreCase("ConvertCSV")) {
 
             // Convert with CSV Reader
-            convert(request, response, new DataSetReaderCSV());
+            return convert(request, response, new DataSetReaderCSV());
+        } else {
+            response.setStatus(HttpStatus.BAD_REQUEST_400);
+            return null;
         }
     }
 
@@ -66,7 +69,7 @@ public class Services {
      * @throws IOException
      * @throws FileUploadException
      */
-    private void convert(HttpServletRequest request,
+    private List<TimeSeries> convert(HttpServletRequest request,
                          HttpServletResponse response,
                          DataSetReader reader) throws IOException, FileUploadException {
         // Get the input file
@@ -77,13 +80,16 @@ public class Services {
 
             List<TimeSeries> convertedSeries = getTimeSeries(reader, key, dataFile);
 
-            String dataSetJson = ContentUtil.serialise(convertedSeries);
-            try(InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = response.getOutputStream()) {
-                IOUtils.copy(inputStream, output);
-            }
+//            String dataSetJson = ContentUtil.serialise(convertedSeries);
+//            try(InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = response.getOutputStream()) {
+//                IOUtils.copy(inputStream, output);
+//            }
+            return convertedSeries;
+
 
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST_400);
+            return null;
         }
     }
 
