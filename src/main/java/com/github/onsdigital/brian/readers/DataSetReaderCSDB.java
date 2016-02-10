@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
  * METHODS TO READ DATA FROM CSDB STANDARD TEXT FILES
  *
  */
-public class DataSetReaderCSDB {
+public class DataSetReaderCSDB implements DataSetReader {
 
     /**
      * READS A DATASET FROM A RESOURCE FILE GIVEN AN ABSOLUTE PATH
@@ -37,49 +37,49 @@ public class DataSetReaderCSDB {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public static TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException {
+    public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException {
 
         TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
 
-        try {
-            // USE WINDOWS ENCODING TO READ THE FILE BECAUSE IT IS A WIN CSDB
-            InputStream inputStream = Files.newInputStream(filePath);
-            // The tests don't need to use encryption, so this is for them:
-            if (key !=null) inputStream = new Crypto().decrypt(inputStream, key);
-            List<String> lines = IOUtils.readLines(inputStream, "cp1252");
-            lines.add("92"); // THROW A 92 ON THE END
+        // NESTED TRY WITH RESOURCES TO GET A NOT NECESSARY ENCRYPTED FILE STREAM
+        try(InputStream initialStream = Files.newInputStream(filePath)) {
+            try(InputStream inputStream = decryptIfNecessary(initialStream, key)) {
 
-            ArrayList<String> seriesBuffer = new ArrayList<>();
+                List<String> lines = IOUtils.readLines(inputStream, "cp1252");
+                lines.add("92"); // THROW A 92 ON THE END
 
-            //WALK THROUGH THE FILE
-            for (String line : lines) {
-                try {
-                    int LineType = Integer.parseInt(line.substring(0, 2));
+                ArrayList<String> seriesBuffer = new ArrayList<>();
 
-                    // WHEN WE GET TO A LINE 92 (TIME SERIES BLOCK START)
-                    if (LineType == 92) {
-                        if (seriesBuffer.size() > 0) {
-                            // PARSE THE BLOCK JUST COLLECTED
-                            TimeSeriesObject series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
+                //WALK THROUGH THE FILE
+                for (String line : lines) {
+                    try {
+                        int LineType = Integer.parseInt(line.substring(0, 2));
 
-                            // COMBINE IT WITH AN EXISTING SERIES
-                            if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
-                                TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
-                                for (TimeSeriesPoint point : series.points.values()) {
-                                    existing.addPoint(point);
+                        // WHEN WE GET TO A LINE 92 (TIME SERIES BLOCK START)
+                        if (LineType == 92) {
+                            if (seriesBuffer.size() > 0) {
+                                // PARSE THE BLOCK JUST COLLECTED
+                                TimeSeriesObject series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
+
+                                // COMBINE IT WITH AN EXISTING SERIES
+                                if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
+                                    TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
+                                    for (TimeSeriesPoint point : series.points.values()) {
+                                        existing.addPoint(point);
+                                    }
+
+                                } else { // OR CREATE A NEW SERIES
+                                    timeSeriesDataSet.addSeries(series);
                                 }
-
-                            } else { // OR CREATE A NEW SERIES
-                                timeSeriesDataSet.addSeries(series);
                             }
+                            seriesBuffer = new ArrayList<>();
+                            seriesBuffer.add(line);
+                        } else if (LineType > 92) {
+                            seriesBuffer.add(line);
                         }
-                        seriesBuffer = new ArrayList<>();
-                        seriesBuffer.add(line);
-                    } else if (LineType > 92) {
-                        seriesBuffer.add(line);
-                    }
-                } catch (NumberFormatException e) {
+                    } catch (NumberFormatException e) {
 
+                    }
                 }
             }
         } catch (Exception e) {
@@ -89,7 +89,13 @@ public class DataSetReaderCSDB {
         return timeSeriesDataSet;
     }
 
-
+    private InputStream decryptIfNecessary(InputStream stream, SecretKey key) throws IOException {
+        if (key == null) {
+            return stream;
+        } else {
+            return new Crypto().decrypt(stream, key);
+        }
+    }
 
 
     /**
@@ -237,26 +243,6 @@ public class DataSetReaderCSDB {
 
     }
 
-
-    public static void main(String[] args) throws IOException, URISyntaxException {
-
-
-        DataFuture dataFuture = DataSetReaderCSDB.readDirectory("/imports/csdb/");
-
-        // Shut down the pools:
-        Processor.shutdown();
-
-        int j = 0;
-        for(Future<TimeSeriesObject> timeSeriesFuture : dataFuture.timeSeries.values()) {
-            try {
-                System.out.println(++j + " " + timeSeriesFuture.get().taxi);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 
 

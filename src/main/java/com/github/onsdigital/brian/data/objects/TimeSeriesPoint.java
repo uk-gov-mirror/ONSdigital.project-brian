@@ -48,7 +48,6 @@ public class TimeSeriesPoint {
      * @return success
      */
     private boolean parseTimeLabel() {
-        // TODO FIND OUT WHETHER LEAP YEAR CORRECTIONS ARE NECESSARY
         String[] quarters = {"q1", "q2", "q3", "q4"};
         String[] quarterMonth = {"01", "04", "07", "10"};
 
@@ -180,7 +179,4 @@ public class TimeSeriesPoint {
         return timeLabel;
     }
 
-    public static void main(String[] args) throws ParseException {
-
-    }
 }

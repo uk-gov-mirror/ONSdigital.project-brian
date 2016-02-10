@@ -116,6 +116,6 @@ public class TimeSeriesPublisherTest {
         URL resource = TimeSeriesDataSet.class.getResource(resourceName);
         Path filePath = Paths.get(resource.toURI());
 
-        return DataSetReaderCSDB.readFile(filePath, null);
+        return new DataSetReaderCSDB().readFile(filePath, null);
     }
 }
