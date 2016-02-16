@@ -6,7 +6,7 @@ export PORT="8083"
 # Restolino configuration
 export RESTOLINO_STATIC="src/main/resources/files"
 export RESTOLINO_CLASSES="target/classes"
-export PACKAGE_PREFIX=com.github.onsdigital.api
+export PACKAGE_PREFIX=com.github.onsdigital.brian.api
 
 #Development: reloadable
 mvn test dependency:copy-dependencies  && \

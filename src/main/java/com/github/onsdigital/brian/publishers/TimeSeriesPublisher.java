@@ -13,6 +13,15 @@ import java.util.*;
  * Created by thomasridd on 09/06/15.
  */
 public class TimeSeriesPublisher {
+
+    public static List<TimeSeries> convertToContentLibraryTimeSeriesList(List<TimeSeriesObject> timeSeriesObjectList) {
+        List<TimeSeries> results = new ArrayList<>();
+        for (TimeSeriesObject timeSeriesObject: timeSeriesObjectList) {
+            results.add(TimeSeriesPublisher.convertToContentLibraryTimeSeries(timeSeriesObject));
+        }
+        return results;
+    }
+
     public static TimeSeries convertToContentLibraryTimeSeries(TimeSeriesObject timeSeriesObject) {
         TimeSeries timeSeriesPage = new TimeSeries();
 

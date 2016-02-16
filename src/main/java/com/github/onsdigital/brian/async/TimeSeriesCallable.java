@@ -19,7 +19,6 @@ public class TimeSeriesCallable implements Callable<TimeSeriesObject> {
     public TimeSeriesObject call() throws Exception {
         while (!timeSeriesObject.isComplete()) {
             Thread.yield();
-//            Thread.sleep(1000);
         }
         return timeSeriesObject;
     }
