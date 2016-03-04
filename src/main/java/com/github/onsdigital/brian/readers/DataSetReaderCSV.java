@@ -6,7 +6,6 @@ import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
 import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
-import com.github.onsdigital.content.partial.TimeseriesValue;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.SecretKey;
@@ -99,22 +98,14 @@ public class DataSetReaderCSV implements DataSetReader {
      * @param seriesObjectMap the target series keyed into a map by cdid
      */
     private void setMetaData(Map<String, Integer> cdidMap, Map<String, String[]> dataMap, Map<String, TimeSeriesObject> seriesObjectMap) {
-
-        //
         if (dataMap.containsKey("id"))
             cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).taxi = dataMap.get("id")[cdidMap.get(cdid)]);
         if (dataMap.containsKey("cdid"))
             cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).taxi = dataMap.get("cdid")[cdidMap.get(cdid)]);
-
         if (dataMap.containsKey("name"))
             cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).name = dataMap.get("name")[cdidMap.get(cdid)]);
         if (dataMap.containsKey("title"))
             cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).name = dataMap.get("title")[cdidMap.get(cdid)]);
-
-        if (dataMap.containsKey("seasonallyadjusted"))
-            cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).seasonallyAdjusted = isSeasonallyAdjusted(dataMap.get("seasonallyadjusted")[cdidMap.get(cdid)]));
-        if (dataMap.containsKey("sa"))
-            cdidMap.keySet().forEach(cdid -> seriesObjectMap.get(cdid).seasonallyAdjusted = isSeasonallyAdjusted(dataMap.get("sa")[cdidMap.get(cdid)]));
     }
 
     private void getValues(Map<String, Integer> cdidMap, Map<String, String[]> dataMap, Map<String, TimeSeriesObject> seriesObjectMap) {
@@ -138,21 +129,6 @@ public class DataSetReaderCSV implements DataSetReader {
                 }
             }
         }
-    }
-
-
-
-    private boolean isSeasonallyAdjusted(String toBool) {
-        if (toBool == null || toBool.trim().equalsIgnoreCase(""))
-            return false;
-
-        String val = toBool.trim().toLowerCase();
-        if (val.equalsIgnoreCase("y") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("sa") || val.equalsIgnoreCase("true"))
-            return true;
-        if (val.equalsIgnoreCase("n") || val.equalsIgnoreCase("no") || val.equalsIgnoreCase("nsa") || val.equalsIgnoreCase("false"))
-            return false;
-
-        return Boolean.getBoolean(toBool);
     }
 
     public static Date parseDate(String date) {
