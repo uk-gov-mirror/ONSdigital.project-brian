@@ -34,7 +34,6 @@ public class TimeSeriesPublisher {
         section.setMarkdown(timeSeriesObject.name);
 
         timeSeriesPage.setSection(new MarkdownSection());
-        description.setSeasonalAdjustment(timeSeriesObject.seasonallyAdjusted ? "SA" : "NSA");
         timeSeriesPage.setDescription(description);
 
         for (String key: timeSeriesObject.points.keySet()) {
