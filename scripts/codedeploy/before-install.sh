@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONTAINER_ID=$(docker ps -a | grep 'brian:[[:alnum:]]\{7\}' | awk '{print $1}')
+CONTAINER_ID=$(docker ps -a | grep brian | awk '{print $1}')
 IMAGE_ID=$(docker images -a | grep brian | awk '{print $3}')
 
 if [[ -n $CONTAINER_ID ]]; then
