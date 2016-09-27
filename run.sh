@@ -10,12 +10,6 @@ export PACKAGE_PREFIX=com.github.onsdigital.brian.api
 
 #Development: reloadable
 mvn test dependency:copy-dependencies  && \
-#java $JAVA_OPTS \
-#-Drestolino.files=$RESTOLINO_STATIC \
-#-Drestolino.classes=$RESTOLINO_CLASSES \
-#-Drestolino.packageprefix=$PACKAGE_PREFIX \
-#-cp "targeUse t/dependency/*" \
-#com.github.davidcarboni.restolino.Main && \
  
 mvn package && \
 java $JAVA_OPTS \
