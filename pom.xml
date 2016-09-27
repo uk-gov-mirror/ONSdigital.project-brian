@@ -129,15 +129,6 @@
             <version>content-library-1.0.68</version>
         </dependency>
 
-        <!-- New Relic -->
-        <dependency>
-            <groupId>com.newrelic.agent.java</groupId>
-            <artifactId>newrelic-java</artifactId>
-            <version>3.24.0</version>
-            <type>zip</type>
-            <scope>runtime</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
