@@ -132,15 +132,7 @@
     </dependencies>
 
     <build>
-        <testResources>
-            <testResource>
-                <directory>${project.basedir}/src/test/resources</directory>
-            </testResource>
-        </testResources>
-
         <plugins>
-
-            <!-- Needs Java 1.7 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -193,22 +185,8 @@
                         </goals>
                         <!-- Default output folder is ${project.build.directory}/dependency -->
                     </execution>
-                    <execution>
-                        <id>unpack-newrelic</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeGroupIds>com.newrelic.agent.java</includeGroupIds>
-                            <includeArtifactIds>newrelic-java</includeArtifactIds>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
-
-
 </project>
