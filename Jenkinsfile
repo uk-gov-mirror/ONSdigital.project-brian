@@ -18,7 +18,7 @@ node {
 
     stage('Image') {
         docker.withRegistry(registry['uri'], { ->
-            sh registry['login']
+            if (registry.containsKey('login')) sh registry['login']
             docker.build(registry['image']).push(registry['tag'])
         })
     }
@@ -49,13 +49,12 @@ node {
 def registry(branch, tag) {
     [
         hub: [
-            login: 'docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS',
+            login: 'docker --config .dockerhub login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS',
             image: "${env.DOCKERHUB_REPOSITORY}/brian",
             tag: 'live',
             uri: "https://${env.DOCKERHUB_REPOSITORY_URI}",
         ],
         ecr: [
-            login: '$(aws ecr get-login)',
             image: 'brian',
             tag: tag,
             uri: "https://${env.ECR_REPOSITORY_URI}",
