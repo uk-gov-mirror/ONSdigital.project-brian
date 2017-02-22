@@ -1,0 +1,18 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: onsdigital/dp-concourse-tools-git
+
+inputs:
+  - name: target
+  - name: project-brian
+
+outputs:
+  - name: artifacts
+
+run:
+  path: project-brian/ci/scripts/revision.sh
