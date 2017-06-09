@@ -1,5 +1,5 @@
 #!/bin/bash -eux
 
 pushd project-brian
-  mvn clean surefire:test
+  mvn test
 popd
