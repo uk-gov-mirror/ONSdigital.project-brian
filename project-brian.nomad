@@ -3,6 +3,11 @@ job "project-brian" {
   region      = "eu"
   type        = "service"
 
+  constraint {
+    attribute = "${meta.has_disk}"
+    value     = true
+  }
+
   update {
     stagger      = "90s"
     max_parallel = 1
