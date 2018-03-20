@@ -33,6 +33,8 @@ job "project-brian" {
 
         args = [
           "java",
+          "-server",
+          "-Xms{{PUBLISHING_RESOURCE_HEAP_MEM}}m",
           "-Xmx{{PUBLISHING_RESOURCE_HEAP_MEM}}m",
           "-Drestolino.packageprefix=com.github.onsdigital.brian.api",
           "-jar target/*-jar-with-dependencies.jar",
