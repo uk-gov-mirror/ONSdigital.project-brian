@@ -21,7 +21,8 @@ job "project-brian" {
 
     constraint {
       attribute = "${node.class}"
-      value     = "publishing"
+      operator  = "regexp"
+      value     = "publishing.*"
     }
 
     task "project-brian" {
