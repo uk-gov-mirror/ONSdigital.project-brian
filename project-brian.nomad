@@ -9,8 +9,11 @@ job "project-brian" {
   }
 
   update {
-    stagger      = "90s"
-    max_parallel = 1
+    min_healthy_time = "30s"
+    healthy_deadline = "2m"
+    max_parallel     = 1
+    auto_revert      = true
+    stagger          = "150s"
   }
 
   group "publishing" {
@@ -18,7 +21,8 @@ job "project-brian" {
 
     constraint {
       attribute = "${node.class}"
-      value     = "publishing"
+      operator  = "regexp"
+      value     = "publishing.*"
     }
 
     task "project-brian" {
@@ -33,7 +37,9 @@ job "project-brian" {
 
         args = [
           "java",
-          "-Xmx4094m",
+          "-server",
+          "-Xms{{PUBLISHING_RESOURCE_HEAP_MEM}}m",
+          "-Xmx{{PUBLISHING_RESOURCE_HEAP_MEM}}m",
           "-Drestolino.packageprefix=com.github.onsdigital.brian.api",
           "-jar target/*-jar-with-dependencies.jar",
         ]
