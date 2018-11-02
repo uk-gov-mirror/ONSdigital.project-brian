@@ -129,6 +129,13 @@
             <version>content-library-1.0.68</version>
         </dependency>
 
+        <!--Logging-->
+        <dependency>
+            <groupId>com.github.ONSdigital</groupId>
+            <artifactId>dp-logging</artifactId>
+            <version>master-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>
