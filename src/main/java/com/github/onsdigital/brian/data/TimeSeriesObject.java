@@ -62,9 +62,9 @@ public class TimeSeriesObject {
      */
     public void fillInTheBlanks() {
         ArrayList <String> periods = new ArrayList<>();
-        if(hasYearly == true) { periods.add(TimeSeriesPoint.PERIOD_YEARS);}
-        if(hasMonthly == true) { periods.add(TimeSeriesPoint.PERIOD_MONTHS);}
-        if(hasQuarterly == true) { periods.add(TimeSeriesPoint.PERIOD_QUARTERS);}
+        if(hasYearly) { periods.add(TimeSeriesPoint.PERIOD_YEARS);}
+        if(hasMonthly) { periods.add(TimeSeriesPoint.PERIOD_MONTHS);}
+        if(hasQuarterly) { periods.add(TimeSeriesPoint.PERIOD_QUARTERS);}
 
         for(String period: periods) {
 

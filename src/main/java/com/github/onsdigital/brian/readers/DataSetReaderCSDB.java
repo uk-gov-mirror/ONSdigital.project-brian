@@ -106,9 +106,6 @@ public class DataSetReaderCSDB implements DataSetReader {
      * @throws IOException
      */
     public static DataFuture readDirectory(String resourceName) throws IOException, URISyntaxException {
-
-
-
         // Get the path
         URL resource = DataFuture.class.getResource(resourceName);
         Path filePath = Paths.get(resource.toURI());

@@ -1,23 +1,39 @@
 package com.github.onsdigital.brian.publishers;
 
+import com.github.onsdigital.brian.data.TimeSeriesObject;
+import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 import com.github.onsdigital.content.page.base.PageDescription;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.content.partial.TimeseriesValue;
 import com.github.onsdigital.content.partial.markdown.MarkdownSection;
-import com.github.onsdigital.brian.data.TimeSeriesObject;
-import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by thomasridd on 09/06/15.
  */
 public class TimeSeriesPublisher {
 
+    static final String[] SHORT_MONTHS = {
+            "JAN", "FEB", "MAR", "APR",
+            "MAY", "JUN", "JUL", "AUG",
+            "SEP", "OCT", "NOV", "DEC"};
+
+    static final String[] LONG_MONTHS = {
+            "January", "February", "March", "April",
+            "May", "June", "July", "August",
+            "September", "October", "November", "December"};
+
+
     public static List<TimeSeries> convertToContentLibraryTimeSeriesList(List<TimeSeriesObject> timeSeriesObjectList) {
         List<TimeSeries> results = new ArrayList<>();
-        for (TimeSeriesObject timeSeriesObject: timeSeriesObjectList) {
-            results.add(TimeSeriesPublisher.convertToContentLibraryTimeSeries(timeSeriesObject));
+        for (TimeSeriesObject timeSeriesObject : timeSeriesObjectList) {
+            results.add(convertToContentLibraryTimeSeries(timeSeriesObject));
         }
         return results;
     }
@@ -36,7 +52,7 @@ public class TimeSeriesPublisher {
         timeSeriesPage.setSection(new MarkdownSection());
         timeSeriesPage.setDescription(description);
 
-        for (String key: timeSeriesObject.points.keySet()) {
+        for (String key : timeSeriesObject.points.keySet()) {
             TimeSeriesPoint point = timeSeriesObject.points.get(key);
             TimeseriesValue value = convertToContentLibaryTimeseriesValue(point);
 
@@ -51,26 +67,23 @@ public class TimeSeriesPublisher {
     }
 
     static TimeseriesValue convertToContentLibaryTimeseriesValue(TimeSeriesPoint point) {
-        final String[] shortMonths = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
-        final String[] longMonths = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-
         TimeseriesValue value = new TimeseriesValue();
         value.value = point.value;
-        value.year = point.timeLabel.substring(0,4);
+        value.year = point.timeLabel.substring(0, 4);
         value.date = value.year;
 
         value.month = "";
         if (point.period.equalsIgnoreCase("months")) {
-            String monthNumber = point.timeLabel.substring(point.timeLabel.length()-2, point.timeLabel.length());
+            String monthNumber = point.timeLabel.substring(point.timeLabel.length() - 2, point.timeLabel.length());
             int monthIndex = Integer.parseInt(monthNumber) - 1;
 
-            value.month = longMonths[monthIndex];
-            value.date = value.year + " " + shortMonths[monthIndex];
+            value.month = LONG_MONTHS[monthIndex];
+            value.date = value.year + " " + SHORT_MONTHS[monthIndex];
         }
 
         value.quarter = "";
         if (point.period.equalsIgnoreCase("quarters")) {
-            value.quarter = point.timeLabel.substring(point.timeLabel.length()-2, point.timeLabel.length());
+            value.quarter = point.timeLabel.substring(point.timeLabel.length() - 2, point.timeLabel.length());
             value.date = value.year + " " + value.quarter;
         }
 
@@ -81,20 +94,11 @@ public class TimeSeriesPublisher {
         List<TimeseriesValue> values = new ArrayList<>();
 
         if (series.months != null && series.months.size() > 0) {
-            Iterator<TimeseriesValue> iterator = series.months.iterator();
-            while (iterator.hasNext()) {
-                values.add(iterator.next());
-            }
+            values.addAll(series.months);
         } else if (series.quarters != null && series.quarters.size() > 0) {
-            Iterator<TimeseriesValue> iterator = series.quarters.iterator();
-            while (iterator.hasNext()) {
-                values.add(iterator.next());
-            }
+            values.addAll(series.quarters);
         } else if (series.years != null && series.years.size() > 0) {
-            Iterator<TimeseriesValue> iterator = series.years.iterator();
-            while (iterator.hasNext()) {
-                values.add(iterator.next());
-            }
+            values.addAll(series.years);
         }
 
         class CustomComparator implements Comparator<TimeseriesValue> {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="DP_LOGGER" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.github.onsdigital.logging.layouts.ConfigurableLayout"/>
+        </encoder>
+    </appender>
+
+    <logger name="com.github.onsdigital.brian" level="debug" additivity="false">
+        <appender-ref ref="DP_LOGGER"/>
+    </logger>
+
+    <logger name="com.github.davidcarboni.restolino" level="trace" additivity="false"></logger>
+
+    <root level="debug">
+        <appender-ref ref="DP_LOGGER"/>
+    </root>
+
+</configuration>

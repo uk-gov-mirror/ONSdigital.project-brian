@@ -9,7 +9,6 @@
     <version>0.0.1-SNAPSHOT</version>
 
 
-
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,7 +53,7 @@
             <version>2.3</version>
         </dependency>
 
-         <!--Spreadsheet handling-->
+        <!--Spreadsheet handling-->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -76,11 +75,17 @@
         </dependency>
 
         <!-- Restolino Stuff -->
-        <dependency>
+<!--        <dependency>
             <groupId>com.github.davidcarboni</groupId>
             <artifactId>restolino</artifactId>
             <version>0.1.8</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>2.8.0</version>
         </dependency>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -160,8 +165,13 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <archive>
-                        <manifest>
+<!--                        <manifest>
                             <mainClass>com.github.davidcarboni.restolino.Main</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>-->
+                        <manifest>
+                            <mainClass>com.github.onsdigital.brian.Application</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>

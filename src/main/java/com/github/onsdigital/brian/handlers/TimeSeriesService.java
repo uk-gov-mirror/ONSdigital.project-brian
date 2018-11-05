@@ -1,14 +1,13 @@
-package com.github.onsdigital.brian.api;
+package com.github.onsdigital.brian.handlers;
 
 import com.github.davidcarboni.cryptolite.Crypto;
 import com.github.davidcarboni.cryptolite.Keys;
 import com.github.davidcarboni.encryptedfileupload.EncryptedFileItemFactory;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
+import com.github.onsdigital.brian.exception.BadRequestException;
 import com.github.onsdigital.brian.publishers.TimeSeriesPublisher;
 import com.github.onsdigital.brian.readers.DataSetReader;
-import com.github.onsdigital.brian.readers.DataSetReaderCSDB;
-import com.github.onsdigital.brian.readers.DataSetReaderCSV;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -27,32 +26,18 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by thomasridd on 08/06/15.
- */
-//@Api
-public class Services {
+import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
-    //  @POST
-    public List<TimeSeries> postToServices(HttpServletRequest request,
-                                           HttpServletResponse response) throws IOException, FileUploadException {
+public class TimeSeriesService {
 
-        String[] segments = request.getPathInfo().split("/");
-
-        if (segments.length > 2 && segments[2].equalsIgnoreCase("ConvertCSDB")) {
-
-            // Convert with CSDB Reader
-            return convert(request, response, new DataSetReaderCSDB());
-        } else if (segments.length > 2 && segments[2].equalsIgnoreCase("ConvertCSV")) {
-
-            // Convert with CSV Reader
-            return convert(request, response, new DataSetReaderCSV());
-        } else {
-            response.setStatus(HttpStatus.BAD_REQUEST_400);
-            return null;
+    public List<TimeSeries> convert(Path dataFile, DataSetReader reader, SecretKey secretKey)
+            throws IOException, BadRequestException {
+        if (dataFile != null) {
+            List<TimeSeries> convertedSeries = getTimeSeries(reader, secretKey, dataFile);
+            return convertedSeries;
         }
+        throw new BadRequestException("data file required but was null");
     }
-
 
     /**
      * Respond to a Service endpoint using a specific DataSetReader
@@ -63,29 +48,21 @@ public class Services {
      * @throws IOException
      * @throws FileUploadException
      */
-    private List<TimeSeries> convert(HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     DataSetReader reader) throws IOException, FileUploadException {
+/*    public List<TimeSeries> convert(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    DataSetReader reader) throws IOException, FileUploadException {
         // Get the input file
         SecretKey key = Keys.newSecretKey();
         Path dataFile = getFileFromMultipartRequest(request, key);
 
         if (dataFile != null) {
-
             List<TimeSeries> convertedSeries = getTimeSeries(reader, key, dataFile);
-
-//            String dataSetJson = ContentUtil.serialise(convertedSeries);
-//            try(InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = response.getOutputStream()) {
-//                IOUtils.copy(inputStream, output);
-//            }
             return convertedSeries;
-
-
-        } else {
-            response.setStatus(HttpStatus.BAD_REQUEST_400);
-            return null;
         }
-    }
+        logEvent().info("failed to generate timeseries data as data file null");
+        response.setStatus(HttpStatus.BAD_REQUEST_400);
+        return null;
+    }*/
 
     /**
      * Get the timeseries list from a data file
@@ -109,54 +86,6 @@ public class Services {
 
         return contentSeries;
     }
-
-//
-//    private void convertCSDB(HttpServletRequest request,
-//                             HttpServletResponse response) throws IOException, FileUploadException {
-//
-//        // Get the input file
-//        SecretKey key = Keys.newSecretKey();
-//        Path csdbFile = getFileFromMultipartRequest(request, key);
-//
-//        if (csdbFile != null) {
-//            // Convert it to dataSet
-//            List<TimeSeries> contentSeries = getTimeSeries(new DataSetReaderCSDB(), key, csdbFile);
-//
-//            String dataSetJson = ContentUtil.serialise(contentSeries);
-//            try(InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = response.getOutputStream()) {
-//                IOUtils.copy(inputStream, output);
-//            }
-//
-////            if (System.getenv("exportLog") != null) {
-////                Path logPath = Paths.get(System.getenv("exportLog")).resolve("convertCSDB.json");
-////                try (InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = FileUtils.openOutputStream(logPath.toFile())) {
-////                    IOUtils.copy(inputStream, output);
-////                }
-////            }
-//        } else {
-//            response.setStatus(HttpStatus.BAD_REQUEST_400);
-//        }
-//    }
-//
-//    private void convertCSV(HttpServletRequest request,
-//                             HttpServletResponse response) throws IOException, FileUploadException {
-//// Get the input file
-//        SecretKey key = Keys.newSecretKey();
-//        Path csdbFile = getFileFromMultipartRequest(request, key);
-//
-//        if (csdbFile != null) {
-//            // Convert it to dataSet
-//            List<TimeSeries> contentSeries = getTimeSeries(new DataSetReaderCSV(), key, csdbFile);
-//
-//            String dataSetJson = ContentUtil.serialise(contentSeries);
-//            try(InputStream inputStream = IOUtils.toInputStream(dataSetJson); OutputStream output = response.getOutputStream()) {
-//                IOUtils.copy(inputStream, output);
-//            }
-//
-//        } else {
-//            response.setStatus(HttpStatus.BAD_REQUEST_400);
-//        }
-//    }
 
     private Path getFileFromMultipartRequest(HttpServletRequest request, SecretKey key) throws IOException, FileUploadException {
         if (!ServletFileUpload.isMultipartContent(request)) {
@@ -186,4 +115,5 @@ public class Services {
         }
         return null;
     }
+
 }

@@ -6,12 +6,15 @@ export PORT="8083"
 # Restolino configuration
 export RESTOLINO_STATIC="src/main/resources/files"
 export RESTOLINO_CLASSES="target/classes"
-export PACKAGE_PREFIX=com.github.onsdigital.brian.api
+#export PACKAGE_PREFIX=com.github.onsdigital.brian.api
+export PACKAGE_PREFIX=com.github.onsdigital.brian.handler
+
+export DP_COLOURED_LOGGING=true
+export DP_LOGGING_FORMAT=pretty_json
 
 #Development: reloadable
 mvn test dependency:copy-dependencies  && \
 
 mvn package && \
 java $JAVA_OPTS \
- -Drestolino.packageprefix=$PACKAGE_PREFIX \
  -jar target/*-jar-with-dependencies.jar

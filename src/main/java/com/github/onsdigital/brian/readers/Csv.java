@@ -1,5 +1,15 @@
 package com.github.onsdigital.brian.readers;
 
+import au.com.bytecode.opencsv.CSVReader;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -17,17 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import au.com.bytecode.opencsv.CSVReader;
+import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
 /**
  * Convenience class for handling CSV and Excel data.
@@ -40,6 +42,10 @@ import au.com.bytecode.opencsv.CSVReader;
  * @author david
  */
 public class Csv implements Iterable<Map<String, String>> {
+
+    private static final String CLEAN_LINE_REGEX = "[^\\x00-\\x7F]";
+    private static final String CSV_EXT = "csv";
+    private static final String XLSX_EXT = "xlsx";
 
     private Path path;
     private String encoding = "UTF8";
@@ -78,18 +84,22 @@ public class Csv implements Iterable<Map<String, String>> {
 
     public static void cleanCSV(String resourceName) {
         URL resource = Csv.class.getResource(resourceName);
+        Path filePath = null;
         try {
-            Path filePath = Paths.get(resource.toURI());
-            List<String> lines = FileUtils.readLines(filePath.toFile());
-            List<String> newlines = new ArrayList<>();
-            for (String line : lines) {
-                newlines.add(line.replaceAll("[^\\x00-\\x7F]", ""));
-            }
-            FileUtils.writeLines(filePath.toFile(), newlines);
+            filePath = Paths.get(resource.toURI());
+            logEvent().path(filePath).info("cleaning CSV file");
+            List<String> cleanLines = FileUtils.readLines(filePath.toFile())
+                    .stream()
+                    .map(line -> line.replaceAll(CLEAN_LINE_REGEX, ""))
+                    .collect(Collectors.toList());
+
+            FileUtils.writeLines(filePath.toFile(), cleanLines);
         } catch (URISyntaxException e) {
+            logEvent(e).path(filePath).error("unexpected error cleaning CSV file");
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            // TODO should this be rethrown? handled? or do we just pretend it didn't happen?
+            logEvent(e).path(filePath).error("unexpected error cleaning CSV file");
         }
     }
 
@@ -98,11 +108,11 @@ public class Csv implements Iterable<Map<String, String>> {
         if (rows == null || (sheetIndex.length > 0 && sheetIndex[0] != this.sheetIndex)) {
 
             String extension = FilenameUtils.getExtension(path.getFileName().toString());
-            if ("csv".equalsIgnoreCase(extension)) {
+            if (CSV_EXT.equalsIgnoreCase(extension)) {
                 try (CSVReader csvReader = new CSVReader(Files.newBufferedReader(path, Charset.forName(encoding)))) {
                     rows = csvReader.readAll();
                 }
-            } else if ("xlsx".equalsIgnoreCase(extension)) {
+            } else if (XLSX_EXT.equalsIgnoreCase(extension)) {
 
                 // Read the workbook if it's not already cached:
                 if (xssfWorkbook == null) {
