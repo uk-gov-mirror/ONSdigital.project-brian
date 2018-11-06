@@ -156,16 +156,12 @@ public class Csv implements Iterable<Map<String, String>> {
         }
 
         for (int r = 0; r < rowTotal; r++) {
-            // if (r == 44) {
-            // System.out.println("Row: " + r);
-            // }
+
             String[] cells = new String[columnTotal];
             XSSFRow row = worksheet.getRow(r);
             if (row != null) {
                 for (int c = 0; c < columnTotal; c++) {
-                    // if (c == 8) {
-                    // System.out.println("Column: " + c);
-                    // }
+
                     XSSFCell cell = row.getCell(c);
                     if (cell != null) {
 
@@ -200,15 +196,7 @@ public class Csv implements Iterable<Map<String, String>> {
                         formatStrings.add(dataFormat);
                         if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 
-                            // System.out.println("toString() before     = " +
-                            // cell.toString());
-                            // System.out.println("getRawValue() before = " +
-                            // cell.getRawValue());
                             cell.setCellType(Cell.CELL_TYPE_STRING);
-                            // System.out.println("toString()      after  = " +
-                            // cell.toString());
-                            // System.out.println("getRawValue() after  = " +
-                            // cell.getRawValue());
 
                             if (dataFormat.contains("0") && !dataFormat.contains("[Red]")) {
                                 // Remove commas from numbers - these would
@@ -261,28 +249,18 @@ public class Csv implements Iterable<Map<String, String>> {
                             value = format.format(d);
                         }
 
+                        // FIXME - is this needed? It doesn't seem to actually do anything.
                         if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                             // System.out.println("Value: " + value);
                             // System.out.println();
                         }
-
-                        // if (rawValue != null && (rawValue.contains("00000")
-                        // || rawValue.contains("99999")) &&
-                        // !"0.0".equals(dataFormat)) {
-                        // System.out.println("mince");
-                        // } else if (rawValue == null) {
-                        // System.out.println("Canhasnull?");
-                        // }
-                        // if (value.endsWith("_)")) {
-                        // System.out.println("WAT?!");
-                        // }
-
                         cells[c] = value.trim();
                     }
                 }
                 result.add(cells);
             }
         }
+
 
         System.out.println(formatStrings);
         return result;
@@ -317,7 +295,6 @@ public class Csv implements Iterable<Map<String, String>> {
             public Map<String, String> next() {
                 String[] row = rows.get(index++);
                 Map<String, String> result = new HashMap<>();
-//                for (int i = 0; i < Math.min(headings.length, row.length); i++) {
                 for (int i = 0; i < row.length; i++) {
                     result.put(Integer.toString(i), row[i]);
                 }

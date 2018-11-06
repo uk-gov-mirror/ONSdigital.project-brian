@@ -8,15 +8,24 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
 /**
  * Created by thomasridd on 18/03/15.
- *
+ * <p>
  * Processes a
  */
-public class Processor implements  Runnable{
+public class Processor implements Runnable {
 
     public static ExecutorService timeSeriesPool = Executors.newCachedThreadPool();
     public static ExecutorService fileProcessPool = Executors.newCachedThreadPool();
@@ -38,9 +47,9 @@ public class Processor implements  Runnable{
     /**
      * CONCEPT - Skeleton - a Dataset object with only the outline of timeseries and the levels of periodicity
      * they contain
-     *
+     * <p>
      * Does a first pass through the files
-     *
+     * <p>
      * Generates a DataFuture object and their accompanying time series
      *
      * @return a promise of a DataFuture with the outline of timeseries
@@ -52,7 +61,7 @@ public class Processor implements  Runnable{
 
 
                 DataFuture result = new DataFuture();
-                Scanner scanner =new Scanner(file, "cp1252");
+                Scanner scanner = new Scanner(file, "cp1252");
 
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
@@ -61,7 +70,7 @@ public class Processor implements  Runnable{
                         // Get the Timeseries information:
                         // 92ABCDY......
                         line = StringUtils.substring(line, 2);
-                        String taxi = line.substring(0,4);
+                        String taxi = line.substring(0, 4);
                         char periodicity = line.charAt(4);
 
                         // Get or create the TimeSeries
@@ -94,7 +103,7 @@ public class Processor implements  Runnable{
     }
 
     /**
-     *  CONVERTS A SERIES OF STRINGS READ FROM A CSDB FILE BY THE READFILE METHODS TO A SERIES
+     * CONVERTS A SERIES OF STRINGS READ FROM A CSDB FILE BY THE READFILE METHODS TO A SERIES
      *
      * @param lines
      * @return
@@ -110,7 +119,7 @@ public class Processor implements  Runnable{
             try {
                 int LineType = Integer.parseInt(line.substring(0, 2));
                 if (LineType == 92) { // TOP LINE (SERIES CODE)
-                    series = timeSerieses.get(line.substring(2,6));
+                    series = timeSerieses.get(line.substring(2, 6));
 
                 } else if (LineType == 93) { // SECOND LINE (DESCRIPTION)
                     series.name = line.substring(2);
@@ -154,7 +163,7 @@ public class Processor implements  Runnable{
     private static String DateLabel(int year, int startInd, String mqa, int iteration) {
         if (mqa.equals("Y") || mqa.equals("A")) {
             return (year + iteration - 1) + "";
-        } else if(mqa.equals("M")) {
+        } else if (mqa.equals("M")) {
             int finalMonth = (startInd + iteration - 2) % 12;
             int yearsTaken = iteration / 12;
             return (year + yearsTaken) + " " + String.format("%02d", finalMonth + 1);
@@ -174,7 +183,7 @@ public class Processor implements  Runnable{
     public void run() {
 
         try {
-            System.out.println("Starting to process " + file);
+            logEvent().path(file).info("beginning processing");
             // USE WINDOWS ENCODING TO READ THE FILE BECAUSE IT IS A WIN CSDB
             List<String> lines = FileUtils.readLines(file.toFile(), "cp1252");
             lines.add("92"); // THROW A 92 ON THE END
@@ -209,9 +218,10 @@ public class Processor implements  Runnable{
 
                 }
             }
-            System.out.println("Finished processing " + file);
+            logEvent().path(file).info("processing completed successfully");
         } catch (IOException e) {
             e.printStackTrace();
+            logEvent(e).path(file).error("error while processing file");
         }
     }
 

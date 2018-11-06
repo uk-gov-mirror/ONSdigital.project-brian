@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.github.onsdigital.brian.logging.Logger.logEvent;
+
 /**
  * Created by thomasridd on 10/03/15.
- *
+ * <p>
  * METHODS TO READ DATA FROM CSDB STANDARD TEXT FILES
- *
  */
 public class DataSetReaderCSDB implements DataSetReader {
 
@@ -38,12 +39,13 @@ public class DataSetReaderCSDB implements DataSetReader {
      * @throws IOException
      */
     public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException {
+        logEvent().path(filePath).info("reading CSDB file");
 
         TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
 
         // NESTED TRY WITH RESOURCES TO GET A NOT NECESSARY ENCRYPTED FILE STREAM
-        try(InputStream initialStream = Files.newInputStream(filePath)) {
-            try(InputStream inputStream = decryptIfNecessary(initialStream, key)) {
+        try (InputStream initialStream = Files.newInputStream(filePath)) {
+            try (InputStream inputStream = decryptIfNecessary(initialStream, key)) {
 
                 List<String> lines = IOUtils.readLines(inputStream, "cp1252");
                 lines.add("92"); // THROW A 92 ON THE END
@@ -59,7 +61,7 @@ public class DataSetReaderCSDB implements DataSetReader {
                         if (LineType == 92) {
                             if (seriesBuffer.size() > 0) {
                                 // PARSE THE BLOCK JUST COLLECTED
-                                TimeSeriesObject series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
+                                TimeSeriesObject series = seriesFromStringList(seriesBuffer);
 
                                 // COMBINE IT WITH AN EXISTING SERIES
                                 if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
@@ -78,21 +80,24 @@ public class DataSetReaderCSDB implements DataSetReader {
                             seriesBuffer.add(line);
                         }
                     } catch (NumberFormatException e) {
-
+                        logEvent(e).path(filePath).error("failed to parse value to integer");
                     }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logEvent(e).path(filePath).error("error while attempting to read CSDB file");
         }
 
+        logEvent().path(filePath).info("read CSDB file completed successfully");
         return timeSeriesDataSet;
     }
 
     private InputStream decryptIfNecessary(InputStream stream, SecretKey key) throws IOException {
         if (key == null) {
+            logEvent().trace("encryption key null reading file with unencrypted stream");
             return stream;
         } else {
+            logEvent().trace("encryption key not null reading file with crypto stream");
             return new Crypto().decrypt(stream, key);
         }
     }
@@ -117,8 +122,8 @@ public class DataSetReaderCSDB implements DataSetReader {
         List<Future<DataFuture>> skeletonDatasets = new ArrayList<>();
 
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(filePath)){ // NOW LOAD THE FILES
-            for(Path entry: stream) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(filePath)) { // NOW LOAD THE FILES
+            for (Path entry : stream) {
                 // System.out.println("Creating processor for " + entry);
                 Processor processor = new Processor(entry);
 
@@ -136,7 +141,7 @@ public class DataSetReaderCSDB implements DataSetReader {
             try {
                 //System.out.println("Getting ID map..");
                 DataFuture promised = skeletonDataset.get();
-                for(String key: promised.timeSeries.keySet())
+                for (String key : promised.timeSeries.keySet())
                     dataFuture.addSeries(key, promised.timeSeries.get(key));
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -146,8 +151,10 @@ public class DataSetReaderCSDB implements DataSetReader {
         }
 
         // Now set our processors running to process all the timeseries in the DataFuture
-        for (Processor processor: processors) {
+        for (Processor processor : processors) {
             //System.out.println("Processing ");
+
+            logEvent().path(filePath).info("processing");
             processor.process();
         }
 
@@ -155,10 +162,8 @@ public class DataSetReaderCSDB implements DataSetReader {
     }
 
 
-
-
     /**
-     *  CONVERTS A SERIES OF STRINGS READ FROM A CSDB FILE BY THE READFILE METHODS TO A SERIES
+     * CONVERTS A SERIES OF STRINGS READ FROM A CSDB FILE BY THE READFILE METHODS TO A SERIES
      *
      * @param lines
      * @return
@@ -206,8 +211,6 @@ public class DataSetReaderCSDB implements DataSetReader {
     }
 
 
-
-
     /**
      * HELPER METHOD THAT DETERMINES THE CORRECT LABEL BASED ON START DATE, A TIME PERIOD, AND THE ITERATION
      *
@@ -220,7 +223,7 @@ public class DataSetReaderCSDB implements DataSetReader {
     private static String DateLabel(int year, int startInd, String mqa, int iteration) {
         if (mqa.equals("Y") || mqa.equals("A")) {
             return (year + iteration - 1) + "";
-        } else if(mqa.equals("M")) {
+        } else if (mqa.equals("M")) {
             int finalMonth = (startInd + iteration - 2) % 12;
             int yearsTaken = (startInd + iteration - 2) / 12;
             return (year + yearsTaken) + " " + String.format("%02d", finalMonth + 1);
@@ -231,8 +234,6 @@ public class DataSetReaderCSDB implements DataSetReader {
         }
 
     }
-
-
 
 
 }

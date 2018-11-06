@@ -14,9 +14,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by thomasridd on 10/03/15.
@@ -24,6 +26,16 @@ import java.util.*;
  * METHODS TO READ DATA FROM CSDB STANDARD TEXT FILES
  */
 public class DataSetReaderCSV implements DataSetReader {
+
+    static final DateFormat DF_YY = new SimpleDateFormat("yy");
+    static final DateFormat DF_YYYY = new SimpleDateFormat("yyyy");
+    static final DateFormat DF_YYYY_MMM = new SimpleDateFormat("yyyy MMM");
+    static final DateFormat DF_YYYY_MM = new SimpleDateFormat("yyyy MM");
+    static final DateFormat DF_MMM_YY = new SimpleDateFormat("MMM yy");
+
+    static final String YYYY_DASH = "yyyy-";
+    static final String YYYY_SLASH= "yyyy/";
+
 
     /**
      * READS A DATASET FROM A RESOURCE FILE GIVEN AN ABSOLUTE PATH
@@ -136,13 +148,13 @@ public class DataSetReaderCSV implements DataSetReader {
             String e = StringUtils.lowerCase(StringUtils.trim(date));
             Date result;
             if(TimeSeries.year.matcher(e).matches()) {
-                result = (new SimpleDateFormat("yyyy")).parse(e);
+                result = DF_YYYY.parse(e);                              // new SimpleDateFormat("yyyy")
             } else if(TimeSeries.month.matcher(e).matches()) {
-                result = (new SimpleDateFormat("yyyy MMM")).parse(e);
+                result = DF_YYYY_MMM.parse(e);                          // new SimpleDateFormat("yyyy MMM")
             } else if(TimeSeries.monthNumVal.matcher(e).matches()) {
-                result = (new SimpleDateFormat("yyyy MM")).parse(e);
+                result = DF_YYYY_MM.parse(e);                           //new SimpleDateFormat("yyyy MM")
             } else if(TimeSeries.quarter.matcher(e).matches()) {
-                Date parsed = (new SimpleDateFormat("yyyy")).parse(e);
+                Date parsed = DF_YYYY.parse(e);                         //new SimpleDateFormat("yyyy")
                 Calendar calendar = Calendar.getInstance(Locale.UK);
                 calendar.setTime(parsed);
                 if(e.endsWith("1")) {
@@ -161,15 +173,14 @@ public class DataSetReaderCSV implements DataSetReader {
 
                 result = calendar.getTime();
             } else if(TimeSeries.yearInterval.matcher(e).matches()) {
-                result = (new SimpleDateFormat("yyyy")).parse(e.substring("yyyy-".length()));
+                result = DF_YYYY.parse(e.substring(YYYY_DASH.length()));                      //new SimpleDateFormat("yyyy")
             } else if(TimeSeries.yearPair.matcher(e).matches()) {
-                result = (new SimpleDateFormat("yy")).parse(e.substring("yyyy/".length()));
+                result = DF_YY.parse(e.substring(YYYY_SLASH.length()));                     // (new SimpleDateFormat("yy"))
             } else {
                 if(!TimeSeries.yearEnd.matcher(e).matches()) {
                     throw new ParseException("Unknown format: \'" + date + "\'", 0);
                 }
-
-                result = (new SimpleDateFormat("MMM yy")).parse(e.substring("YE ".length()));
+                result = DF_MMM_YY.parse(e.substring("YE ".length()));                      //(new SimpleDateFormat("MMM yy"))
             }
 
             return result;
