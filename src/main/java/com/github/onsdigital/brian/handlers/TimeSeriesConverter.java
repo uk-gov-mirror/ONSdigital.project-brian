@@ -28,7 +28,7 @@ import java.util.List;
 
 import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
-public class TimeSeriesService {
+public class TimeSeriesConverter {
 
     public List<TimeSeries> convert(Path dataFile, DataSetReader reader, SecretKey secretKey)
             throws IOException, BadRequestException {

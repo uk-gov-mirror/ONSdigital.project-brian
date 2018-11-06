@@ -15,15 +15,23 @@ import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
 public class CsdbHandler implements Route {
 
-    private TimeSeriesService service;
+    private TimeSeriesConverter converter;
     private FileUploadHelper fileUploadHelper;
     private Supplier<SecretKey> encryptionKeySupplier;
     private DataSetReader dataSetReader;
 
-    public CsdbHandler(FileUploadHelper fileUploadHelper, TimeSeriesService service,
+    /**
+     * Constuct a new CSDB API handler.
+     *
+     * @param fileUploadHelper      a helper to take care of getting the uploaded file from the HTTP request.
+     * @param converter             the services that generates the Timesseries from the CSDB file.
+     * @param encryptionKeySupplier provides {@link SecretKey} to use.
+     * @param dataSetReader         a parser responsible for reading the uploaded CSDB file.
+     */
+    public CsdbHandler(FileUploadHelper fileUploadHelper, TimeSeriesConverter converter,
                        Supplier<SecretKey> encryptionKeySupplier, DataSetReader dataSetReader) {
         this.fileUploadHelper = fileUploadHelper;
-        this.service = service;
+        this.converter = converter;
         this.encryptionKeySupplier = encryptionKeySupplier;
         this.dataSetReader = dataSetReader;
     }
@@ -33,7 +41,7 @@ public class CsdbHandler implements Route {
         SecretKey key = encryptionKeySupplier.get();
         Path uploadFilePath = fileUploadHelper.getFileUploadPath(request.raw(), key);
 
-        List<TimeSeries> timeSeries = service.convert(uploadFilePath, dataSetReader, key);
+        List<TimeSeries> timeSeries = converter.convert(uploadFilePath, dataSetReader, key);
         logEvent().path(uploadFilePath).info("handle CSDB request completed successfully");
         return timeSeries;
     }

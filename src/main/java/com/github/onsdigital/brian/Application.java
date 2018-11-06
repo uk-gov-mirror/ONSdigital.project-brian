@@ -9,7 +9,7 @@ import com.github.onsdigital.brian.filter.BeforeHandleFilter;
 import com.github.onsdigital.brian.handlers.CsdbHandler;
 import com.github.onsdigital.brian.handlers.CsvHandler;
 import com.github.onsdigital.brian.handlers.FileUploadHelper;
-import com.github.onsdigital.brian.handlers.TimeSeriesService;
+import com.github.onsdigital.brian.handlers.TimeSeriesConverter;
 import com.github.onsdigital.brian.handlers.responses.JsonTransformer;
 import com.github.onsdigital.brian.handlers.responses.Message;
 import com.github.onsdigital.brian.readers.DataSetReader;
@@ -17,7 +17,6 @@ import com.github.onsdigital.brian.readers.DataSetReaderCSDB;
 import spark.Route;
 
 import javax.crypto.SecretKey;
-
 import java.util.function.Supplier;
 
 import static com.github.onsdigital.brian.configuration.Config.getConfig;
@@ -32,33 +31,38 @@ import static spark.Spark.post;
 
 public class Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        createApp();
+    }
+
+    private static void createApp() throws Exception {
         logEvent().info("initialising project-brian");
         Config appConfig = getConfig();
 
-        TimeSeriesService timeSeriesService = new TimeSeriesService();
-
-        FileUploadHelper fileUploadHelper = new FileUploadHelper();
-
-        JsonTransformer transformer = JsonTransformer.getInstance();
-
-        Supplier<SecretKey> encryptionKeySupplier = () -> Keys.newSecretKey();
-
-        DataSetReader csdbReader = new DataSetReaderCSDB();
-
-        Route csdbRoute = new CsdbHandler(fileUploadHelper, timeSeriesService, encryptionKeySupplier, csdbReader);
-
-        Route csvRoute = new CsvHandler(fileUploadHelper, timeSeriesService);
-
-        BeforeHandleFilter beforeHandleFilter = new BeforeHandleFilter();
-
-        AfterHandleFilter afterHandleFilter = new AfterHandleFilter();
-
         port(appConfig.getPort());
 
-        // filters
-        before("/*", beforeHandleFilter);
+        before("/*", new BeforeHandleFilter());
+
+        AfterHandleFilter afterHandleFilter = new AfterHandleFilter();
         after("/*", afterHandleFilter);
+
+        exception(BadRequestException.class, new BadRequestExceptionHandler(afterHandleFilter));
+
+        registerRoutes();
+
+        logEvent().info("initialisation of project-brian API completed");
+    }
+
+    private static void registerRoutes() {
+        TimeSeriesConverter timeSeriesConverter = new TimeSeriesConverter();
+        FileUploadHelper fileUploadHelper = new FileUploadHelper();
+
+        Supplier<SecretKey> encryptionKeySupplier = () -> Keys.newSecretKey();
+        DataSetReader csdbReader = new DataSetReaderCSDB();
+        Route csdbRoute = new CsdbHandler(fileUploadHelper, timeSeriesConverter, encryptionKeySupplier, csdbReader);
+        Route csvRoute = new CsvHandler(fileUploadHelper, timeSeriesConverter, encryptionKeySupplier, csdbReader);
+
+        JsonTransformer transformer = JsonTransformer.getInstance();
 
         // API routes
         get("/healthcheck", (req, resp) -> new Message("Healthcheck response"), transformer);
@@ -67,10 +71,5 @@ public class Application {
             post("/ConvertCSDB", (req, resp) -> csdbRoute.handle(req, resp), transformer);
             post("/ConvertCSV", (req, resp) -> csvRoute.handle(req, resp), transformer);
         });
-
-        // exception handlers
-        exception(BadRequestException.class, new BadRequestExceptionHandler(afterHandleFilter));
-
-        logEvent().info("initialisation of project-brian API completed");
     }
 }

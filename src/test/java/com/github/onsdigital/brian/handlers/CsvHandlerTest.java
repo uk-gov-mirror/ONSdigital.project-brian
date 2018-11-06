@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-public class CsdbHandlerTest {
+public class CsvHandlerTest {
 
     @Mock
     private FileUploadHelper fileUploadHelper;
@@ -66,7 +66,7 @@ public class CsdbHandlerTest {
         encryptionKeySupplier = () -> secretKey;
 
         route = new CsdbHandler(fileUploadHelper, timeSeriesConverter, encryptionKeySupplier, dataSetReader);
-        uploadFile = Paths.get("/home/uploads/csdb.csdb");
+        uploadFile = Paths.get("/home/uploads/csv.csv");
 
         generatedTimeSeries = new ArrayList<>();
         generatedTimeSeries.add(timeSeries);
