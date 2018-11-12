@@ -13,8 +13,8 @@ export DP_COLOURED_LOGGING=true
 export DP_LOGGING_FORMAT=pretty_json
 
 #Development: reloadable
-mvn test dependency:copy-dependencies  && \
+#mvn test dependency:copy-dependencies  && \
 
-mvn package && \
+mvn package -DskipTests=true && \
 java $JAVA_OPTS \
  -jar target/*-jar-with-dependencies.jar

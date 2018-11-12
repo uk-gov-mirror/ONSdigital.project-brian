@@ -39,7 +39,8 @@ public class FileUploadHelper {
         if (fileItem.isPresent()) {
             return writeToTempFile(fileItem.get(), key);
         }
-        return null;
+
+        throw new BadRequestException("expected file item in request but none found");
     }
 
     private ServletFileUpload getServletFileUpload() throws IOException {
