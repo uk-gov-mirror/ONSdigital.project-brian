@@ -55,7 +55,7 @@ public class CsdbHandler implements Route {
         logEvent().path(uploadFilePath).info("handle CSDB request completed successfully");
 
         Gson g = new GsonBuilder().setPrettyPrinting().create();
-        Path p = Paths.get("/Users/dave/Desktop/modified.json");
+        Path p = Paths.get("/Users/dave/Desktop/spark.json");
         Files.write(p, g.toJson(timeSeries).getBytes());
 
         //return timeSeries;
@@ -63,8 +63,8 @@ public class CsdbHandler implements Route {
     }
 
     public static void main(String[] args) throws Exception {
-        Path existing = Paths.get("/Users/dave/Desktop/original.json");
-        Path latest = Paths.get("/Users/dave/Desktop/modified.json");
+        Path existing = Paths.get("/Users/dave/Desktop/restolino.json");
+        Path latest = Paths.get("/Users/dave/Desktop/spark.json");
 
         try (
                 InputStream in = Files.newInputStream(existing);
