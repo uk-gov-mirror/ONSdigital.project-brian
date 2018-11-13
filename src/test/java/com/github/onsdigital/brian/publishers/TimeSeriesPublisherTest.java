@@ -5,7 +5,7 @@ import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
 import com.github.onsdigital.brian.generators.Sample;
-import com.github.onsdigital.brian.readers.DataSetReaderCSDB;
+import com.github.onsdigital.brian.readers.csdb.DataSetReaderCSDB;
 import org.junit.Test;
 
 import java.io.IOException;

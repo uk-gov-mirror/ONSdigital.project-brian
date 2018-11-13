@@ -1,4 +1,4 @@
-package com.github.onsdigital.brian.readers;
+package com.github.onsdigital.brian.readers.csdb;
 
 public class DateLabel {
 

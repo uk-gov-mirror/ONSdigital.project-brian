@@ -7,7 +7,7 @@ import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
 import com.github.onsdigital.brian.publishers.TimeSeriesPublisher;
 import com.github.onsdigital.brian.readers.DataSetReader;
-import com.github.onsdigital.brian.readers.DataSetReaderCSDB;
+import com.github.onsdigital.brian.readers.csdb.DataSetReaderCSDB;
 import com.github.onsdigital.brian.readers.DataSetReaderCSV;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import org.apache.commons.fileupload.FileItem;

@@ -13,7 +13,7 @@ import com.github.onsdigital.brian.handlers.TimeSeriesConverter;
 import com.github.onsdigital.brian.handlers.responses.JsonTransformer;
 import com.github.onsdigital.brian.handlers.responses.Message;
 import com.github.onsdigital.brian.readers.DataSetReader;
-import com.github.onsdigital.brian.readers.DataSetReaderCSDB;
+import com.github.onsdigital.brian.readers.csdb.DataSetReaderCSDB;
 import spark.Route;
 
 import javax.crypto.SecretKey;
