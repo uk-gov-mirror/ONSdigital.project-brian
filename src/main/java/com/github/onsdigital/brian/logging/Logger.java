@@ -92,6 +92,10 @@ public class Logger extends LogMessageBuilder {
         return this;
     }
 
+    public Logger index(int i) {
+        return addParamSafe("index", i);
+    }
+
     private Logger addParamSafe(String key, Object value) {
         if (StringUtils.isNotEmpty(key) && null != value) {
             super.addParameter(key, value);

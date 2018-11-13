@@ -6,7 +6,6 @@ import com.github.onsdigital.brian.data.DataFuture;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
 import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.SecretKey;
@@ -36,6 +35,11 @@ import static com.github.onsdigital.brian.logging.Logger.logEvent;
 public class DataSetReaderCSDB implements DataSetReader {
 
     private static final Pattern p = Pattern.compile("^[0-9]{2}$");
+    private static final int TYPE_92 = 92;
+    private static final int TYPE_93 = 93;
+    private static final int TYPE_96 = 96;
+    private static final int TYPE_97 = 97;
+
 
     /**
      * READS A DATASET FROM A RESOURCE FILE GIVEN AN ABSOLUTE PATH
@@ -44,110 +48,19 @@ public class DataSetReaderCSDB implements DataSetReader {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public TimeSeriesDataSet readFile2(Path filePath, SecretKey key) throws IOException {
-        logEvent().path(filePath).info("reading CSDB file");
-
-        TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
-
-        // NESTED TRY WITH RESOURCES TO GET A NOT NECESSARY ENCRYPTED FILE STREAM
-        try (InputStream initialStream = Files.newInputStream(filePath)) {
-            try (InputStream inputStream = decryptIfNecessary(initialStream, key)) {
-
-                List<String> lines = IOUtils.readLines(inputStream, "cp1252");
-                lines.add("92"); // THROW A 92 ON THE END
-
-                ArrayList<String> seriesBuffer = new ArrayList<>();
-
-                //WALK THROUGH THE FILE
-                int index = 0;
-                for (String line : lines) {
-
-                    if (StringUtils.isBlank(line)) {
-                        logEvent().warn("skipping blank line");
-                        continue;
-                    }
-
-                    String lineTypeStr = StringUtils.trim(line.substring(0, 2));
-                    int LineType = 0;
-
-                    try {
-                        LineType = Integer.parseInt(lineTypeStr);
-                    } catch (NumberFormatException e) {
-                        logEvent(e).path(filePath).error("failed to parse value to integer");
-                        throw e;
-                    }
-
-                    // WHEN WE GET TO A LINE 92 (TIME SERIES BLOCK START)
-                    if (LineType == 92) {
-                        logEvent().parameter("index", index).info("processing line type 92");
-                        if (seriesBuffer.size() > 0) {
-                            // PARSE THE BLOCK JUST COLLECTED
-                            TimeSeriesObject series = seriesFromStringList(seriesBuffer);
-
-                            // COMBINE IT WITH AN EXISTING SERIES
-                            if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
-                                TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
-                                for (TimeSeriesPoint point : series.points.values()) {
-                                    existing.addPoint(point);
-                                }
-
-                            } else { // OR CREATE A NEW SERIES
-                                timeSeriesDataSet.addSeries(series);
-                            }
-                        }
-                        seriesBuffer = new ArrayList<>();
-                        seriesBuffer.add(line);
-                    } else if (LineType > 92) {
-                        logEvent().parameter("index", index).info("processing line type other");
-                        seriesBuffer.add(line);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logEvent(e).path(filePath).error("error while attempting to read CSDB file");
-        }
-
-        logEvent().path(filePath).info("read CSDB file completed successfully");
-        return timeSeriesDataSet;
-    }
-
     public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException {
-        logEvent().path(filePath).info("reading CSDB file");
+        TimeSeriesDataSet timeSeriesDataSet = null;
 
-        TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
         try (
                 InputStream initialStream = Files.newInputStream(filePath);
                 InputStream inputStream = decryptIfNecessary(initialStream, key);
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "cp1252");
                 BufferedReader reader = new BufferedReader(inputStreamReader);
         ) {
-            ArrayList<String> seriesBuffer = new ArrayList<>();
-            int index = 0;
-            String line = null;
+            logEvent().path(filePath).info("reading CSDB file");
+            timeSeriesDataSet = processCSDBFile(reader, filePath);
 
-            while ((line = reader.readLine()) != null) {
-                int lineType = getLineType(line, index);
-
-                if (lineType < 92) {
-                    index++;
-                    continue;
-                }
-
-                if (lineType == 92 && !seriesBuffer.isEmpty()) {
-                    processDataBlock(timeSeriesDataSet, seriesBuffer);
-                    seriesBuffer.clear();
-                }
-                seriesBuffer.add(line);
-                index++;
-            }
-
-            if (!seriesBuffer.isEmpty()) {
-                processDataBlock(timeSeriesDataSet, seriesBuffer);
-                seriesBuffer.clear();
-            }
-
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             logEvent(e).path(filePath).error("error while attempting to read CSDB file");
             throw e;
         }
@@ -156,9 +69,52 @@ public class DataSetReaderCSDB implements DataSetReader {
         return timeSeriesDataSet;
     }
 
+    private TimeSeriesDataSet processCSDBFile(BufferedReader reader, Path filePath) throws IOException {
+        TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
+        ArrayList<String> seriesBuffer = new ArrayList<>();
+
+        int index = 0;
+        String line = null;
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                int lineType = getLineType(line, index);
+
+                if (lineType < TYPE_92) {
+                    logEvent().path(filePath).index(index).debug("skipping line as line type < 92");
+                    index++;
+                    continue;
+                }
+
+                // If its type 92 and the buffere isn't empty - its the end of the a data block - so we proccess it.
+                if (lineType == TYPE_92 && !seriesBuffer.isEmpty()) {
+                    //logEvent().path(filePath).index(index).info("processing time series data block");
+                    processDataBlock(timeSeriesDataSet, seriesBuffer);
+                    seriesBuffer.clear();
+                }
+
+                // if line type is greater than 92 its part of the data block so we add it to the buffer.
+                seriesBuffer.add(line);
+                index++;
+            }
+
+            // flush the buffer - process the file data block.
+            if (!seriesBuffer.isEmpty()) {
+                // logEvent().path(filePath).index(index).info("processing time series data block");
+                processDataBlock(timeSeriesDataSet, seriesBuffer);
+                seriesBuffer.clear();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("index " + index);
+        }
+
+        return timeSeriesDataSet;
+    }
+
     private void processDataBlock(TimeSeriesDataSet timeSeriesDataSet, ArrayList<String> seriesBuffer) {
         // PARSE THE BLOCK JUST COLLECTED
-        TimeSeriesObject series = seriesFromStringList(seriesBuffer);
+        TimeSeriesObject series = seriesFromStringList2(seriesBuffer);
 
         // COMBINE IT WITH AN EXISTING SERIES
         if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
@@ -173,36 +129,6 @@ public class DataSetReaderCSDB implements DataSetReader {
         // OR CREATE A NEW SERIES
         timeSeriesDataSet.addSeries(series);
     }
-
-    private void processLine(TimeSeriesDataSet timeSeriesDataSet, ArrayList<String> seriesBuffer, String line, int index) {
-        int lineType = getLineType(line, index);
-
-        if (lineType == 92) {
-            if (seriesBuffer.size() > 0) {
-                logEvent().parameter("index", index).debug("processing line type 92");
-
-                // PARSE THE BLOCK JUST COLLECTED
-                TimeSeriesObject series = seriesFromStringList(seriesBuffer);
-
-                // COMBINE IT WITH AN EXISTING SERIES
-                if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
-                    TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
-                    for (TimeSeriesPoint point : series.points.values()) {
-                        existing.addPoint(point);
-                    }
-
-                } else { // OR CREATE A NEW SERIES
-                    timeSeriesDataSet.addSeries(series);
-                }
-            }
-            //seriesBuffer = new ArrayList<>();
-            seriesBuffer.add(line);
-        } else if (lineType > 92) {
-            logEvent().parameter("index", index).debug("processing line type other");
-            seriesBuffer.add(line);
-        }
-    }
-
 
     private InputStream decryptIfNecessary(InputStream stream, SecretKey key) throws IOException {
         if (key == null) {
@@ -319,6 +245,33 @@ public class DataSetReaderCSDB implements DataSetReader {
             }
         }
 
+        return series;
+    }
+
+
+    private static TimeSeriesObject seriesFromStringList2(ArrayList<String> lines) {
+        TimeSeriesObject series = new TimeSeriesObject();
+        int lineType = 0;
+        DateLabel dateLabel = null;
+
+        for (String line : lines) {
+            lineType = DataLine.getLineType(line);
+
+            switch (lineType) {
+                case TYPE_92:
+                    DataLine.processLineType92(series, line);
+                    break;
+                case TYPE_93:
+                    DataLine.processLineType93(series, line);
+                    break;
+                case TYPE_96:
+                    dateLabel = DataLine.processLineType96(line);
+                    break;
+                case TYPE_97:
+                    DataLine.processLineType97(series, line, dateLabel);
+                    break;
+            }
+        }
         return series;
     }
 
