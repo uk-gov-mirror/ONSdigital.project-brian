@@ -18,5 +18,4 @@ public class CSDBLineParseException extends IOException {
     public CSDBLineParseException(String message, Object...args) {
         super(format(message,args));
     }
-
 }

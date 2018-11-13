@@ -1,5 +1,9 @@
 package com.github.onsdigital.brian.readers.csdb;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class DateLabel {
 
     static final String YEAR = "Y";
@@ -22,6 +26,22 @@ public class DateLabel {
         this.mqa = mqa;
     }
 
+    public int getStartInd() {
+        return startInd;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public String getMqa() {
+        return mqa;
+    }
+
+    public int getIteration() {
+        return iteration;
+    }
+
     public String getNextIteration() {
         String result = getDateStr();
         iteration++;
@@ -42,5 +62,41 @@ public class DateLabel {
         int finalQuarter = (startInd + iteration - 2) % 4;
         int yearsTaken = (startInd + iteration - 2) / 4;
         return String.format(MQA_OTHER_FORMAT, (year + yearsTaken), (finalQuarter + 1));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DateLabel dateLabel = (DateLabel) o;
+
+        return new EqualsBuilder()
+                .append(getStartInd(), dateLabel.getStartInd())
+                .append(getYear(), dateLabel.getYear())
+                .append(getIteration(), dateLabel.getIteration())
+                .append(getMqa(), dateLabel.getMqa())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getStartInd())
+                .append(getYear())
+                .append(getMqa())
+                .append(getIteration())
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("startInd", startInd)
+                .append("year", year)
+                .append("mqa", mqa)
+                .append("iteration", iteration)
+                .toString();
     }
 }
