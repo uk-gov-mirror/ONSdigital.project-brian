@@ -38,18 +38,18 @@ public class DataLine {
         }
     }
 
-    public static void processLineType92(TimeSeriesObject series, String line) {
+    public static String processLineType92(String line) {
         if (line.length() < 6) {
             throw new RuntimeException("line length not as expected");
         }
-        series.taxi = line.substring(2, 6);
+        return line.substring(2, 6);
     }
 
-    public static void processLineType93(TimeSeriesObject series, String line) {
+    public static String processLineType93(String line) {
         if (line.length() < 2) {
             throw new RuntimeException("line length not as expected");
         }
-        series.name = line.substring(2);
+        return line.substring(2);
     }
 
     public static DateLabel processLineType96(String line) {
@@ -71,13 +71,11 @@ public class DataLine {
 
         String values = line.substring(2);
         while (values.length() > 9) {
-            // GET FIRST VALUE
             String oneValue = values.substring(0, 10).trim();
 
             TimeSeriesPoint point = new TimeSeriesPoint(dateLabel.getNextIteration(), oneValue);
             series.addPoint(point);
 
-            // TRIM OFF THE BEGINNING
             values = values.substring(10);
         }
     }

@@ -2,6 +2,14 @@ package com.github.onsdigital.brian.readers;
 
 public class DateLabel {
 
+    static final String YEAR = "Y";
+    static final String ANNUAL = "A";
+    static final String MONTH = "M";
+
+    static final String MQA_MONTH_FORMAT = "%d %02d";
+    static final String MQA_OTHER_FORMAT = "%d Q%d";
+
+
     private int startInd;
     private int year;
     private String mqa;
@@ -21,22 +29,18 @@ public class DateLabel {
     }
 
     private String getDateStr() {
-        StringBuilder sb = new StringBuilder();
+        if (YEAR.equals(mqa) || ANNUAL.equals(mqa)) {
+            return String.valueOf(year + (iteration - 1));
+        }
 
-        if (mqa.equals("Y") || mqa.equals("A")) {
-            return sb.append(year).append(iteration - 1).toString();
-        } else if (mqa.equals("M")) {
+        if (MONTH.equals(mqa)) {
             int finalMonth = (startInd + iteration - 2) % 12;
             int yearsTaken = (startInd + iteration - 2) / 12;
-
-            return sb.append(year + yearsTaken)
-                    .append(" ")
-                    .append(String.format("%02d", finalMonth + 1))
-                    .toString();
-        } else {
-            int finalQuarter = (startInd + iteration - 2) % 4;
-            int yearsTaken = (startInd + iteration - 2) / 4;
-            return String.format("%d Q%d", year + yearsTaken, finalQuarter + 1);
+            return String.format(MQA_MONTH_FORMAT, (year + yearsTaken), (finalMonth + 1));
         }
+
+        int finalQuarter = (startInd + iteration - 2) % 4;
+        int yearsTaken = (startInd + iteration - 2) / 4;
+        return String.format(MQA_OTHER_FORMAT, (year + yearsTaken), (finalQuarter + 1));
     }
 }

@@ -259,10 +259,10 @@ public class DataSetReaderCSDB implements DataSetReader {
 
             switch (lineType) {
                 case TYPE_92:
-                    DataLine.processLineType92(series, line);
+                    series.taxi = DataLine.processLineType92(line);
                     break;
                 case TYPE_93:
-                    DataLine.processLineType93(series, line);
+                    series.name = DataLine.processLineType93(line);
                     break;
                 case TYPE_96:
                     dateLabel = DataLine.processLineType96(line);
