@@ -5,7 +5,7 @@ import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
 /**
  * Created by Tom.Ridd on 03/03/15.

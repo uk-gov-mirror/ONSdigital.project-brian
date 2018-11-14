@@ -8,7 +8,7 @@ import spark.Response;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
 /**
  * A filter to be applied after a {@link spark.Route#handle(Request, Response)} method is called. Captures and

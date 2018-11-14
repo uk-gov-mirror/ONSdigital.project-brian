@@ -19,14 +19,21 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
+/**
+ * Provides functionality for handling multipart file uploads ensuring they will be written to disk encrypted.
+ */
 public class FileUploadHelper {
 
     static final String TEMP_DIR = "csdb";
     static final String TEMP_FILENAME = "csdb";
     static final String CSDB_EXT = ".csdb";
 
+    /**
+     * Extract the multipart upload file part from the request and write it to a temp file. Returns the path to the
+     * temp file.
+     */
     public Path getFileUploadPath(HttpServletRequest request, SecretKey key) throws IOException,
             FileUploadException, BadRequestException {
         if (!ServletFileUpload.isMultipartContent(request)) {

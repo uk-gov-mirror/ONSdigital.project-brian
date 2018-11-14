@@ -11,8 +11,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
+/**
+ * A {@link Route} implementation that handles POST requests convert the uploaded .csdb file to a JSON representaion
+ * of a Time series data set.
+ */
 public class CsdbHandler implements Route {
 
     private TimeSeriesConverter converter;

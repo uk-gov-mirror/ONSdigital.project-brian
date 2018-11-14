@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_LENGTH_ERROR;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_LENGTH_ERROR_UNKNOWN_TYPE;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_TYPE_INT_PARSE_ERROR;

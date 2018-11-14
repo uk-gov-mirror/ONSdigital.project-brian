@@ -23,7 +23,7 @@ import javax.crypto.SecretKey;
 import java.util.function.Supplier;
 
 import static com.github.onsdigital.brian.configuration.Config.getConfig;
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 import static spark.Spark.after;
 import static spark.Spark.before;
 import static spark.Spark.exception;

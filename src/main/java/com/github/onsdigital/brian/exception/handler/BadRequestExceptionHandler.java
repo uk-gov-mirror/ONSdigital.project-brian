@@ -10,7 +10,7 @@ import spark.ExceptionHandler;
 import spark.Request;
 import spark.Response;
 
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
 /**
  * Exception handler for {@link BadRequestException} creates a JSON response using the exception message, sets the

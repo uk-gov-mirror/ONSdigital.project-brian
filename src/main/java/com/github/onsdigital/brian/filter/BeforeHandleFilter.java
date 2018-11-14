@@ -9,7 +9,7 @@ import spark.utils.StringUtils;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
 /**
  * A Filter to pass requests through before invoking the target {@link spark.Route#handle(Request, Response)} method.

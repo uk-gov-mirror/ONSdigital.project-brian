@@ -2,7 +2,7 @@ package com.github.onsdigital.brian.configuration;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static com.github.onsdigital.brian.logging.Logger.logEvent;
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 public class Config {
