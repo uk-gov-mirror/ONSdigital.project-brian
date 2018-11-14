@@ -16,21 +16,19 @@ import java.util.regex.Pattern;
 import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
 /**
- * Created by thomasridd on 10/03/15.
- * <p>
- * METHODS TO READ DATA FROM CSDB STANDARD TEXT FILES
+ * Parse a <i>.csdb</i> file and convert it to a {@link TimeSeriesDataSet}
  */
 public class DataSetReaderCSDB implements DataSetReader {
 
     private static final Pattern p = Pattern.compile("^[0-9]{2}$");
     private static final String CSDB_FILE_CHAR_SET = "cp1252";
 
+
     /**
-     * READS A DATASET FROM A RESOURCE FILE GIVEN AN ABSOLUTE PATH
+     * Parse a <i>.csdb</i> file and convert it to a {@link TimeSeriesDataSet}
      *
-     * @param filePath - THE PATH NAME
-     * @return - THE DATASET REPRESENTATION
-     * @throws IOException
+     * @param filePath the path to the <i>.csdb</i> file to parse.
+     * @param key      the {@link SecretKey} to use to decrypt the file.
      */
     public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException {
         TimeSeriesDataSet timeSeriesDataSet = null;

@@ -17,8 +17,14 @@ import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
 /**
  * Created by thomasridd on 10/03/15.
@@ -34,7 +40,7 @@ public class DataSetReaderCSV implements DataSetReader {
     static final DateFormat DF_MMM_YY = new SimpleDateFormat("MMM yy");
 
     static final String YYYY_DASH = "yyyy-";
-    static final String YYYY_SLASH= "yyyy/";
+    static final String YYYY_SLASH = "yyyy/";
 
 
     /**
@@ -71,7 +77,8 @@ public class DataSetReaderCSV implements DataSetReader {
                 cdidMap.keySet().forEach(cdid -> timeSeriesDataSet.addSeries(timeSeriesMap.get(cdid)));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // TODO feels like this should throw an exception instead of just doing nothing...
+            logEvent(e).path(filePath).error("error while reading CSV file");
         }
 
         return timeSeriesDataSet;
@@ -94,9 +101,9 @@ public class DataSetReaderCSV implements DataSetReader {
         }
 
         Map<String, Integer> map = new HashMap<>();
-        for (int i = 1; i < cdidRow.length; i++)
+        for (int i = 1; i < cdidRow.length; i++) {
             map.put(cdidRow[i], Integer.valueOf(i));
-
+        }
 
         return map;
     }
@@ -105,8 +112,8 @@ public class DataSetReaderCSV implements DataSetReader {
     /**
      * Set timeseries metadata that can be taken from these spreadsheets
      *
-     * @param cdidMap cdids mapped to row number
-     * @param dataMap the data as read from a spreadsheet (column names unknown)
+     * @param cdidMap         cdids mapped to row number
+     * @param dataMap         the data as read from a spreadsheet (column names unknown)
      * @param seriesObjectMap the target series keyed into a map by cdid
      */
     private void setMetaData(Map<String, Integer> cdidMap, Map<String, String[]> dataMap, Map<String, TimeSeriesObject> seriesObjectMap) {
@@ -123,17 +130,17 @@ public class DataSetReaderCSV implements DataSetReader {
     private void getValues(Map<String, Integer> cdidMap, Map<String, String[]> dataMap, Map<String, TimeSeriesObject> seriesObjectMap) {
 
         // For each row
-        for(String row: dataMap.keySet()) {
+        for (String row : dataMap.keySet()) {
 
             // If it is a date row
             if (parseDate(row) != null) {
 
                 // For each timeseries
-                for (String cdid: cdidMap.keySet()) {
+                for (String cdid : cdidMap.keySet()) {
 
                     // Grab the value
                     String value = dataMap.get(row)[cdidMap.get(cdid)];
-                    if( value.trim().length() != 0) {
+                    if (value.trim().length() != 0) {
 
                         TimeSeriesObject timeSeriesObject = seriesObjectMap.get(cdid);
                         timeSeriesObject.addPoint(new TimeSeriesPoint(row.trim(), value));
@@ -147,24 +154,24 @@ public class DataSetReaderCSV implements DataSetReader {
         try {
             String e = StringUtils.lowerCase(StringUtils.trim(date));
             Date result;
-            if(TimeSeries.year.matcher(e).matches()) {
-                result = DF_YYYY.parse(e);                              // new SimpleDateFormat("yyyy")
-            } else if(TimeSeries.month.matcher(e).matches()) {
-                result = DF_YYYY_MMM.parse(e);                          // new SimpleDateFormat("yyyy MMM")
-            } else if(TimeSeries.monthNumVal.matcher(e).matches()) {
-                result = DF_YYYY_MM.parse(e);                           //new SimpleDateFormat("yyyy MM")
-            } else if(TimeSeries.quarter.matcher(e).matches()) {
-                Date parsed = DF_YYYY.parse(e);                         //new SimpleDateFormat("yyyy")
+            if (TimeSeries.year.matcher(e).matches()) {
+                result = DF_YYYY.parse(e);
+            } else if (TimeSeries.month.matcher(e).matches()) {
+                result = DF_YYYY_MMM.parse(e);
+            } else if (TimeSeries.monthNumVal.matcher(e).matches()) {
+                result = DF_YYYY_MM.parse(e);
+            } else if (TimeSeries.quarter.matcher(e).matches()) {
+                Date parsed = DF_YYYY.parse(e);
                 Calendar calendar = Calendar.getInstance(Locale.UK);
                 calendar.setTime(parsed);
-                if(e.endsWith("1")) {
+                if (e.endsWith("1")) {
                     calendar.set(2, 0);
-                } else if(e.endsWith("2")) {
+                } else if (e.endsWith("2")) {
                     calendar.set(2, 3);
-                } else if(e.endsWith("3")) {
+                } else if (e.endsWith("3")) {
                     calendar.set(2, 6);
                 } else {
-                    if(!e.endsWith("4")) {
+                    if (!e.endsWith("4")) {
                         throw new RuntimeException("Didn\'t detect quarter in " + e);
                     }
 
@@ -172,15 +179,15 @@ public class DataSetReaderCSV implements DataSetReader {
                 }
 
                 result = calendar.getTime();
-            } else if(TimeSeries.yearInterval.matcher(e).matches()) {
-                result = DF_YYYY.parse(e.substring(YYYY_DASH.length()));                      //new SimpleDateFormat("yyyy")
-            } else if(TimeSeries.yearPair.matcher(e).matches()) {
-                result = DF_YY.parse(e.substring(YYYY_SLASH.length()));                     // (new SimpleDateFormat("yy"))
+            } else if (TimeSeries.yearInterval.matcher(e).matches()) {
+                result = DF_YYYY.parse(e.substring(YYYY_DASH.length()));
+            } else if (TimeSeries.yearPair.matcher(e).matches()) {
+                result = DF_YY.parse(e.substring(YYYY_SLASH.length()));
             } else {
-                if(!TimeSeries.yearEnd.matcher(e).matches()) {
+                if (!TimeSeries.yearEnd.matcher(e).matches()) {
                     throw new ParseException("Unknown format: \'" + date + "\'", 0);
                 }
-                result = DF_MMM_YY.parse(e.substring("YE ".length()));                      //(new SimpleDateFormat("MMM yy"))
+                result = DF_MMM_YY.parse(e.substring("YE ".length()));
             }
 
             return result;
@@ -199,9 +206,9 @@ public class DataSetReaderCSV implements DataSetReader {
     }
 
 
-
     /**
      * get the row list as a map
+     *
      * @param rows
      * @return
      */

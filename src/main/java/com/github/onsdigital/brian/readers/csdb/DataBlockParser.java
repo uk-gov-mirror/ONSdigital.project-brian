@@ -17,7 +17,7 @@ import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.COM
 import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.NOT_STARTED;
 
 /**
- * Object to parse lines of a CSDB file into {@link TimeSeriesObject}. Each line of a .csdb file is passed to the
+ * Parse lines of a CSDB file into {@link TimeSeriesObject}. Each line of a .csdb file is passed to the
  * {@link DataBlockParser#parseLine(String, int)} which will process the data based on the line type returning true
  * if the current "data block" is completed or else returns false.
  * <p/>
@@ -59,10 +59,11 @@ public class DataBlockParser {
     }
 
     /**
-     * Parse a line of a CSDB file. If the line type is 92 (indicating the start of a block of data) and this
-     * block is already open then the line is not processed and true is returned to indicate that the end of the time
-     * series block has been reached. Otherwise the line is processed and returns false (the block is not yet
-     * compelete).
+     * Parse a line of a CSDB file. Line type <b>92</b> indicates the start or end of a block of data - the parser
+     * will internally track if a block is in progress or not. If a block is already in progress and a line
+     * of type 92 is passed in then the current block is marked as done and true is returned to indicate that
+     * {@link #complete(TimeSeriesDataSet)} can be called. Other line types will be processed and added to current
+     * block.
      */
     public boolean parseLine(String line, int index) throws IOException {
         if (this.state == BLOCK_ENDED || this.state == COMPLETED) {
@@ -92,6 +93,8 @@ public class DataBlockParser {
     /**
      * Call only once the CSDB data block is compeleted. Will add the parsed time series data to the provided
      * TimeSeriesDataSet.
+     *
+     * @throws DataBlockException if the state of the parser is {@link State#NOT_STARTED} or {@link State#COMPLETED}
      */
     public void complete(TimeSeriesDataSet timeSeriesDataSet) throws IOException {
         if (this.state == NOT_STARTED) {
