@@ -4,6 +4,8 @@ import com.github.davidcarboni.cryptolite.Keys;
 import com.github.onsdigital.brian.configuration.Config;
 import com.github.onsdigital.brian.exception.BadRequestException;
 import com.github.onsdigital.brian.exception.handler.BadRequestExceptionHandler;
+import com.github.onsdigital.brian.exception.handler.DataBlockExceptionHandler;
+import com.github.onsdigital.brian.exception.handler.InternalServerErrorHandler;
 import com.github.onsdigital.brian.filter.AfterHandleFilter;
 import com.github.onsdigital.brian.filter.BeforeHandleFilter;
 import com.github.onsdigital.brian.handlers.CsdbHandler;
@@ -13,6 +15,7 @@ import com.github.onsdigital.brian.handlers.TimeSeriesConverter;
 import com.github.onsdigital.brian.handlers.responses.JsonTransformer;
 import com.github.onsdigital.brian.handlers.responses.Message;
 import com.github.onsdigital.brian.readers.DataSetReader;
+import com.github.onsdigital.brian.readers.csdb.DataBlockException;
 import com.github.onsdigital.brian.readers.csdb.DataSetReaderCSDB;
 import spark.Route;
 
@@ -25,6 +28,7 @@ import static spark.Spark.after;
 import static spark.Spark.before;
 import static spark.Spark.exception;
 import static spark.Spark.get;
+import static spark.Spark.internalServerError;
 import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
@@ -47,6 +51,10 @@ public class Application {
         after("/*", afterHandleFilter);
 
         exception(BadRequestException.class, new BadRequestExceptionHandler(afterHandleFilter));
+        exception(DataBlockException.class, new DataBlockExceptionHandler(afterHandleFilter));
+
+        internalServerError((request, response) -> new InternalServerErrorHandler(afterHandleFilter)
+                .handle(request, response));
 
         registerRoutes();
 

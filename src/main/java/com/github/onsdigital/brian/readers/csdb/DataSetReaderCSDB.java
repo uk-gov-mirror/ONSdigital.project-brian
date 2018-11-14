@@ -50,9 +50,10 @@ public class DataSetReaderCSDB implements DataSetReader {
                     .info("time series dataset successfully generated from CSDB file");
             return timeSeriesDataSet;
 
-        } catch (Exception e) {
-            logEvent(e).path(filePath).error("error while attempting to parse CSDB file");
+        } catch (DataBlockException e) {
             throw e;
+        } catch (IOException e) {
+            throw new IOException("error while attempting to parse CSDB file", e);
         }
     }
 
