@@ -106,6 +106,9 @@ public class DataBlockParser {
     }
 
 
+    /**
+     * Process any remaining data that might be held in the parser.
+     */
     public void flush(TimeSeriesDataSet timeSeriesDataSet) throws IOException {
         // if there is an open block that isn't complete - invoke complete to flush the remaining data.
         if (this.state == BLOCK_STARTED || this.state == BLOCK_ENDED) {
