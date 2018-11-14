@@ -11,33 +11,51 @@ import static com.github.onsdigital.brian.logging.Logger.logEvent;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_LENGTH_ERROR;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_LENGTH_ERROR_UNKNOWN_TYPE;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_TYPE_INT_PARSE_ERROR;
+import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.BLOCK_ENDED;
+import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.BLOCK_STARTED;
+import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.COMPLETED;
+import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.NOT_STARTED;
 
+/**
+ * Object to parse lines of a CSDB file into {@link TimeSeriesObject}. Each line of a .csdb file is passed to the
+ * {@link DataBlockParser#parseLine(String, int)} which will process the data based on the line type returning true
+ * if the current "data block" is completed or else returns false.
+ * <p/>
+ * When {@link DataBlockParser#parseLine(String, int)} returns true the caller should then invoke
+ * {@link DataBlockParser#complete(TimeSeriesDataSet)} to retreive the {@link TimeSeriesDataSet} generated from this
+ * block - this instance should then be discarded and a new one instatitated for the next block.
+ */
 public class DataBlockParser {
 
-    /* Indicated the start of a data block & the end of the current one. Contains the series taxi value */
+    /* 92 indicates the start of a data block & the end of the current one. Contains the series taxi value */
     static final int TYPE_92 = 92;
 
-    /* Contains the series name */
+    /* 93 contains the series name */
     static final int TYPE_93 = 93;
 
-    /* Contains the series date label data */
+    /* 96 contains the series date label data */
     static final int TYPE_96 = 96;
 
-    /* Contains the time series point values */
+    /* 97 contains the time series point values */
     static final int TYPE_97 = 97;
 
+    private TimeSeriesPointGenerator timeSeriesPointGenerator;
     private DateLabel dateLabel;
     private TimeSeriesObject series;
-    private boolean isOpen;
-    private boolean isComplete;
+    private State state;
 
     /**
      * Construct a new CSDBDataBlockParser.
      */
     public DataBlockParser() {
-        this.series = new TimeSeriesObject();
-        this.isOpen = false; // the data block is not open until the first line type 92 is added
-        this.isComplete = false;
+        this(new TimeSeriesObject(), null, (dateLabel, val) -> new TimeSeriesPoint(dateLabel.getNextIteration(), val));
+    }
+
+    DataBlockParser(TimeSeriesObject timeSeriesObject, DateLabel dateLabel, TimeSeriesPointGenerator timeSeriesPointGenerator) {
+        this.timeSeriesPointGenerator = timeSeriesPointGenerator;
+        this.series = timeSeriesObject;
+        this.dateLabel = dateLabel;
+        this.state = NOT_STARTED;
     }
 
     /**
@@ -47,6 +65,10 @@ public class DataBlockParser {
      * compelete).
      */
     public boolean parseLine(String line, int index) throws IOException {
+        if (this.state == BLOCK_ENDED || this.state == COMPLETED) {
+            throw new DataBlockException("complete invoked on data block that has been completed");
+        }
+
         int lineType = getLineType(line, index);
 
         switch (lineType) {
@@ -67,39 +89,28 @@ public class DataBlockParser {
         }
     }
 
-
     /**
      * Call only once the CSDB data block is compeleted. Will add the parsed time series data to the provided
      * TimeSeriesDataSet.
      */
     public void complete(TimeSeriesDataSet timeSeriesDataSet) throws IOException {
-        if (!isOpen) {
+        if (this.state == NOT_STARTED) {
             throw new DataBlockException("complete invoked on data block that has not been started");
         }
 
-        if (isComplete) {
+        if (this.state == COMPLETED) {
             throw new DataBlockException("complete invoked on data block that has already been competed, " +
                     "series: %s", series.taxi);
         }
+        addToTimeSeriesDataSet(timeSeriesDataSet);
+    }
 
-        try {
-            // combine it with an existing series
-            if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
-                TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
 
-                for (TimeSeriesPoint point : series.points.values()) {
-                    existing.addPoint(point);
-                }
-                return;
-
-            }
-            // or create a new series
-            timeSeriesDataSet.addSeries(series);
-        } finally {
-            logEvent().parameter("taxi", series.taxi)
-                    .parameter("name", series.name)
-                    .trace("completed parsing time series data block");
-            isComplete = true;
+    public void flush(TimeSeriesDataSet timeSeriesDataSet) throws IOException {
+        // if there is an open block that isn't complete - invoke complete to flush the remaining data.
+        if (this.state == BLOCK_STARTED || this.state == BLOCK_ENDED) {
+            logEvent().info("flushing dataBlockParser");
+            complete(timeSeriesDataSet);
         }
     }
 
@@ -128,14 +139,38 @@ public class DataBlockParser {
         }
     }
 
+    private void addToTimeSeriesDataSet(TimeSeriesDataSet timeSeriesDataSet) {
+        try {
+            // combine it with an existing series
+            if (timeSeriesDataSet.getTimeSeries().containsKey(series.taxi)) {
+                TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
+
+                for (TimeSeriesPoint point : series.points.values()) {
+                    existing.addPoint(point);
+                }
+                return;
+
+            }
+            // or create a new series
+            timeSeriesDataSet.addSeries(series);
+        } finally {
+            logEvent().parameter("taxi", series.taxi)
+                    .parameter("name", series.name)
+                    .trace("completed parsing time series data block");
+
+            this.state = COMPLETED;
+        }
+    }
+
     /**
      * parse a line type '92' - extract the series taxi value from the line. If open return true to indicate the
      * current block is completed and a new block should begin.
      */
-    boolean parseLineType92(String line, int startIndex) throws IOException {
-        if (isOpen) {
-            isOpen = false;
-            isComplete = true;
+    private boolean parseLineType92(String line, int startIndex) throws IOException {
+        if (BLOCK_STARTED == this.state) {
+            // If the block parsing is started and we encourter another line typw 92 - then we have reached the end
+            // of the current block.
+            this.state = BLOCK_ENDED;
             return true;
         }
 
@@ -144,7 +179,7 @@ public class DataBlockParser {
         }
 
         this.series.taxi = line.substring(2, 6);
-        this.isOpen = true;
+        this.state = BLOCK_STARTED;
         return false;
     }
 
@@ -154,6 +189,10 @@ public class DataBlockParser {
     private void parseLineType93(String line, int lineIndex) throws IOException {
         if (line.length() < 2) {
             throw new DataBlockException(LINE_LENGTH_ERROR, TYPE_93, 2, line.length(), lineIndex);
+        }
+        if (line.length() < 3) {
+            logEvent().index(lineIndex).parameter("line", line).parameter("lineType", TYPE_93)
+                    .warn("time series object has no name value - please check if this is expected");
         }
         this.series.name = line.substring(2);
     }
@@ -185,9 +224,13 @@ public class DataBlockParser {
         while (values.length() > 9) {
             String oneValue = values.substring(0, 10).trim();
 
-            this.series.addPoint(new TimeSeriesPoint(dateLabel.getNextIteration(), oneValue));
+            series.addPoint(timeSeriesPointGenerator.create(dateLabel, oneValue));
             values = values.substring(10);
         }
+    }
+
+    public State getState() {
+        return state;
     }
 
     DateLabel getDateLabel() {
@@ -198,11 +241,32 @@ public class DataBlockParser {
         return series;
     }
 
-    boolean isOpen() {
-        return isOpen;
-    }
+    /**
+     * Constants representing the possible states of {@link DataBlockParser}
+     */
+    enum State {
 
-    boolean isComplete() {
-        return isComplete;
+        /**
+         * Initial state - a data block is not started until a line type 92 is provided.
+         */
+        NOT_STARTED,
+
+        /**
+         * Once an inital line type 92 is passed to the parser then the parse moves to this state to indicate it is
+         * currently processing a block of data.
+         */
+        BLOCK_STARTED,
+
+        /**
+         * If the parser is in {@link State#BLOCK_STARTED} and it receieves another line type 92 - this indicates the
+         * end current block of data. While in this state the parse will reject any further input.
+         */
+        BLOCK_ENDED,
+
+        /**
+         * The final state - once the data block as been added to the parent time series data set the state is set to
+         * completed - the parser will no longer do anything.
+         */
+        COMPLETED,
     }
 }

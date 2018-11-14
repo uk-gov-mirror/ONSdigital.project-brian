@@ -41,11 +41,13 @@ public class DataSetReaderCSDB implements DataSetReader {
                 InputStreamReader isReader = new InputStreamReader(decryptedIS, CSDB_FILE_CHAR_SET);
                 BufferedReader bufR = new BufferedReader(isReader);
         ) {
-            logEvent().path(filePath).info("generating Time series dataset from CSDB file");
+            logEvent().path(filePath).info("generating time series dataset from CSDB file");
 
-            timeSeriesDataSet = parseCSDBFile(bufR);
+            timeSeriesDataSet = generateTimeSeriesDataSet(bufR);
 
-            logEvent().path(filePath).info("time series dataset successfully generated from CSDB file");
+            logEvent().path(filePath)
+                    .parameter("name", timeSeriesDataSet.name)
+                    .info("time series dataset successfully generated from CSDB file");
             return timeSeriesDataSet;
 
         } catch (Exception e) {
@@ -55,7 +57,7 @@ public class DataSetReaderCSDB implements DataSetReader {
     }
 
 
-    private TimeSeriesDataSet parseCSDBFile(BufferedReader reader) throws IOException {
+    private TimeSeriesDataSet generateTimeSeriesDataSet(BufferedReader reader) throws IOException {
         TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
         DataBlockParser dataBlockParser = new DataBlockParser();
 
@@ -74,11 +76,7 @@ public class DataSetReaderCSDB implements DataSetReader {
             index++;
         }
 
-        // flush any remaining entry
-        if (dataBlockParser.isOpen() && !dataBlockParser.isComplete()) {
-            dataBlockParser.complete(timeSeriesDataSet);
-        }
-
+        dataBlockParser.flush(timeSeriesDataSet);
         return timeSeriesDataSet;
     }
 

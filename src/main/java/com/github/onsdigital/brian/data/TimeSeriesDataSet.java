@@ -37,4 +37,7 @@ public class TimeSeriesDataSet implements Cloneable {
         return timeSeries.get(taxi);
     }
 
+    public HashMap<String, TimeSeriesObject> getTimeSeries() {
+        return timeSeries;
+    }
 }
