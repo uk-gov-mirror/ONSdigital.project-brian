@@ -103,6 +103,9 @@ public class DataBlockParser {
                     "series: %s", series.taxi);
         }
         addToTimeSeriesDataSet(timeSeriesDataSet);
+        logEvent().parameter("series", series.name)
+                .parameter("taxi", series.taxi)
+                .info("csdb data block completed");
     }
 
 
@@ -112,7 +115,7 @@ public class DataBlockParser {
     public void flush(TimeSeriesDataSet timeSeriesDataSet) throws IOException {
         // if there is an open block that isn't complete - invoke complete to flush the remaining data.
         if (this.state == BLOCK_STARTED || this.state == BLOCK_ENDED) {
-            logEvent().info("flushing dataBlockParser");
+            logEvent().parameter("series", series.name).parameter("taxi", series.taxi).info("flushing dataBlockParser");
             complete(timeSeriesDataSet);
         }
     }
@@ -130,9 +133,6 @@ public class DataBlockParser {
         }
 
         String lineTypeStr = line.substring(0, 2);
-        if (lineTypeStr.contains(" ")) {
-            logEvent().warn("line containing space");
-        }
         lineTypeStr = lineTypeStr.trim();
 
         try {

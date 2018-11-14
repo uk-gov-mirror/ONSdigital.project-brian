@@ -13,7 +13,6 @@ public class DateLabel {
     static final String MQA_MONTH_FORMAT = "%d %02d";
     static final String MQA_OTHER_FORMAT = "%d Q%d";
 
-
     private int startInd;
     private int year;
     private String mqa;
