@@ -74,12 +74,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Restolino Stuff -->
-<!--        <dependency>
-            <groupId>com.github.davidcarboni</groupId>
-            <artifactId>restolino</artifactId>
-            <version>0.1.8</version>
-        </dependency>-->
         <dependency>
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
@@ -172,11 +166,6 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <archive>
-<!--                        <manifest>
-                            <mainClass>com.github.davidcarboni.restolino.Main</mainClass>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>-->
                         <manifest>
                             <mainClass>com.github.onsdigital.brian.Application</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
