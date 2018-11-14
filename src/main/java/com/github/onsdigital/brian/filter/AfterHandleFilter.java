@@ -10,7 +10,13 @@ import java.time.LocalDateTime;
 
 import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
+/**
+ * A filter to be applied after a {@link spark.Route#handle(Request, Response)} method is called. Captures and
+ * logs request duration metrics, and other useful debugging information.
+ */
 public class AfterHandleFilter implements Filter, QuietFilter {
+
+    private static final String REQ_RECEIVED_KEY = "requestRecieved";
 
     @Override
     public void handle(Request request, Response response) throws Exception {
@@ -18,7 +24,7 @@ public class AfterHandleFilter implements Filter, QuietFilter {
     }
 
     public void handleQuietly(Request request, Response response) {
-        LocalDateTime start = LocalDateTime.parse(MDC.get("requestRecieved"));
+        LocalDateTime start = LocalDateTime.parse(MDC.get(REQ_RECEIVED_KEY));
         LocalDateTime end = LocalDateTime.now();
         Duration requestTime = Duration.between(start, end);
 

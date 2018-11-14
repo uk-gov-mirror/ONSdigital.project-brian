@@ -12,13 +12,23 @@ import spark.Response;
 
 import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
+/**
+ * Exception handler for {@link BadRequestException} creates a JSON response using the exception message, sets the
+ * response status as 400 and send passes the request & response through a post handle filter to capture & log
+ * response details before returning to the caller.
+ */
 public class BadRequestExceptionHandler implements ExceptionHandler<BadRequestException> {
 
-    private QuietFilter postHandleFilter;
+    private QuietFilter afterHandleFilter;
     private Gson g;
 
-    public BadRequestExceptionHandler(QuietFilter postHandleFilter) {
-        this.postHandleFilter = postHandleFilter;
+    /**
+     * Construct a new handler.
+     *
+     * @param afterHandleFilter the filter to pass the request/response through before returning to the caller.
+     */
+    public BadRequestExceptionHandler(QuietFilter afterHandleFilter) {
+        this.afterHandleFilter = afterHandleFilter;
         this.g = new GsonBuilder().setPrettyPrinting().create();
     }
 
@@ -29,6 +39,6 @@ public class BadRequestExceptionHandler implements ExceptionHandler<BadRequestEx
         resp.type("application/json");
         resp.status(HttpStatus.BAD_REQUEST_400);
 
-        postHandleFilter.handleQuietly(req, resp);
+        afterHandleFilter.handleQuietly(req, resp);
     }
 }

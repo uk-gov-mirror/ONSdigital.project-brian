@@ -12,11 +12,21 @@ import spark.Response;
 
 import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
+/**
+ * Exception handler for {@link DataBlockException} creates a JSON response using the exception message, sets the
+ * response status as 400 and send passes the request & response through an 'after handle filter' to capture & log
+ * response details before returning to the caller.
+ */
 public class DataBlockExceptionHandler implements ExceptionHandler<DataBlockException> {
 
     private QuietFilter postHandleFilter;
     private Gson g;
 
+    /**
+     * Construct a new handler instance.
+     *
+     * @param postHandleFilter The {@link QuietFilter} to apply before returning to the caller.
+     */
     public DataBlockExceptionHandler(QuietFilter postHandleFilter) {
         this.postHandleFilter = postHandleFilter;
         this.g = new GsonBuilder().setPrettyPrinting().create();

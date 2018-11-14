@@ -70,7 +70,6 @@ public class TimeSeriesPoint {
 
 
         // CHECK FOR THE QUARTER USING A REGEX
-        //Matcher matcher = Pattern.compile("q\\d{1}").matcher(lowerLabel);
         Matcher matcher = QUARTER_REGEX.matcher(lowerLabel);
         if (matcher.find()) {
             quarter = matcher.group(0).toUpperCase();
@@ -98,8 +97,6 @@ public class TimeSeriesPoint {
 
         // CHECK FOR MONTHS - OPTION 2 - MONTH LABELS
         if (!isQuarter & !isMonth) { //
-            //matcher = Pattern.compile("[a-z]{3}").matcher(lowerLabel); // SPEED THINGS UP BY CHECKING WHETHER A
-            // MONTH CAN EXIST
             matcher = MONTHS_REGEX.matcher(lowerLabel); // SPEED THINGS UP BY CHECKING WHETHER A MONTH CAN EXIST
             if (matcher.find()) {
                 for (int i = 0; i < MONTHS.length; i++) {
@@ -114,7 +111,6 @@ public class TimeSeriesPoint {
         }
 
         // TRY AND WORK OUT THE RELEVANT YEAR - IF A YEAR IS FOUND RETURN TRUE
-        //matcher = Pattern.compile("\\d{4}").matcher(timeLabel);
         matcher = YEARS_REGEX.matcher(timeLabel);
 
         if (matcher.find()) {
@@ -173,7 +169,7 @@ public class TimeSeriesPoint {
                 startMonth += 1;
             }
             return String.format("%d-%s", startYear, OUTPUT_MONTHS[startMonth - 1]);
-        } else if (pt.period.equals(TimeSeriesPoint.PERIOD_QUARTERS)) { // FOR QUARTER LABELS
+        } else if (pt.period.equals(PERIOD_QUARTERS)) { // FOR QUARTER LABELS
             int nextQuarter = (((startMonth + 3 - 1) / 3) + 1);
             if (nextQuarter == 5) {
                 nextQuarter = 1;

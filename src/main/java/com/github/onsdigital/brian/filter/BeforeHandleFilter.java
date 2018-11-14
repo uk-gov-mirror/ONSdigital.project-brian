@@ -11,6 +11,11 @@ import java.util.UUID;
 
 import static com.github.onsdigital.brian.logging.Logger.logEvent;
 
+/**
+ * A Filter to pass requests through before invoking the target {@link spark.Route#handle(Request, Response)} method.
+ * Populates the request ID if its does not exist, Captures the time the request was received (used later in metrics
+ * logging) and logs other useful debugging information.
+ */
 public class BeforeHandleFilter implements Filter {
 
     static final String REQUEST_ID_HEADER = "X-Request-Id";
