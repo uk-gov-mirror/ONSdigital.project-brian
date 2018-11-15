@@ -6,23 +6,21 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class DateLabel {
 
-    static final String YEAR = "Y";
-    static final String ANNUAL = "A";
-    static final String MONTH = "M";
 
     static final String MQA_MONTH_FORMAT = "%d %02d";
     static final String MQA_OTHER_FORMAT = "%d Q%d";
 
     private int startInd;
     private int year;
-    private String mqa;
+    private Period period;
     private int iteration;
 
-    public DateLabel(int year, int startInd, String mqa) {
-        this.iteration = 1;
-        this.startInd = startInd;
+
+    public DateLabel(Period period, int year, int startInd) {
+        this.period = period;
         this.year = year;
-        this.mqa = mqa;
+        this.startInd = startInd;
+        this.iteration = 1;
     }
 
     public int getStartInd() {
@@ -31,10 +29,6 @@ public class DateLabel {
 
     public int getYear() {
         return year;
-    }
-
-    public String getMqa() {
-        return mqa;
     }
 
     public int getIteration() {
@@ -48,16 +42,30 @@ public class DateLabel {
     }
 
     private String getDateStr() {
-        if (YEAR.equals(mqa) || ANNUAL.equals(mqa)) {
-            return String.valueOf(year + (iteration - 1));
+        switch (period) {
+            case YEAR:
+                // fall through to annual
+            case ANNUAL:
+                return getYearLabel();
+            case MONTH:
+                return getMonthLabel();
+            default:
+                // default to QUARTER
+                return getQuaterLabel();
         }
+    }
 
-        if (MONTH.equals(mqa)) {
-            int finalMonth = (startInd + iteration - 2) % 12;
-            int yearsTaken = (startInd + iteration - 2) / 12;
-            return String.format(MQA_MONTH_FORMAT, (year + yearsTaken), (finalMonth + 1));
-        }
+    private String getYearLabel() {
+        return String.valueOf(year + (iteration - 1));
+    }
 
+    private String getMonthLabel() {
+        int finalMonth = (startInd + iteration - 2) % 12;
+        int yearsTaken = (startInd + iteration - 2) / 12;
+        return String.format(MQA_MONTH_FORMAT, (year + yearsTaken), (finalMonth + 1));
+    }
+
+    private String getQuaterLabel() {
         int finalQuarter = (startInd + iteration - 2) % 4;
         int yearsTaken = (startInd + iteration - 2) / 4;
         return String.format(MQA_OTHER_FORMAT, (year + yearsTaken), (finalQuarter + 1));
@@ -65,9 +73,13 @@ public class DateLabel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DateLabel dateLabel = (DateLabel) o;
 
@@ -75,7 +87,7 @@ public class DateLabel {
                 .append(getStartInd(), dateLabel.getStartInd())
                 .append(getYear(), dateLabel.getYear())
                 .append(getIteration(), dateLabel.getIteration())
-                .append(getMqa(), dateLabel.getMqa())
+                .append(period, dateLabel.period)
                 .isEquals();
     }
 
@@ -84,7 +96,7 @@ public class DateLabel {
         return new HashCodeBuilder(17, 37)
                 .append(getStartInd())
                 .append(getYear())
-                .append(getMqa())
+                .append(period)
                 .append(getIteration())
                 .toHashCode();
     }
@@ -94,7 +106,7 @@ public class DateLabel {
         return new ToStringBuilder(this)
                 .append("startInd", startInd)
                 .append("year", year)
-                .append("mqa", mqa)
+                .append("period", period)
                 .append("iteration", iteration)
                 .toString();
     }

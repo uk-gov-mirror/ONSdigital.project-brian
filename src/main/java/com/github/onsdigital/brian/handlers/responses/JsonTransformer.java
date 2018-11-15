@@ -1,6 +1,7 @@
 package com.github.onsdigital.brian.handlers.responses;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import spark.ResponseTransformer;
 
 /**
@@ -17,6 +18,7 @@ public class JsonTransformer implements ResponseTransformer {
      */
     private JsonTransformer() {
         this.gson = new Gson();
+        //this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     @Override

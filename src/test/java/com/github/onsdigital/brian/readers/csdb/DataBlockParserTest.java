@@ -173,7 +173,7 @@ public class DataBlockParserTest {
         assertFalse(parser.parseLine(LINE_TYPE_96, 1));
 
         assertThat(parser.getState(), equalTo(BLOCK_STARTED));
-        assertThat("incorrect DateLabel generated", parser.getDateLabel(), equalTo(new DateLabel(1981, 1, "A")));
+        assertThat("incorrect DateLabel generated", parser.getDateLabel(), equalTo(new DateLabel(Period.ANNUAL, 1981, 1)));
     }
 
     /**
@@ -246,7 +246,7 @@ public class DataBlockParserTest {
         when(timeSeriesPointGenerator.create(any(DateLabel.class), anyString()))
                 .thenReturn(point);
 
-        DateLabel expectedDateLabel = new DateLabel(1981, 1, "A");
+        DateLabel expectedDateLabel = new DateLabel(Period.ANNUAL, 1981, 1);
 
         parser = new DataBlockParser(timeSeriesObject, null, timeSeriesPointGenerator);
 

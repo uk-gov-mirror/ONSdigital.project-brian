@@ -248,12 +248,6 @@ public class Csv implements Iterable<Map<String, String>> {
                             double d = Double.parseDouble(value);
                             value = format.format(d);
                         }
-
-                        // FIXME - is this needed? It doesn't seem to actually do anything.
-                        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                            // System.out.println("Value: " + value);
-                            // System.out.println();
-                        }
                         cells[c] = value.trim();
                     }
                 }

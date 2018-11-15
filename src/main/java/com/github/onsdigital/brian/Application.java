@@ -33,12 +33,18 @@ import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
 
+/**
+ * The main class - start all the things.
+ */
 public class Application {
 
     public static void main(String[] args) throws Exception {
         createApp();
     }
 
+    /**
+     * The root class of the application. Defines the request filters, exception handlers, API routes etc.
+     */
     private static void createApp() throws Exception {
         logEvent().info("initialising project-brian");
         Config appConfig = getConfig();

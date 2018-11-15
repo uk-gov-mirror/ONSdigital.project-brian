@@ -174,7 +174,7 @@ public class DataBlockParser {
      */
     private boolean parseLineType92(String line, int startIndex) throws IOException {
         if (BLOCK_STARTED == this.state) {
-            // If the block parsing is started and we encourter another line typw 92 - then we have reached the end
+            // If the block parsing is started and we encourter another line type 92 - then we have reached the end
             // of the current block.
             this.state = BLOCK_ENDED;
             return true;
@@ -211,11 +211,11 @@ public class DataBlockParser {
             throw new DataBlockException(LINE_LENGTH_ERROR, TYPE_96, 11, line.length(), lineIndex);
         }
 
-        String mqa = line.substring(2, 3);
+        Period period = Period.fromLine(line);
         int year = Integer.parseInt(line.substring(4, 8));
         int startInd = Integer.parseInt(line.substring(9, 11).trim());
 
-        this.dateLabel = new DateLabel(year, startInd, mqa);
+        this.dateLabel = new DateLabel(period, year, startInd);
     }
 
     /**

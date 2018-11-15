@@ -9,6 +9,10 @@ import spark.utils.StringUtils;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.github.onsdigital.brian.filter.FilterKeys.REQUEST_ID_HEADER;
+import static com.github.onsdigital.brian.filter.FilterKeys.REQUEST_RECIEVED_KEY;
+import static com.github.onsdigital.brian.filter.FilterKeys.REQ_METHOD_KEY;
+import static com.github.onsdigital.brian.filter.FilterKeys.REQ_RECEIVED_MSG;
 import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
 /**
@@ -18,17 +22,14 @@ import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
  */
 public class BeforeHandleFilter implements Filter {
 
-    static final String REQUEST_ID_HEADER = "X-Request-Id";
-    static final String REQUEST_RECIEVED_KEY = "requestRecieved";
-
     @Override
     public void handle(Request request, Response response) throws Exception {
         captureRequestStartTime();
         addRequestID(request);
 
-        logEvent().parameter("requestMethod", request.requestMethod())
-                .parameter("uri", request.uri())
-                .info("inbound request details");
+        logEvent().uri(request.uri())
+                .parameter(REQ_METHOD_KEY, request.requestMethod())
+                .info(REQ_RECEIVED_MSG);
     }
 
     private void addRequestID(Request request) {

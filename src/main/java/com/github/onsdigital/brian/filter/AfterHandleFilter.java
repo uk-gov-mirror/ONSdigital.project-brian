@@ -8,6 +8,11 @@ import spark.Response;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import static com.github.onsdigital.brian.filter.FilterKeys.REQ_COMPLETE_MSG;
+import static com.github.onsdigital.brian.filter.FilterKeys.REQ_METHOD_KEY;
+import static com.github.onsdigital.brian.filter.FilterKeys.REQ_RECEIVED_KEY;
+import static com.github.onsdigital.brian.filter.FilterKeys.RESP_TIME_KEY;
+import static com.github.onsdigital.brian.filter.FilterKeys.STATUS_KEY;
 import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 
 /**
@@ -15,8 +20,6 @@ import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
  * logs request duration metrics, and other useful debugging information.
  */
 public class AfterHandleFilter implements Filter, QuietFilter {
-
-    private static final String REQ_RECEIVED_KEY = "requestRecieved";
 
     @Override
     public void handle(Request request, Response response) throws Exception {
@@ -28,10 +31,10 @@ public class AfterHandleFilter implements Filter, QuietFilter {
         LocalDateTime end = LocalDateTime.now();
         Duration requestTime = Duration.between(start, end);
 
-        logEvent().parameter("requestMethod", request.requestMethod())
-                .parameter("uri", request.uri())
-                .parameter("responseStatus", response.status())
-                .parameter("responseTimeMillis", requestTime.toMillis())
-                .info("completed request details");
+        logEvent().uri(request.uri())
+                .parameter(REQ_METHOD_KEY, request.requestMethod())
+                .parameter(STATUS_KEY, response.status())
+                .parameter(RESP_TIME_KEY, requestTime.toMillis())
+                .info(REQ_COMPLETE_MSG);
     }
 }

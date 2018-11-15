@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import spark.staticfiles.MimeType;
 
 /**
  * Internal server error Exception handler.  Creates a JSON response message, sets the appropriate response status and
@@ -15,7 +16,7 @@ import spark.Route;
  */
 public class InternalServerErrorHandler implements Route {
 
-    static final Message INTERNAL_SERVER_ERROR = new Message("internal server error yo");
+    static final Message INTERNAL_SERVER_ERROR = new Message("internal server error");
 
     private QuietFilter quietFilter;
     private Gson g;

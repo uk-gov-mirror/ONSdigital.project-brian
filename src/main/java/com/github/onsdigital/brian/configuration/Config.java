@@ -5,6 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
+/**
+ * Application configuration.
+ */
 public class Config {
 
     private static Config config;
@@ -18,10 +21,16 @@ public class Config {
                 .info("loading project-brian configuration");
     }
 
+    /**
+     * @return the port to run the application on.
+     */
     public int getPort() {
         return this.port;
     }
 
+    /**
+     * Return a singleton instance of the configuration object.
+     */
     public static Config getConfig() {
         if (config == null) {
             synchronized (Config.class) {
