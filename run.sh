@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export JAVA_OPTS="-Xmx1024m -Xdebug -Xrunjdwp:transport=dt_socket,address=8008,server=y,suspend=n"
-export PORT="8083"
+export PORT="${PORT:-8083}"
 
 # Restolino configuration
 export RESTOLINO_STATIC="src/main/resources/files"
