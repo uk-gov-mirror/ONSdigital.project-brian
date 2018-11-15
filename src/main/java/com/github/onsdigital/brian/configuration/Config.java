@@ -11,13 +11,18 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 public class Config {
 
     private static Config config;
+    private static final String PORT_KEY = "PORT";
+    private static final String PRETTY_JSON_RESPONSE_KEY = "PRETTY_JSON_FORMAT";
 
     private final int port;
+    private final boolean prettyJSONFormat;
 
     private Config() {
-        this.port = getEnvInteger("PORT", 8083);
+        this.port = getEnvInteger(PORT_KEY, 8083);
+        this.prettyJSONFormat = Boolean.valueOf(getEnvString(PRETTY_JSON_RESPONSE_KEY, "false"));
 
-        logEvent().parameter("port", port)
+        logEvent().parameter(PORT_KEY, port)
+                .parameter(PRETTY_JSON_RESPONSE_KEY, prettyJSONFormat)
                 .info("loading project-brian configuration");
     }
 
@@ -26,6 +31,10 @@ public class Config {
      */
     public int getPort() {
         return this.port;
+    }
+
+    public boolean isPrettyJSONFormat() {
+        return prettyJSONFormat;
     }
 
     /**

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import spark.ResponseTransformer;
 
+import static com.github.onsdigital.brian.configuration.Config.getConfig;
+
 /**
  * Implementation of the Spark {@link JsonTransformer}. Used by the Spark framework to convert response objects to JSON.
  */
@@ -17,8 +19,13 @@ public class JsonTransformer implements ResponseTransformer {
      * Singleton instance - use {@link #getInstance()} to obtain it.
      */
     private JsonTransformer() {
-        this.gson = new Gson();
-        //this.gson = new GsonBuilder().setPrettyPrinting().create();
+        GsonBuilder builder = new GsonBuilder();
+
+        if (getConfig().isPrettyJSONFormat()) {
+            builder.setPrettyPrinting();
+        }
+
+        this.gson = builder.create();
     }
 
     @Override

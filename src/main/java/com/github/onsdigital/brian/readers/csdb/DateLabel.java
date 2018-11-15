@@ -6,7 +6,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class DateLabel {
 
-
     static final String MQA_MONTH_FORMAT = "%d %02d";
     static final String MQA_OTHER_FORMAT = "%d Q%d";
 
@@ -15,7 +14,9 @@ public class DateLabel {
     private Period period;
     private int iteration;
 
-
+    /**
+     * Construct a new DateLabel instance using the values provided.
+     */
     public DateLabel(Period period, int year, int startInd) {
         this.period = period;
         this.year = year;
