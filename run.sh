@@ -11,7 +11,7 @@ export PACKAGE_PREFIX=com.github.onsdigital.brian.handler
 export DP_COLOURED_LOGGING=true
 export DP_LOGGING_FORMAT=pretty_json
 
-## Pretty format the JSOP responses - probably not recomended for production
+## Pretty format the JSON responses - probably not recomended for production
 export PRETTY_JSON_FORMAT=true
 
 #Development: reloadable
