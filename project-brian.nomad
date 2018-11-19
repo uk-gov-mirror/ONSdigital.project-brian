@@ -3,11 +3,6 @@ job "project-brian" {
   region      = "eu"
   type        = "service"
 
-  constraint {
-    attribute = "${meta.has_disk}"
-    value     = true
-  }
-
   update {
     min_healthy_time = "30s"
     healthy_deadline = "2m"
@@ -21,7 +16,6 @@ job "project-brian" {
 
     constraint {
       attribute = "${node.class}"
-      operator  = "regexp"
       value     = "publishing"
     }
 
