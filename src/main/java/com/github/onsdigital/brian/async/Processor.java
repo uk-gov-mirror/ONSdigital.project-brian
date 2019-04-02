@@ -18,7 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 
 /**
  * Created by thomasridd on 18/03/15.
@@ -183,7 +184,7 @@ public class Processor implements Runnable {
     public void run() {
 
         try {
-            logEvent().path(file).info("beginning processing");
+            info().data("path", file.toString()).log("beginning processing");
             // USE WINDOWS ENCODING TO READ THE FILE BECAUSE IT IS A WIN CSDB
             List<String> lines = FileUtils.readLines(file.toFile(), "cp1252");
             lines.add("92"); // THROW A 92 ON THE END
@@ -218,10 +219,9 @@ public class Processor implements Runnable {
 
                 }
             }
-            logEvent().path(file).info("processing completed successfully");
+            info().data("path", file.toString()).log("processing completed successfully");
         } catch (IOException e) {
-            e.printStackTrace();
-            logEvent(e).path(file).error("error while processing file");
+            error().exception(e).data("path", file.toString()).log("error proccessing file");
         }
     }
 

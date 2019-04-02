@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_LENGTH_ERROR;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_LENGTH_ERROR_UNKNOWN_TYPE;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockException.LINE_TYPE_INT_PARSE_ERROR;
@@ -15,6 +14,8 @@ import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.BLO
 import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.BLOCK_STARTED;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.COMPLETED;
 import static com.github.onsdigital.brian.readers.csdb.DataBlockParser.State.NOT_STARTED;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 
 /**
  * Parse lines of a CSDB file into {@link TimeSeriesObject}. Each line of a .csdb file is passed to the
@@ -106,9 +107,9 @@ public class DataBlockParser {
                     "series: %s", series.taxi);
         }
         addToTimeSeriesDataSet(timeSeriesDataSet);
-        logEvent().parameter("series", series.name)
-                .parameter("taxi", series.taxi)
-                .info("csdb data block completed");
+        info().data("series", series.name)
+                .data("taxi", series.taxi)
+                .log("csdb data block completed");
     }
 
 
@@ -118,7 +119,9 @@ public class DataBlockParser {
     public void flush(TimeSeriesDataSet timeSeriesDataSet) throws IOException {
         // if there is an open block that isn't complete - invoke complete to flush the remaining data.
         if (this.state == BLOCK_STARTED || this.state == BLOCK_ENDED) {
-            logEvent().parameter("series", series.name).parameter("taxi", series.taxi).info("flushing dataBlockParser");
+            info().data("series", series.name)
+                    .data("taxi", series.taxi)
+                    .log("flushing dataBlockParser");
             complete(timeSeriesDataSet);
         }
     }
@@ -160,10 +163,9 @@ public class DataBlockParser {
             // or create a new series
             timeSeriesDataSet.addSeries(series);
         } finally {
-            logEvent().parameter("taxi", series.taxi)
-                    .parameter("name", series.name)
-                    .trace("completed parsing time series data block");
-
+            info().data("taxi", series.taxi)
+                    .data("name", series.name)
+                    .log("completed parsing time series data block");
             this.state = COMPLETED;
         }
     }
@@ -197,8 +199,8 @@ public class DataBlockParser {
             throw new DataBlockException(LINE_LENGTH_ERROR, TYPE_93, 2, line.length(), lineIndex);
         }
         if (line.length() < 3) {
-            logEvent().index(lineIndex).parameter("line", line).parameter("lineType", TYPE_93)
-                    .warn("time series object has no name value - please check if this is expected");
+            error().data("index", line).data("line", line).data("line_type", TYPE_93)
+                    .log("time series object has no name value - please check if this is expected");
         }
         this.series.name = line.substring(2);
     }

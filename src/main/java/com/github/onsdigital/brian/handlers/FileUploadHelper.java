@@ -6,6 +6,7 @@ import com.github.onsdigital.brian.exception.BadRequestException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.crypto.SecretKey;
@@ -19,7 +20,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 
 /**
  * Provides functionality for handling multipart file uploads ensuring they will be written to disk encrypted.
@@ -68,11 +70,13 @@ public class FileUploadHelper {
                 OutputStream stream = new Crypto().encrypt(Files.newOutputStream(tempFile), key)
         ) {
             IOUtils.copy(inputStream, stream);
-            logEvent().path(tempFile).info("successfully wrote upload file to temp file");
+            info().data("temp_file_path", tempFile.toString())
+                    .data("temp_file_size", FileUtils.byteCountToDisplaySize(tempFile.toFile().length()))
+                    .log("successfully written uploaded file to temp on disk file");
             return tempFile;
         } catch (IOException io) {
-            logEvent(io).path(tempFile).error("error while attempting to write stream to file");
-            throw io;
+            throw error().data("temp_file_path", tempFile.toString())
+                    .logException(io, "error while attempting to write stream to file");
         }
     }
 

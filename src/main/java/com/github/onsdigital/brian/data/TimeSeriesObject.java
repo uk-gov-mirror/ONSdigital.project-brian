@@ -5,8 +5,6 @@ import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
-
 /**
  * Created by Tom.Ridd on 03/03/15.
  */
@@ -31,11 +29,11 @@ public class TimeSeriesObject {
      */
     public void addPoint(TimeSeriesPoint point) {
         points.put(point.timeLabel, point);
-        if(point.period == TimeSeriesPoint.PERIOD_YEARS){
+        if (point.period == TimeSeriesPoint.PERIOD_YEARS) {
             hasYearly = true;
-        } else if(point.period.equals(TimeSeriesPoint.PERIOD_MONTHS)) {
+        } else if (point.period.equals(TimeSeriesPoint.PERIOD_MONTHS)) {
             hasMonthly = true;
-        } else if(point.period.equals((TimeSeriesPoint.PERIOD_QUARTERS))) {
+        } else if (point.period.equals((TimeSeriesPoint.PERIOD_QUARTERS))) {
             hasQuarterly = true;
         }
     }
@@ -53,42 +51,49 @@ public class TimeSeriesObject {
     @Override
     public String toString() {
         String str = "";
-        for(String key: points.keySet()) {
+        for (String key : points.keySet()) {
             TimeSeriesPoint point = points.get(key);
             str = String.format("%s(%s, %s) ", str, point.timeLabel, point.value);
         }
         return str;
     }
+
     /**
      * FILL BREAKS IN CONTINUITY WITH BLANKS
      */
     public void fillInTheBlanks() {
-        ArrayList <String> periods = new ArrayList<>();
-        if(hasYearly) { periods.add(TimeSeriesPoint.PERIOD_YEARS);}
-        if(hasMonthly) { periods.add(TimeSeriesPoint.PERIOD_MONTHS);}
-        if(hasQuarterly) { periods.add(TimeSeriesPoint.PERIOD_QUARTERS);}
+        ArrayList<String> periods = new ArrayList<>();
+        if (hasYearly) {
+            periods.add(TimeSeriesPoint.PERIOD_YEARS);
+        }
+        if (hasMonthly) {
+            periods.add(TimeSeriesPoint.PERIOD_MONTHS);
+        }
+        if (hasQuarterly) {
+            periods.add(TimeSeriesPoint.PERIOD_QUARTERS);
+        }
 
-        for(String period: periods) {
+        for (String period : periods) {
 
-                TimeSeriesPoint minPoint = new TimeSeriesPoint("2049", "");
-                TimeSeriesPoint maxPoint = new TimeSeriesPoint("1800", "");
-                for(TimeSeriesPoint point: points.values()) {
-                    if(point.period.equals(period) & point.startDate.after(maxPoint.startDate)) {
-                        maxPoint = point;
-                    }
-                    if(point.period.equals(period) & point.startDate.before(minPoint.startDate)) {
-                        minPoint = point;
-                    }
+            TimeSeriesPoint minPoint = new TimeSeriesPoint("2049", "");
+            TimeSeriesPoint maxPoint = new TimeSeriesPoint("1800", "");
+            for (TimeSeriesPoint point : points.values()) {
+                if (point.period.equals(period) & point.startDate.after(maxPoint.startDate)) {
+                    maxPoint = point;
                 }
-
-                // USING THE TimeSeriesPoint.nextTimeLabel FUNCTION STEP THROUGH OUR SERIES
-                TimeSeriesPoint curPoint = new TimeSeriesPoint(TimeSeriesPoint.nextTimeLabel(minPoint.timeLabel), "");
-                while(curPoint.startDate.before(maxPoint.startDate)) {
-                    if(points.containsKey(curPoint.timeLabel) == false) {
-                        points.put(curPoint.timeLabel, curPoint);
-                    }
-                    curPoint = new TimeSeriesPoint(TimeSeriesPoint.nextTimeLabel(curPoint.timeLabel), "");
+                if (point.period.equals(period) & point.startDate.before(minPoint.startDate)) {
+                    minPoint = point;
                 }
+            }
+
+            // USING THE TimeSeriesPoint.nextTimeLabel FUNCTION STEP THROUGH OUR SERIES
+            TimeSeriesPoint curPoint = new TimeSeriesPoint(TimeSeriesPoint.nextTimeLabel(minPoint.timeLabel), "");
+            while (curPoint.startDate.before(maxPoint.startDate)) {
+                if (points.containsKey(curPoint.timeLabel) == false) {
+                    points.put(curPoint.timeLabel, curPoint);
+                }
+                curPoint = new TimeSeriesPoint(TimeSeriesPoint.nextTimeLabel(curPoint.timeLabel), "");
+            }
         }
     }
 
@@ -101,8 +106,8 @@ public class TimeSeriesObject {
         TimeSeriesObject series = new TimeSeriesObject();
         series.taxi = taxi;
         series.name = name;
-        for(TimeSeriesPoint point: points.values()) {
-            if(point.value.length() > 0) {
+        for (TimeSeriesPoint point : points.values()) {
+            if (point.value.length() > 0) {
                 series.addPoint(point);
             }
         }
@@ -110,19 +115,18 @@ public class TimeSeriesObject {
     }
 
     /**
-     *
      * MERGES TWO TIMESERIES
      *
-     * @param left timeseries 1
-     * @param right timeseries 2
+     * @param left               timeseries 1
+     * @param right              timeseries 2
      * @param leftTakesPrecedent which timeseries is definitive
      * @return
      */
     public static TimeSeriesObject merge(TimeSeriesObject left, TimeSeriesObject right, boolean leftTakesPrecedent) {
         TimeSeriesObject merged = leftTakesPrecedent ? left.noBlanks() : right.noBlanks();
         TimeSeriesObject add = leftTakesPrecedent ? right.noBlanks() : left.noBlanks();
-        for(TimeSeriesPoint point: add.points.values()) {
-            if(merged.points.containsKey(point.timeLabel) == false) {
+        for (TimeSeriesPoint point : add.points.values()) {
+            if (merged.points.containsKey(point.timeLabel) == false) {
                 merged.addPoint(point);
             }
         }
@@ -147,8 +151,8 @@ public class TimeSeriesObject {
 
         // Then
         //... we expect them to exist
-        for(String timeLabel: filledPoints) {
-            if(!series.points.containsKey(timeLabel)) {
+        for (String timeLabel : filledPoints) {
+            if (!series.points.containsKey(timeLabel)) {
                 System.out.println("Expected point missing for: " + timeLabel);
             }
         }

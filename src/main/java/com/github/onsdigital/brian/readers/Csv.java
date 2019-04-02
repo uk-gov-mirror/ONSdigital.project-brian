@@ -29,7 +29,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 
 /**
  * Convenience class for handling CSV and Excel data.
@@ -87,7 +88,7 @@ public class Csv implements Iterable<Map<String, String>> {
         Path filePath = null;
         try {
             filePath = Paths.get(resource.toURI());
-            logEvent().path(filePath).info("cleaning CSV file");
+            info().data("resouce_path", filePath.toString()).log("cleaning csv file");
             List<String> cleanLines = FileUtils.readLines(filePath.toFile())
                     .stream()
                     .map(line -> line.replaceAll(CLEAN_LINE_REGEX, ""))
@@ -95,11 +96,11 @@ public class Csv implements Iterable<Map<String, String>> {
 
             FileUtils.writeLines(filePath.toFile(), cleanLines);
         } catch (URISyntaxException e) {
-            logEvent(e).path(filePath).error("unexpected error cleaning CSV file");
-            throw new IllegalArgumentException(e);
+            throw error().data("resouce_path", filePath.toString())
+                    .logException(new IllegalArgumentException(e), "unexpected error cleaning CSV file");
         } catch (IOException e) {
-            // TODO should this be rethrown? handled? or do we just pretend it didn't happen?
-            logEvent(e).path(filePath).error("unexpected error cleaning CSV file");
+            throw error().data("resouce_path", filePath.toString())
+                    .logException(new RuntimeException(e), "unexpected error cleaning CSV file");
         }
     }
 

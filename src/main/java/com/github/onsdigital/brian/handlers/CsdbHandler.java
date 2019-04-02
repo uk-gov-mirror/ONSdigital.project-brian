@@ -2,16 +2,22 @@ package com.github.onsdigital.brian.handlers;
 
 import com.github.onsdigital.brian.readers.DataSetReader;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
+import com.google.gson.GsonBuilder;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
 import javax.crypto.SecretKey;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
  * A {@link Route} implementation that handles POST requests convert the uploaded .csdb file to a JSON representaion
@@ -46,8 +52,28 @@ public class CsdbHandler implements Route {
         Path uploadFilePath = fileUploadHelper.getFileUploadPath(request.raw(), key);
 
         List<TimeSeries> timeSeries = converter.convert(uploadFilePath, dataSetReader, key);
-        logEvent().path(uploadFilePath).info("handle CSDB request completed successfully");
+        info().data("upload_file_path", uploadFilePath.toString())
+                .data("time_series_size", timeSeries.size())
+                .log("handle CSDB request completed successfully");
+
+        writeResultToFile(timeSeries, true);
         return timeSeries;
     }
+
+    void writeResultToFile(List<TimeSeries> result, boolean isSpark) throws IOException {
+        Path dest = null;
+        if (isSpark) {
+            dest = Paths.get("/Users/dave/IdeaProjects/project-brian/spark.json");
+        } else {
+            dest = Paths.get("/Users/dave/IdeaProjects/project-brian/spark.json");
+        }
+
+        Files.write(dest, new GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+                .toJson(result).getBytes(), CREATE, TRUNCATE_EXISTING);
+    }
+
+
 }
 

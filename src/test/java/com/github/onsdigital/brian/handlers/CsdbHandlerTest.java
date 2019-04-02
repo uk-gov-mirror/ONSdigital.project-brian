@@ -5,6 +5,7 @@ import com.github.onsdigital.brian.readers.DataSetReader;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import org.apache.commons.fileupload.FileUploadException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+@Ignore
 public class CsdbHandlerTest {
 
     @Mock

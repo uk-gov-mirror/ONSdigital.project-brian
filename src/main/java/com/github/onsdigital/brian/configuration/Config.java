@@ -1,8 +1,12 @@
 package com.github.onsdigital.brian.configuration;
 
 import org.apache.commons.lang3.StringUtils;
+import sun.rmi.transport.ObjectTable;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 /**
@@ -20,10 +24,6 @@ public class Config {
     private Config() {
         this.port = getEnvInteger(PORT_KEY, 8083);
         this.prettyJSONFormat = Boolean.valueOf(getEnvString(PRETTY_JSON_RESPONSE_KEY, "false"));
-
-        logEvent().parameter(PORT_KEY, port)
-                .parameter(PRETTY_JSON_RESPONSE_KEY, prettyJSONFormat)
-                .info("loading project-brian configuration");
     }
 
     /**
@@ -35,6 +35,12 @@ public class Config {
 
     public boolean isPrettyJSONFormat() {
         return prettyJSONFormat;
+    }
+
+    public Map<String, Object> get() {
+        return new HashMap() {{
+           put("port", port);
+        }};
     }
 
     /**
@@ -60,7 +66,7 @@ public class Config {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            logEvent(e).parameter("value", value).error("could not parse env value to integer applying default");
+            error().exception(e).data("value", value).log("could not parse env value to integer applying default");
             return defaultVal;
         }
     }

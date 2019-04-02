@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
 
 /**
  * Created by thomasridd on 10/03/15.
@@ -78,7 +78,7 @@ public class DataSetReaderCSV implements DataSetReader {
             }
         } catch (Exception e) {
             // TODO feels like this should throw an exception instead of just doing nothing...
-            logEvent(e).path(filePath).error("error while reading CSV file");
+            error().exception(e).data("file_path", filePath.toString()).log("error while reading CSV file");
         }
 
         return timeSeriesDataSet;

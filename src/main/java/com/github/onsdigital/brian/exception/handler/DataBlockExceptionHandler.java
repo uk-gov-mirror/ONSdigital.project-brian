@@ -10,7 +10,7 @@ import spark.ExceptionHandler;
 import spark.Request;
 import spark.Response;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
 
 /**
  * Exception handler for {@link DataBlockException} creates a JSON response using the exception message, sets the
@@ -34,7 +34,7 @@ public class DataBlockExceptionHandler implements ExceptionHandler<DataBlockExce
 
     @Override
     public void handle(DataBlockException e, Request req, Response resp) {
-        logEvent(e).error("error while attempting to parse CSDB file");
+        error().exception(e).log("error while attempting to parse CSDB file");
         resp.type("application/json");
         resp.status(HttpStatus.BAD_REQUEST_400);
         resp.body(g.toJson(new Message(e.getMessage())));

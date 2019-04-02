@@ -3,6 +3,7 @@ package com.github.onsdigital.brian.readers.csdb;
 import com.github.davidcarboni.cryptolite.Crypto;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.readers.DataSetReader;
+import org.apache.commons.io.FileUtils;
 
 import javax.crypto.SecretKey;
 import java.io.BufferedReader;
@@ -13,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 
 /**
  * Parse a <i>.csdb</i> file and convert it to a {@link TimeSeriesDataSet}
@@ -39,13 +40,15 @@ public class DataSetReaderCSDB implements DataSetReader {
                 InputStreamReader isReader = new InputStreamReader(decryptedIS, CSDB_FILE_CHAR_SET);
                 BufferedReader bufR = new BufferedReader(isReader);
         ) {
-            logEvent().path(filePath).info("generating time series dataset from CSDB file");
+            info().data("file_path", filePath.toString()).log("generating time series dataset from CSDB file");
 
             timeSeriesDataSet = generateTimeSeriesDataSet(bufR);
 
-            logEvent().path(filePath)
-                    .parameter("name", timeSeriesDataSet.name)
-                    .info("time series dataset successfully generated from CSDB file");
+            info().data("file_path", filePath.toString())
+                    .data("name", timeSeriesDataSet.name)
+                    .data("file_size", FileUtils.byteCountToDisplaySize(filePath.toFile().length()))
+                    .log("time series dataset successfully generated from CSDB file");
+
             return timeSeriesDataSet;
 
         } catch (DataBlockException e) {
@@ -81,10 +84,10 @@ public class DataSetReaderCSDB implements DataSetReader {
 
     private InputStream decryptIfNecessary(InputStream stream, SecretKey key) throws IOException {
         if (key == null) {
-            logEvent().trace("encryption key null reading file with unencrypted stream");
+            info().log("encryption key null reading file with unencrypted stream");
             return stream;
         } else {
-            logEvent().trace("encryption key not null reading file with crypto stream");
+            info().log("encryption key not null reading file with crypto stream");
             return new Crypto().decrypt(stream, key);
         }
     }

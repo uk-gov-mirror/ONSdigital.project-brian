@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 
 /**
  * A {@link Route} implementation that handles POST requests convert the uploaded .csv file to a JSON representaion
@@ -46,7 +46,9 @@ public class CsvHandler implements Route {
         Path dataFile = fileUploadHelper.getFileUploadPath(request.raw(), key);
 
         List<TimeSeries> timeSeries = converter.convert(dataFile, dataSetReader, key);
-        logEvent().info("handle CSV request completed successfully");
+        info().data("upload_file_path", dataFile.toString())
+                .data("time_series_size", timeSeries.size())
+                .log("handle CSV request completed successfully");
         return timeSeries;
     }
 }

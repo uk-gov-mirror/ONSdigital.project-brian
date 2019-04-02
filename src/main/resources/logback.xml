@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="DP_LOGGER" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="JSONIFIED" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="com.github.onsdigital.logging.layouts.ConfigurableLayout"/>
+            <layout class="com.github.onsdigital.logging.v2.layout.ThirdPartyEventLayout">
+                <Pattern>%n%msg</Pattern>
+            </layout>
         </encoder>
     </appender>
 
-    <logger name="com.github.onsdigital.brian" level="debug" additivity="false">
-        <appender-ref ref="DP_LOGGER"/>
+    <appender name="APP_JSON_APPENDER" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!-- Message is already formatted in JSON so just output to console -->
+            <Pattern>%n%msg</Pattern>
+        </layout>
+    </appender>
+
+    <logger name="project-brian" level="debug" additivity="false">
+        <appender-ref ref="APP_JSON_APPENDER"/>
     </logger>
 
-    <root level="debug">
-        <appender-ref ref="DP_LOGGER"/>
+    <logger name="com.github.davidcarboni.restolino" level="info" additivity="false">
+        <appender-ref ref="JSONIFIED"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="JSONIFIED"/>
     </root>
 
 </configuration>

@@ -10,7 +10,7 @@ import spark.ExceptionHandler;
 import spark.Request;
 import spark.Response;
 
-import static com.github.onsdigital.brian.logging.LogEvent.logEvent;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
 
 /**
  * Exception handler for {@link BadRequestException} creates a JSON response using the exception message, sets the
@@ -34,7 +34,7 @@ public class BadRequestExceptionHandler implements ExceptionHandler<BadRequestEx
 
     @Override
     public void handle(BadRequestException e, Request req, Response resp) {
-        logEvent(e).error(e.getMessage());
+        error().exception(e).log("bad request");
         resp.body(g.toJson(new Message(e.getMessage())));
         resp.type("application/json");
         resp.status(HttpStatus.BAD_REQUEST_400);
