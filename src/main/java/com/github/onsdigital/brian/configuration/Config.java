@@ -23,7 +23,8 @@ public class Config {
 
     private Config() {
         this.port = getEnvInteger(PORT_KEY, 8083);
-        this.prettyJSONFormat = Boolean.valueOf(getEnvString(PRETTY_JSON_RESPONSE_KEY, "false"));
+        //this.prettyJSONFormat = Boolean.valueOf(getEnvString(PRETTY_JSON_RESPONSE_KEY, "false"));
+        this.prettyJSONFormat = false;
     }
 
     /**

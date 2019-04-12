@@ -4,6 +4,7 @@ import com.github.davidcarboni.cryptolite.Keys;
 import com.github.onsdigital.brian.configuration.Config;
 import com.github.onsdigital.brian.exception.BadRequestException;
 import com.github.onsdigital.brian.exception.handler.BadRequestExceptionHandler;
+import com.github.onsdigital.brian.exception.handler.CatchAllExceptionHandler;
 import com.github.onsdigital.brian.exception.handler.DataBlockExceptionHandler;
 import com.github.onsdigital.brian.exception.handler.InternalServerErrorHandler;
 import com.github.onsdigital.brian.filter.RequestCompleteFilter;
@@ -70,9 +71,10 @@ public class Application {
 
         exception(BadRequestException.class, new BadRequestExceptionHandler(requestCompleteFilter));
         exception(DataBlockException.class, new DataBlockExceptionHandler(requestCompleteFilter));
+        exception(Exception.class, new CatchAllExceptionHandler());
 
-        internalServerError((request, response) -> new InternalServerErrorHandler(requestCompleteFilter)
-                .handle(request, response));
+/*        internalServerError((request, response) -> new InternalServerErrorHandler(requestCompleteFilter)
+                .handle(request, response));*/
 
         registerRoutes();
 

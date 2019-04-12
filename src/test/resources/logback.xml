@@ -2,7 +2,7 @@
 <configuration>
 
     <property scope="context" name="default.logger.name" value="dp-logger-default"/>
-    <property scope="context" name="default.logger.formatted" value="false"/>
+    <property scope="context" name="default.logger.formatted" value="true"/>
 
     <appender name="THIRD_PARTY_WRAPPER" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
@@ -19,12 +19,8 @@
         </layout>
     </appender>
 
-    <logger name="project-brian" level="debug" additivity="false">
+    <logger name="dp-logger-default" level="debug" additivity="false">
         <appender-ref ref="DP_LOGGER"/>
-    </logger>
-
-    <logger name="com.github.davidcarboni.restolino" level="info" additivity="false">
-        <appender-ref ref="THIRD_PARTY_WRAPPER"/>
     </logger>
 
     <root level="info">
