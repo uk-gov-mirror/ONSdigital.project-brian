@@ -9,9 +9,9 @@ export RESTOLINO_CLASSES="target/classes"
 export PACKAGE_PREFIX=com.github.onsdigital.brian.api
 
 #Development: reloadable
-mvn test dependency:copy-dependencies  && \
+mvn -Dossindex.skip=true test dependency:copy-dependencies  && \
 
-mvn package && \
+mvn -Dossindex.skip=true package && \
 java $JAVA_OPTS \
  -Drestolino.packageprefix=$PACKAGE_PREFIX \
  -jar target/*-jar-with-dependencies.jar

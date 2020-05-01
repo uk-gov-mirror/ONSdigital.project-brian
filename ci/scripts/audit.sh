@@ -1,5 +1,5 @@
 #!/bin/bash -eux
 
 pushd project-brian
-  mvn -Dossindex.skip=true test
+  mvn ossindex:audit
 popd
