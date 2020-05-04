@@ -1,5 +1,5 @@
 #!/bin/bash -eux
 
 pushd project-brian
-  mvn ossindex:audit
+  make audit
 popd
