@@ -1,5 +1,5 @@
 #!/bin/bash -eux
 
 pushd project-brian
-  make test
+  make audit
 popd

@@ -8,7 +8,7 @@ image_resource:
     repository: onsdigital/dp-concourse-tools-java
 
 inputs:
-  - name: project-brian
+  name: project-brian
 
 run:
-  path: project-brian/ci/scripts/unit.sh
+  path: project-brian/ci/scripts/audit.sh
