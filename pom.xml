@@ -124,7 +124,7 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.3.1</version>
+            <version>1.4</version>
         </dependency>
 
         <!-- ONS Content Library, fetched through jitpack.io -->
@@ -225,12 +225,6 @@
                             <groupId>org.apache.poi</groupId>
                             <artifactId>poi</artifactId>
                             <version>3.10.1</version>
-                        </exlude>
-                        <!-- The follow exclusion is covered by trello card: https://trello.com/c/qvJGv7aX -->
-                        <exlude>
-                            <groupId>commons-fileupload</groupId>
-                            <artifactId>commons-fileupload</artifactId>
-                            <version>1.3.1</version>
                         </exlude>
                     </excludeCoordinates>
                 </configuration>
