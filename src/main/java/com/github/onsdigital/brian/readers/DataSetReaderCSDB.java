@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
+
 /**
  * Created by thomasridd on 10/03/15.
  *
@@ -45,6 +47,7 @@ public class DataSetReaderCSDB implements DataSetReader {
         try(InputStream initialStream = Files.newInputStream(filePath)) {
             try(InputStream inputStream = decryptIfNecessary(initialStream, key)) {
 
+                info().log("reading CSDB file");
                 List<String> lines = IOUtils.readLines(inputStream, "cp1252");
                 lines.add("92"); // THROW A 92 ON THE END
 
@@ -63,12 +66,14 @@ public class DataSetReaderCSDB implements DataSetReader {
 
                                 // COMBINE IT WITH AN EXISTING SERIES
                                 if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
+                                    info().data("taxi",series.taxi).log("merging time series into list");
                                     TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
                                     for (TimeSeriesPoint point : series.points.values()) {
                                         existing.addPoint(point);
                                     }
 
                                 } else { // OR CREATE A NEW SERIES
+                                    info().data("taxi",series.taxi).log("adding time series to list");
                                     timeSeriesDataSet.addSeries(series);
                                 }
                             }
@@ -86,6 +91,7 @@ public class DataSetReaderCSDB implements DataSetReader {
             e.printStackTrace();
         }
 
+        info().log("completed reading CSDB file");
         return timeSeriesDataSet;
     }
 

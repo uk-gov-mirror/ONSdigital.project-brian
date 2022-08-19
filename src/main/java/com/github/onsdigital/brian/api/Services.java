@@ -33,6 +33,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
+
 /**
  * Created by thomasridd on 08/06/15.
  */
@@ -43,17 +45,24 @@ public class Services {
     public List<TimeSeries> postToServices(HttpServletRequest request,
                       HttpServletResponse response) throws IOException, FileUploadException {
 
+        info().log("service endpoint: request received");
+
         String[] segments = request.getPathInfo().split("/");
 
         if (segments.length > 2 && segments[2].equalsIgnoreCase("ConvertCSDB")) {
 
             // Convert with CSDB Reader
-            return convert(request, response, new DataSetReaderCSDB());
+            List<TimeSeries> result = convert(request, response, new DataSetReaderCSDB());
+            info().log("returning time series from CSDB reader");
+            return result;
         } else if (segments.length > 2 && segments[2].equalsIgnoreCase("ConvertCSV")) {
 
             // Convert with CSV Reader
-            return convert(request, response, new DataSetReaderCSV());
+            List<TimeSeries> result =  convert(request, response, new DataSetReaderCSV());
+            info().log("returning time series from CSV reader");
+            return result;
         } else {
+            info().log("returning 400 BAD_REQUEST");
             response.setStatus(HttpStatus.BAD_REQUEST_400);
             return null;
         }
