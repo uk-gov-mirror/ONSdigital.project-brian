@@ -1,6 +1,6 @@
 package com.github.onsdigital.brian.data;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by Tom.Ridd on 03/03/15.
@@ -16,7 +16,7 @@ public class TimeSeriesDataSet implements Cloneable {
     public String name;
     public String source;
 
-    public HashMap<String, TimeSeriesObject> timeSeries = new HashMap<>();
+    public LinkedHashMap<String, TimeSeriesObject> timeSeries = new LinkedHashMap<>();
 
     @Override
     public TimeSeriesDataSet clone(){
