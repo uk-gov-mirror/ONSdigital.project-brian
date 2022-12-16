@@ -1,6 +1,9 @@
 # project-brian
 Data pipeline for ONS Beta website
 
+This service converts CSDB files to JSON for use by timeseries datasets. It has other functionality which does not seem
+to be currently utilised by zebedee etc.
+
 ### Context
 Zebedee converts uploaded CSDB files into separate time-series at collection approval stage. It does this by POSTing the
 csdb file to Brian and receiving a JSON file in return which it then processes in 

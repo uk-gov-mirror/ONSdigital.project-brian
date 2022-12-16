@@ -21,7 +21,7 @@ import java.util.TreeSet;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -188,13 +188,13 @@ public class Csv implements Iterable<Map<String, String>> {
                         // String rawValue = cell.getRawValue();
                         String dataFormat = cell.getCellStyle().getDataFormatString();
                         formatStrings.add(dataFormat);
-                        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                        if (cell.getCellType() == CellType.NUMERIC) {
 
                             // System.out.println("toString() before     = " +
                             // cell.toString());
                             // System.out.println("getRawValue() before = " +
                             // cell.getRawValue());
-                            cell.setCellType(Cell.CELL_TYPE_STRING);
+                            cell.setCellType(CellType.STRING);
                             // System.out.println("toString()      after  = " +
                             // cell.toString());
                             // System.out.println("getRawValue() after  = " +
@@ -251,7 +251,7 @@ public class Csv implements Iterable<Map<String, String>> {
                             value = format.format(d);
                         }
 
-                        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                        if (cell.getCellType() == CellType.NUMERIC) {
                             // System.out.println("Value: " + value);
                             // System.out.println();
                         }
