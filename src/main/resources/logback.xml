@@ -23,6 +23,9 @@
         <appender-ref ref="DP_LOG_APPENDER"/>
     </logger>
 
+    <!-- Suppress warnings from Reflections package caused by restolino framework -->
+    <logger name="org.reflections" level="ERROR"/>
+
     <root level="WARN">
         <appender-ref ref="THIRD_PARTY_APPENDER"/>
     </root>
