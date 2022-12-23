@@ -2,6 +2,7 @@ package com.github.onsdigital.brian.readers;
 
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 
+import com.github.onsdigital.brian.exception.BadFileException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,5 +40,27 @@ public class DataSetReaderCSVTest {
 
         // Then
         assertNotNull(timeSeriesDataSet);
+    }
+
+    @Test(expected = BadFileException.class)
+    public void testReadNonTimeSeriesCSVFile() throws Exception {
+        // Given a valid CSV file containing unexpected data
+        URL resource = TimeSeriesDataSet.class.getResource("/examples/invalid/nonsense.csv");
+        Path badExample = Paths.get(resource.toURI());
+        DataSetReaderCSV dataSetReaderCSV = new DataSetReaderCSV();
+
+        // When
+        dataSetReaderCSV.readFile(badExample, null);
+    }
+
+    @Test(expected = BadFileException.class)
+    public void testReadInvalidFile() throws Exception {
+        // Given an invalid CSV file
+        URL resource = TimeSeriesDataSet.class.getResource("/examples/invalid/invalid.csv");
+        Path badExample = Paths.get(resource.toURI());
+        DataSetReaderCSV dataSetReaderCSV = new DataSetReaderCSV();
+
+        // When
+        dataSetReaderCSV.readFile(badExample, null);
     }
 }

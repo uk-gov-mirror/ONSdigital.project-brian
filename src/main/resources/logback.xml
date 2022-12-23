@@ -15,7 +15,7 @@
     <appender name="DP_LOG_APPENDER" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <!-- Message is already formatted in JSON so just output to console -->
-            <Pattern>%n%msg</Pattern>
+            <Pattern>%msg%n</Pattern>
         </layout>
     </appender>
 
