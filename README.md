@@ -12,8 +12,7 @@ processes in
 
 ### How to debug locally
 
-First obtain a valid CSDB  (for example the 
-or CSV file. For exampl…
+First obtain a valid CSDB or CSV file. For example…
 
 - `emp.csdb` - ('structured text') on a time series like
   [Average weekly earnings](https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/averageweeklyearnings)
