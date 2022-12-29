@@ -4,6 +4,7 @@ import com.github.davidcarboni.cryptolite.Crypto;
 import com.github.davidcarboni.cryptolite.Keys;
 import com.github.davidcarboni.encryptedfileupload.EncryptedFileItemFactory;
 import com.github.davidcarboni.restolino.framework.Api;
+import com.github.onsdigital.brian.data.ErrorResponse;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
 import com.github.onsdigital.brian.exception.BrianException;
@@ -40,7 +41,7 @@ import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 public class Services {
 
     @POST
-    public List<TimeSeries> postToServices(HttpServletRequest request,
+    public Object postToServices(HttpServletRequest request,
                                            HttpServletResponse response) throws IOException, FileUploadException {
 
         info().log("service endpoint: request received");
@@ -61,13 +62,17 @@ public class Services {
             } else {
                 info().log("returning 400 BAD_REQUEST");
                 response.setStatus(HttpStatus.BAD_REQUEST_400);
-                return null;
+                return new ErrorResponse(HttpStatus.BAD_REQUEST_400,"invalid endpoint called");
             }
 
         } catch (BrianException e) {
             error().logException(e, "failed to convert time series file");
             response.setStatus(e.getHttpStatus());
-            return null;
+            return new ErrorResponse(e);
+        } catch (Exception e) {
+            error().logException(e, "internal server error");
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR_500,"internal server error");
         }
     }
 
