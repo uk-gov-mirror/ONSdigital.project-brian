@@ -68,7 +68,7 @@ public class Services {
         } catch (BrianException e) {
             error().logException(e, "failed to convert time series file");
             response.setStatus(e.getHttpStatus());
-            return new ErrorResponse(e);
+            return new ErrorResponse(e.getHttpStatus(),e.getMessage());
         } catch (Exception e) {
             error().logException(e, "internal server error");
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);

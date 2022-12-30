@@ -1,7 +1,5 @@
 package com.github.onsdigital.brian.data;
 
-import com.github.onsdigital.brian.exception.BrianException;
-
 /**
  * Data Tranfer Object representing the body of an error response
  */
@@ -12,10 +10,6 @@ public class ErrorResponse {
     public ErrorResponse(int code, String description) {
         setCode(code);
         setDescription(description);
-    }
-
-    public ErrorResponse(BrianException be) {
-        this(be.getHttpStatus(),be.getMessage());
     }
 
     public int getCode() {
