@@ -5,6 +5,8 @@ import com.github.davidcarboni.cryptolite.Crypto;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
 import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
+import com.github.onsdigital.brian.exception.BadFileException;
+import com.github.onsdigital.brian.exception.BrianException;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,6 +19,9 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 
 /**
  * Created by thomasridd on 10/03/15.
@@ -32,33 +37,42 @@ public class DataSetReaderCSV implements DataSetReader {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException {
+    public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException, BadFileException {
 
         TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
 
         try (InputStream initialStream = Files.newInputStream(filePath)) {
             try (CSVReader reader = new CSVReader(new InputStreamReader(decryptIfNecessary(initialStream, key)))) {
 
+                info().log("reading CSV file");
                 // Read the file as a list of rows
                 List<String[]> rows = reader.readAll();
 
                 // Convert it to a map keyed by row name
-                Map<String, String[]> map = rowsAsMap(rows);
+                Map<String, String[]> rowMap = rowsAsMap(rows);
 
                 // Get a list of cdids
-                Map<String, Integer> cdidMap = cdidMap(map);
+                Map<String, Integer> cdidMap = cdidMap(rowMap);
+                if (cdidMap == null) {
+                    error().log("invalid csv file with no cdid row");
+                    throw new BadFileException("invalid csv file with no cdid row");
+                }
                 Map<String, TimeSeriesObject> timeSeriesMap = constructTimeSeriesMap(cdidMap);
 
                 // Set metadata
-                setMetaData(cdidMap, map, timeSeriesMap);
+                setMetaData(cdidMap, rowMap, timeSeriesMap);
 
                 // Get values
-                getValues(cdidMap, map, timeSeriesMap);
+                getValues(cdidMap, rowMap, timeSeriesMap);
 
                 // Return values to the timeSeries list
                 cdidMap.keySet().forEach(cdid -> timeSeriesDataSet.addSeries(timeSeriesMap.get(cdid)));
             }
-        } catch (Exception e) {
+        }
+        catch (BrianException e) {
+           throw(e);
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -93,8 +107,8 @@ public class DataSetReaderCSV implements DataSetReader {
     /**
      * Set timeseries metadata that can be taken from these spreadsheets
      *
-     * @param cdidMap cdids mapped to row number
-     * @param dataMap the data as read from a spreadsheet (column names unknown)
+     * @param cdidMap         cdids mapped to row number
+     * @param dataMap         the data as read from a spreadsheet (column names unknown)
      * @param seriesObjectMap the target series keyed into a map by cdid
      */
     private void setMetaData(Map<String, Integer> cdidMap, Map<String, String[]> dataMap, Map<String, TimeSeriesObject> seriesObjectMap) {
@@ -111,17 +125,17 @@ public class DataSetReaderCSV implements DataSetReader {
     private void getValues(Map<String, Integer> cdidMap, Map<String, String[]> dataMap, Map<String, TimeSeriesObject> seriesObjectMap) {
 
         // For each row
-        for(String row: dataMap.keySet()) {
+        for (String row : dataMap.keySet()) {
 
             // If it is a date row
             if (parseDate(row) != null) {
 
                 // For each timeseries
-                for (String cdid: cdidMap.keySet()) {
+                for (String cdid : cdidMap.keySet()) {
 
                     // Grab the value
                     String value = dataMap.get(row)[cdidMap.get(cdid)];
-                    if( value.trim().length() != 0) {
+                    if (value.trim().length() != 0) {
 
                         TimeSeriesObject timeSeriesObject = seriesObjectMap.get(cdid);
                         timeSeriesObject.addPoint(new TimeSeriesPoint(row.trim(), value));
@@ -135,24 +149,24 @@ public class DataSetReaderCSV implements DataSetReader {
         try {
             String e = StringUtils.lowerCase(StringUtils.trim(date));
             Date result;
-            if(TimeSeries.year.matcher(e).matches()) {
+            if (TimeSeries.year.matcher(e).matches()) {
                 result = (new SimpleDateFormat("yyyy")).parse(e);
-            } else if(TimeSeries.month.matcher(e).matches()) {
+            } else if (TimeSeries.month.matcher(e).matches()) {
                 result = (new SimpleDateFormat("yyyy MMM")).parse(e);
-            } else if(TimeSeries.monthNumVal.matcher(e).matches()) {
+            } else if (TimeSeries.monthNumVal.matcher(e).matches()) {
                 result = (new SimpleDateFormat("yyyy MM")).parse(e);
-            } else if(TimeSeries.quarter.matcher(e).matches()) {
+            } else if (TimeSeries.quarter.matcher(e).matches()) {
                 Date parsed = (new SimpleDateFormat("yyyy")).parse(e);
                 Calendar calendar = Calendar.getInstance(Locale.UK);
                 calendar.setTime(parsed);
-                if(e.endsWith("1")) {
+                if (e.endsWith("1")) {
                     calendar.set(2, 0);
-                } else if(e.endsWith("2")) {
+                } else if (e.endsWith("2")) {
                     calendar.set(2, 3);
-                } else if(e.endsWith("3")) {
+                } else if (e.endsWith("3")) {
                     calendar.set(2, 6);
                 } else {
-                    if(!e.endsWith("4")) {
+                    if (!e.endsWith("4")) {
                         throw new RuntimeException("Didn\'t detect quarter in " + e);
                     }
 
@@ -160,12 +174,12 @@ public class DataSetReaderCSV implements DataSetReader {
                 }
 
                 result = calendar.getTime();
-            } else if(TimeSeries.yearInterval.matcher(e).matches()) {
+            } else if (TimeSeries.yearInterval.matcher(e).matches()) {
                 result = (new SimpleDateFormat("yyyy")).parse(e.substring("yyyy-".length()));
-            } else if(TimeSeries.yearPair.matcher(e).matches()) {
+            } else if (TimeSeries.yearPair.matcher(e).matches()) {
                 result = (new SimpleDateFormat("yy")).parse(e.substring("yyyy/".length()));
             } else {
-                if(!TimeSeries.yearEnd.matcher(e).matches()) {
+                if (!TimeSeries.yearEnd.matcher(e).matches()) {
                     throw new ParseException("Unknown format: \'" + date + "\'", 0);
                 }
 
@@ -186,7 +200,6 @@ public class DataSetReaderCSV implements DataSetReader {
 
         return timeSeries;
     }
-
 
 
     /**

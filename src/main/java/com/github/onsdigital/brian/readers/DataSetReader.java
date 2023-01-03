@@ -1,6 +1,7 @@
 package com.github.onsdigital.brian.readers;
 
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
+import com.github.onsdigital.brian.exception.BrianException;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -18,6 +19,6 @@ public interface DataSetReader {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException;
+    public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException, BrianException;
 
 }

@@ -6,6 +6,7 @@ import com.github.onsdigital.brian.data.DataFuture;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
 import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
+import com.github.onsdigital.brian.exception.BadFileException;
 import org.apache.commons.io.IOUtils;
 
 import javax.crypto.SecretKey;
@@ -21,14 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
+
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.error;
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
 
 /**
  * Created by thomasridd on 10/03/15.
- *
+ * <p>
  * METHODS TO READ DATA FROM CSDB STANDARD TEXT FILES
- *
  */
 public class DataSetReaderCSDB implements DataSetReader {
+
+    public static Pattern numOrWhitespace = Pattern.compile("[\\s\\.\\-0-9]*");
 
     /**
      * READS A DATASET FROM A RESOURCE FILE GIVEN AN ABSOLUTE PATH
@@ -37,55 +43,66 @@ public class DataSetReaderCSDB implements DataSetReader {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException {
+    public TimeSeriesDataSet readFile(Path filePath, SecretKey key) throws IOException, BadFileException {
 
         TimeSeriesDataSet timeSeriesDataSet = new TimeSeriesDataSet();
 
-        // NESTED TRY WITH RESOURCES TO GET A NOT NECESSARY ENCRYPTED FILE STREAM
-        try(InputStream initialStream = Files.newInputStream(filePath)) {
-            try(InputStream inputStream = decryptIfNecessary(initialStream, key)) {
+        // TRY WITH RESOURCES TO GET A NOT NECESSARY ENCRYPTED FILE STREAM
+        try (InputStream initialStream = Files.newInputStream(filePath);
+             InputStream inputStream = decryptIfNecessary(initialStream, key)) {
 
-                List<String> lines = IOUtils.readLines(inputStream, "cp1252");
-                lines.add("92"); // THROW A 92 ON THE END
+            info().log("reading CSDB file");
+            List<String> lines = IOUtils.readLines(inputStream, "cp1252");
+            lines.add("92"); // THROW A 92 ON THE END
 
-                ArrayList<String> seriesBuffer = new ArrayList<>();
+            ArrayList<String> seriesBuffer = new ArrayList<>();
 
-                //WALK THROUGH THE FILE
-                for (String line : lines) {
-                    try {
-                        int LineType = Integer.parseInt(line.substring(0, 2));
-
-                        // WHEN WE GET TO A LINE 92 (TIME SERIES BLOCK START)
-                        if (LineType == 92) {
-                            if (seriesBuffer.size() > 0) {
-                                // PARSE THE BLOCK JUST COLLECTED
-                                TimeSeriesObject series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
-
-                                // COMBINE IT WITH AN EXISTING SERIES
-                                if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
-                                    TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
-                                    for (TimeSeriesPoint point : series.points.values()) {
-                                        existing.addPoint(point);
-                                    }
-
-                                } else { // OR CREATE A NEW SERIES
-                                    timeSeriesDataSet.addSeries(series);
-                                }
-                            }
-                            seriesBuffer = new ArrayList<>();
-                            seriesBuffer.add(line);
-                        } else if (LineType > 92) {
-                            seriesBuffer.add(line);
-                        }
-                    } catch (NumberFormatException e) {
-
+            //WALK THROUGH THE FILE
+            for (String line : lines) {
+                try {
+                    if (line.length()<2) {
+                        error().log("line too short in csdb file, does not contain 2 digit line id");
+                        throw new BadFileException("line too short in csdb file, does not contain 2 digit line id");
                     }
+                    int LineType = Integer.parseInt(line.substring(0, 2));
+
+                    // WHEN WE GET TO A LINE 92 (TIME SERIES BLOCK START)
+                    if (LineType == 92) {
+                        if (seriesBuffer.size() > 0) {
+                            // PARSE THE BLOCK JUST COLLECTED
+                            TimeSeriesObject series = DataSetReaderCSDB.seriesFromStringList(seriesBuffer);
+
+                            // COMBINE IT WITH AN EXISTING SERIES
+                            if (timeSeriesDataSet.timeSeries.containsKey(series.taxi)) {
+                                info().data("taxi", series.taxi).log("merging time series into list");
+                                TimeSeriesObject existing = timeSeriesDataSet.timeSeries.get(series.taxi);
+                                for (TimeSeriesPoint point : series.points.values()) {
+                                    existing.addPoint(point);
+                                }
+
+                            } else { // OR CREATE A NEW SERIES
+                                info().data("taxi", series.taxi).log("adding time series to list");
+                                timeSeriesDataSet.addSeries(series);
+                            }
+                        }
+                        seriesBuffer = new ArrayList<>();
+                        seriesBuffer.add(line);
+                    } else if (LineType > 92) {
+                        seriesBuffer.add(line);
+                    }
+                } catch (NumberFormatException e) {
+
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            if (timeSeriesDataSet.timeSeries.size() == 0) {
+                error().log("no time series found in csdb file");
+                throw new BadFileException("no time series found in csdb file");
+            }
         }
 
+
+        info().log("completed reading CSDB file");
         return timeSeriesDataSet;
     }
 
@@ -108,7 +125,6 @@ public class DataSetReaderCSDB implements DataSetReader {
     public static DataFuture readDirectory(String resourceName) throws IOException, URISyntaxException {
 
 
-
         // Get the path
         URL resource = DataFuture.class.getResource(resourceName);
         Path filePath = Paths.get(resource.toURI());
@@ -120,8 +136,8 @@ public class DataSetReaderCSDB implements DataSetReader {
         List<Future<DataFuture>> skeletonDatasets = new ArrayList<>();
 
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(filePath)){ // NOW LOAD THE FILES
-            for(Path entry: stream) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(filePath)) { // NOW LOAD THE FILES
+            for (Path entry : stream) {
                 // System.out.println("Creating processor for " + entry);
                 Processor processor = new Processor(entry);
 
@@ -139,7 +155,7 @@ public class DataSetReaderCSDB implements DataSetReader {
             try {
                 //System.out.println("Getting ID map..");
                 DataFuture promised = skeletonDataset.get();
-                for(String key: promised.timeSeries.keySet())
+                for (String key : promised.timeSeries.keySet())
                     dataFuture.addSeries(key, promised.timeSeries.get(key));
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -149,7 +165,7 @@ public class DataSetReaderCSDB implements DataSetReader {
         }
 
         // Now set our processors running to process all the timeseries in the DataFuture
-        for (Processor processor: processors) {
+        for (Processor processor : processors) {
             //System.out.println("Processing ");
             processor.process();
         }
@@ -158,15 +174,13 @@ public class DataSetReaderCSDB implements DataSetReader {
     }
 
 
-
-
     /**
-     *  CONVERTS A SERIES OF STRINGS READ FROM A CSDB FILE BY THE READFILE METHODS TO A SERIES
+     * CONVERTS A SERIES OF STRINGS READ FROM A CSDB FILE BY THE READFILE METHODS TO A SERIES
      *
      * @param lines
      * @return
      */
-    private static TimeSeriesObject seriesFromStringList(ArrayList<String> lines) {
+    private static TimeSeriesObject seriesFromStringList(ArrayList<String> lines) throws BadFileException {
         TimeSeriesObject series = new TimeSeriesObject();
         int startInd = 1;
         int year = 1881;
@@ -188,6 +202,12 @@ public class DataSetReaderCSDB implements DataSetReader {
 
                 } else if (LineType == 97) { // OTHER LINES (APPEND IN BLOCKS)
                     String values = line.substring(2);
+
+                    //Check for non-numeric/whitespace chars in data point
+                    if (!numOrWhitespace.matcher(values).matches()) {
+                        error().data("taxi",series.taxi).log("unexpected characters in csdb data point");
+                        throw new BadFileException("unexpected characters in csdb data point");
+                    }
                     while (values.length() > 9) {
                         // GET FIRST VALUE
                         String oneValue = values.substring(0, 10).trim();
@@ -209,8 +229,6 @@ public class DataSetReaderCSDB implements DataSetReader {
     }
 
 
-
-
     /**
      * HELPER METHOD THAT DETERMINES THE CORRECT LABEL BASED ON START DATE, A TIME PERIOD, AND THE ITERATION
      *
@@ -223,7 +241,7 @@ public class DataSetReaderCSDB implements DataSetReader {
     private static String DateLabel(int year, int startInd, String mqa, int iteration) {
         if (mqa.equals("Y") || mqa.equals("A")) {
             return (year + iteration - 1) + "";
-        } else if(mqa.equals("M")) {
+        } else if (mqa.equals("M")) {
             int finalMonth = (startInd + iteration - 2) % 12;
             int yearsTaken = (startInd + iteration - 2) / 12;
             return (year + yearsTaken) + " " + String.format("%02d", finalMonth + 1);
@@ -234,8 +252,6 @@ public class DataSetReaderCSDB implements DataSetReader {
         }
 
     }
-
-
 
 
 }

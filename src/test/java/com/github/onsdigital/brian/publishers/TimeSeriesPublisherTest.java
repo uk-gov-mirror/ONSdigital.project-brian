@@ -1,6 +1,8 @@
 package com.github.onsdigital.brian.publishers;
 
 
+import com.github.onsdigital.brian.exception.BadFileException;
+import com.github.onsdigital.brian.exception.BrianException;
 import com.github.onsdigital.content.page.statistics.data.timeseries.TimeSeries;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
 import com.github.onsdigital.brian.data.TimeSeriesObject;
@@ -42,7 +44,7 @@ public class TimeSeriesPublisherTest {
     public void testDataSetReaderKicksOutTheCorrectYearsForQuartersAndMonths() throws Exception {
         // Given
         // a time series
-        String resourceName = "/examples/CSDB";
+        String resourceName = "/examples/good.csdb";
 
         // When
         // we read it to a csdb file
@@ -62,11 +64,53 @@ public class TimeSeriesPublisherTest {
         }
     }
 
+    @Test(expected = BadFileException.class)
+    public void testDataSetReaderThrowsExceptionOnNullsInFile() throws Exception {
+        // Given
+        // a time series
+        String resourceName = "/examples/invalid/nulls.csdb";
+
+        // When
+        // we read it to a csdb file
+        TimeSeriesDataSet csdb = readFile(resourceName);
+
+        // Then
+        // we expect an exception to be thrown
+    }
+
+    @Test(expected = BadFileException.class)
+    public void testDataSetReaderThrowsExceptionOnXLSXFile() throws Exception {
+        // Given
+        // a time series
+        String resourceName = "/examples/invalid/actuallyanxlsx.csdb";
+
+        // When
+        // we read it to a csdb file
+        TimeSeriesDataSet csdb = readFile(resourceName);
+
+        // Then
+        // we expect an exception to be thrown
+    }
+
+    @Test(expected = BadFileException.class)
+    public void testDataSetReaderThrowsExceptionOnIncompleteFile() throws Exception {
+        // Given
+        // a time series
+        String resourceName = "/examples/invalid/incomplete.csdb";
+
+        // When
+        // we read it to a csdb file
+        TimeSeriesDataSet csdb = readFile(resourceName);
+
+        // Then
+        // we expect an exception to be thrown
+    }
+
     @Test
     public void testDataSetReaderKicksOutTheCorrectFinalNumberForTimeSeries() throws Exception {
         // Given
         // a time series
-        String resourceName = "/examples/SmallExample";
+        String resourceName = "/examples/SmallExample.csdb";
         TimeSeriesDataSet csdb = readFile(resourceName);
         TimeSeriesObject series = csdb.getSeries("DS38");
 
@@ -83,7 +127,7 @@ public class TimeSeriesPublisherTest {
     public void testDataSetReaderKicksOutTheCorrectFinalDateForTimeSeries() throws Exception {
         // Given
         // a time series
-        String resourceName = "/examples/SmallExample";
+        String resourceName = "/examples/SmallExample.csdb";
         TimeSeriesDataSet csdb = readFile(resourceName);
         TimeSeriesObject series = csdb.getSeries("DS38");
 
@@ -111,7 +155,7 @@ public class TimeSeriesPublisherTest {
      * @return - THE DATASET REPRESENTATION
      * @throws IOException
      */
-    public static TimeSeriesDataSet readFile(String resourceName) throws IOException, URISyntaxException {
+    public static TimeSeriesDataSet readFile(String resourceName) throws IOException, URISyntaxException, BrianException {
         // FIRST THINGS FIRST - GET THE FILE
         URL resource = TimeSeriesDataSet.class.getResource(resourceName);
         Path filePath = Paths.get(resource.toURI());

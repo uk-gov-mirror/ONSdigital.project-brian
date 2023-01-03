@@ -9,20 +9,31 @@ import com.github.onsdigital.brian.data.objects.TimeSeriesPoint;
 
 import java.util.*;
 
+import static com.github.onsdigital.logging.v2.event.SimpleEvent.info;
+
 /**
  * Created by thomasridd on 09/06/15.
  */
 public class TimeSeriesPublisher {
 
     public static List<TimeSeries> convertToContentLibraryTimeSeriesList(List<TimeSeriesObject> timeSeriesObjectList) {
+
+        info().log("converting timeseries list");
+
         List<TimeSeries> results = new ArrayList<>();
         for (TimeSeriesObject timeSeriesObject: timeSeriesObjectList) {
             results.add(TimeSeriesPublisher.convertToContentLibraryTimeSeries(timeSeriesObject));
         }
+
+        info().log("completed converting timeseries list");
+
         return results;
     }
 
     public static TimeSeries convertToContentLibraryTimeSeries(TimeSeriesObject timeSeriesObject) {
+
+        info().data("cdid",timeSeriesObject.taxi).log("converting timeseries");
+
         TimeSeries timeSeriesPage = new TimeSeries();
 
         PageDescription description = new PageDescription();
