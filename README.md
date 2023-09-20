@@ -1,9 +1,11 @@
 # project-brian
+
 Data pipeline for ONS website
 
-This service converts CSDB or CSV files to JSON for use by time series datasets. 
+This service converts CSDB or CSV files to JSON for use by time series datasets.
 
-### Context
+## Context
+
 Zebedee converts uploaded CSDB or CSV files in time series datasets into separate individual time-series at collection
 approval stage. It does this by POSTing the csdb or csv file to Brian and receiving a JSON file in return which it then
 processes in 
@@ -19,7 +21,13 @@ First obtain a valid CSDB or CSV file. For example…
 - `upload-pop.csv` - ('csv') on 
   [Population estimates time series dataset](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatestimeseriesdataset)
 
-Then with project-brian running locally via the `./run.sh` command, post the downloaded file to the service using.
+To run project brian, use:
+
+```bash
+make debug
+```
+
+Now, post the downloaded file to the service using:
 
 ```
 curl -X POST -F "file=@somefile.csdb" http://localhost:8083/Services/ConvertCSDB -o csdb.json
