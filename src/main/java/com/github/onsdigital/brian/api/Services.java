@@ -2,7 +2,7 @@ package com.github.onsdigital.brian.api;
 
 import com.github.davidcarboni.cryptolite.Crypto;
 import com.github.davidcarboni.cryptolite.Keys;
-import com.github.davidcarboni.encryptedfileupload.EncryptedFileItemFactory;
+import com.github.davidcarboni.fileupload.encrypted.EncryptedFileItemFactory;
 import com.github.davidcarboni.restolino.framework.Api;
 import com.github.onsdigital.brian.data.ErrorResponse;
 import com.github.onsdigital.brian.data.TimeSeriesDataSet;
