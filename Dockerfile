@@ -1,4 +1,4 @@
-FROM onsdigital/java-component
+FROM eclipse-temurin:8-jre
 
 # Add the build artifacts
 WORKDIR /usr/src
